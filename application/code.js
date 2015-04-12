@@ -75,7 +75,12 @@ var ForceGraph = (function(){
 		/**
 		 * number of disconnected subgraphs in the collection of nodes
 		 */
-		group_count: 0
+		group_count: 0,
+
+		/**
+		 *radius of the gravity ring
+		 */
+		gravity_ring_radius: 0
 	}
 
 	//public interface
@@ -98,6 +103,7 @@ var ForceGraph = (function(){
 			private_data.layout = d3.layout.force()
 				/*.friction(.5)*/
 				.linkStrength(0.5)
+				.gravity(0)
 				.linkDistance(function(d){
 					return (private_data.max_link_strength/Math.max(d.strength,0.0001))*100;
 				});
@@ -106,19 +112,27 @@ var ForceGraph = (function(){
 			self.setData(private_data.data);
 
 			//the graph animation
-			private_data.layout.on("tick", function() {
+			private_data.layout.on("tick", function(event) {
+
+				private_data.node_selection
+					.attr("cx", function(d) {
+						var impulse = self.getGravityImpulse(d);
+						d.x += event.alpha*impulse.x;
+						return d.x;
+					})
+					.attr("cy", function(d) {
+						var impulse = self.getGravityImpulse(d);
+						d.y += event.alpha*impulse.y;
+						return d.y;
+					});
+//					.attr("cx", function(d) { return d.x = Math.max(0, Math.min(screen_size.x, d.x)); })
+//					.attr("cy", function(d) { return d.y = Math.max(0, Math.min(screen_size.y, d.y)); });
+
 				private_data.link_selection
 					.attr("x1", function(d) { return d.source.x; })
 					.attr("y1", function(d) { return d.source.y; })
 					.attr("x2", function(d) { return d.target.x; })
 					.attr("y2", function(d) { return d.target.y; });
-
-				screen_size = self.screenToSimulation(width,height);
-				private_data.node_selection
-					.attr("cx", function(d) { return d.x; })
-					.attr("cy", function(d) { return d.y; });
-//					.attr("cx", function(d) { return d.x = Math.max(0, Math.min(screen_size.x, d.x)); })
-//					.attr("cy", function(d) { return d.y = Math.max(0, Math.min(screen_size.y, d.y)); });
 			});
 
 			self.setSize(height, width);
@@ -131,8 +145,6 @@ var ForceGraph = (function(){
 				private_data.zoom.y = d3.event.translate[1];
 				private_data.main_group
 					.attr("transform", "translate("+private_data.zoom.x+","+private_data.zoom.y+") scale("+private_data.zoom.scale+")");
-//					.attr("transform", "translate("+private_data.zoom.x+","+private_data.zoom.y+")");
-//					.attr("transform", "scale("+private_data.zoom.scale+")");
 			});
 			var zoom_selection = svg.call(private_data.zoom.behavior);
 			var mouse_handler = zoom_selection.on("mousedown.zoom");
@@ -180,8 +192,11 @@ var ForceGraph = (function(){
 			});
 			private_data.group_count = 0;
 			private_data.data.nodes.forEach(function(d){
-				private_data.group_count = Math.max(private_data.group_count, d.group);
+				if('group' in d){
+					private_data.group_count = Math.max(private_data.group_count, d.group);
+				}
 			});
+			private_data.group_count++;
 
 			private_data.layout.charge(-private_data.max_link_strength)
 
@@ -228,7 +243,7 @@ var ForceGraph = (function(){
 
 			private_data.node_selection.enter()
 				.append("circle")
-				.attr("r", private_data.max_link_strength/10)
+				.attr("r", 10)
 				.attr("class", "node")
 				.call(private_data.layout.drag)
 				.style("fill", function(d) {
@@ -249,14 +264,37 @@ var ForceGraph = (function(){
 		},
 
 		/**
-		 * given screen coords return visualization coords
+		 *get a gravity ring point for the given group
 		 */
-		screenToSimulation :function(x,y){
-			x /= private_data.zoom.scale;
-			y /= private_data.zoom.scale;
-			x += private_data.zoom.x;
-			y += private_data.zoom.y;
-			return {x:x,y:y};
+		getGravityRingPoint: function(node){
+			if('group' in node){
+				var a  = (node.group/private_data.group_count)*Math.PI*2;
+				var r = private_data.gravity_ring_radius;
+				return {
+					x:r*Math.sin(a), 
+					y:r*Math.cos(a)
+				};
+			}
+			else{
+				return {x:0,y:0};
+			}
+		},
+
+		/**
+		 *calculate a impulse for a node
+		 */
+		getGravityImpulse: function(node){
+			var center = this.getGravityRingPoint(node); //where the node wants to be
+			var to_center = {x:center.x-node.x, y:center.y-node.y} //displacement to center
+
+			return to_center;
+		},
+
+		/**
+		 *sets the size of the ring that the different groups will be attracted to
+		 */
+		setGroupRingSize: function(size){
+			private_data.gravity_ring_radius = size;
 		}
 	}
 })();
@@ -271,7 +309,8 @@ function main(){
 
 	//this should be done in an ajax call if we end up with non-static data
 	//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
-	setFlooredData(50);
+	setFlooredData(0);
+	ForceGraph.setGroupRingSize(500);
 }
 
 /**
