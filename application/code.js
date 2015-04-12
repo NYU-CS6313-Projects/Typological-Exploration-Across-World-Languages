@@ -255,7 +255,8 @@ function main(){
 	ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"), window.innerHeight, window.innerWidth);
 
 	//this should be done in an ajax call if we end up with non-static data
-	ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
+	//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
+	setFlooredData(50);
 }
 
 /**
@@ -273,54 +274,7 @@ function floorData(data, threshold){
 		}
 	}
 
-	//remove features that have no connections
-	//assume everything is disconnected at first
-	var nodes_to_keep = [];
-
-	var groups = [];
-
-	//find groups and disconnected nodes
-	for(var i = 0; i<data.links.length; i++){
-		var src_idx = data.links[i].source;
-		var tar_idx = data.links[i].target;
-
-		//these have been found at least once, so lets keep them
-		if(nodes_to_keep.indexOf(src_idx) != -1){
-			nodes_to_keep.push(src_idx)
-		}
-		if(nodes_to_keep.indexOf(tar_idx) != -1){
-			nodes_to_keep.push(tar_idx)
-		}
-
-		//now calculate group
-		var source  = data.nodes[src_idx];
-		var target  = data.nodes[tar_idx];
-
-		var group_id = null;
-
-		//if both nodes are in a group already, use the smaller one
-		if("group" in source.group && "group" in target.group){
-			group_id = Math.min(source.group, target.group);
-		}
-		else if("group" in source.group){
-			group_id = source.group;
-		}
-		else if("group" in target.group){
-			group_id = target.group;
-		}
-		else{
-			group_id = groups.length;
-			groups.push([]);
-		}
-
-		if(source.group != group_id){
-			if("group" in source.group){
-				groups
-			}
-			groups
-			source.group != group_id;
-		}
-	}
+	makeSubgraphs(data);
 	
 	return data;
 }
@@ -332,6 +286,59 @@ function floorData(data, threshold){
 function setFlooredData(threshold){
 	var data = floorData(test_data, threshold);
 	ForceGraph.setData(data);
+}
+
+/**
+ * Forms nodes into groups
+ * deletes any single nodes
+ */
+function makeSubgraphs(data){
+	var group_counter = 0;
+	var marked_for_deletion;
+	var deletion_group = [];
+	var target;
+	for (var i = 0; i<data.nodes.length; i++){
+		//only mark for deletion if we aren't in a group and never find one
+		if(data.nodes[i].group == null){
+			marked_for_deletion=1;
+		}
+		//look for any node we connect to
+		for (var j = 0; j<data.links.length; j++){
+			if(data.links[j].source == i){
+				marked_for_deletion=0;
+				target = data.links[j].target;
+				if(data.nodes[target].group != null){
+					//target has a group, join it
+					data.nodes[i].group = data.nodes[target].group;
+				} else if(data.nodes[i].group != null){
+					//we have a group, add target to it
+					data.nodes[target].group = data.nodes[i].group;
+				} else {
+					//make a new group for ourselves and target
+					data.nodes[i].group = data.nodes[target].group = group_counter;
+					group_counter++;
+				}
+			}
+		}
+		//mark node for deletion if nothing found
+		if(marked_for_deletion == 1){
+			deletion_group.push(i);
+		}
+	}
+	//now actually delete things
+	for(var i = 0; i<deletion_group.length; i++){
+		data.nodes.splice(deletion_group[i], 1);
+		for(var j = 0; j<data.links.length; j++){
+			if(data.links[j].source > deletion_group[i]){
+				data.links[j].source--;
+			}
+			if(data.links[j].target > deletion_group[i]){
+				data.links[j].target--;
+			}
+		}
+	}
+	
+	return data;
 }
 
 

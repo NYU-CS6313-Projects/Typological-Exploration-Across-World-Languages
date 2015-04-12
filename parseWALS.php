@@ -1,4 +1,9 @@
 <?php
+/**
+ * Combines wals_dump and lab_table (from the original matlab file)
+ * and massages data to produce a friendlier to work work csv
+ * for language information
+ */
 
 $languages = array_map(
 	"str_getcsv",

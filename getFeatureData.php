@@ -1,4 +1,8 @@
 <?php
+/**
+ * Pulls distinct feature information from wals_dump
+ * stores it as json objects
+ */
 
 $data = array_map(
 	"str_getcsv",
