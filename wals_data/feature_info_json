@@ -1,0 +1,2291 @@
+{
+	id:"1A",
+	name:"Consonant Inventories",
+	enum: {
+		"Moderately small",
+		"Large",
+		"Small",
+		"Average",
+		"Moderately large"
+	}
+},
+{
+	id:"2A",
+	name:"Vowel Quality Inventories",
+	enum: {
+		"Average (5-6)",
+		"Small (2-4)",
+		"Large (7-14)"
+	}
+},
+{
+	id:"3A",
+	name:"Consonant-Vowel Ratio",
+	enum: {
+		"Average",
+		"High",
+		"Moderately high",
+		"Moderately low",
+		"Low"
+	}
+},
+{
+	id:"4A",
+	name:"Voicing in Plosives and Fricatives",
+	enum: {
+		"No voicing contrast",
+		"In both plosives and fricatives",
+		"In plosives alone",
+		"In fricatives alone"
+	}
+},
+{
+	id:"5A",
+	name:"Voicing and Gaps in Plosive Systems",
+	enum: {
+		"Other",
+		"None missing in /p t k b d g/",
+		"Missing /g/",
+		"Missing /p/",
+		"Both missing"
+	}
+},
+{
+	id:"6A",
+	name:"Uvular Consonants",
+	enum: {
+		"Uvular stops and continuants",
+		"Uvular stops only",
+		"None",
+		"Uvular continuants only"
+	}
+},
+{
+	id:"7A",
+	name:"Glottalized Consonants",
+	enum: {
+		"No glottalized consonants",
+		"Ejectives only",
+		"Ejectives and glottalized resonants",
+		"Implosives only",
+		"Glottalized resonants only",
+		"Ejectives and implosives",
+		"Implosives and glottalized resonants",
+		"Ejectives, implosives, and glottalized resonants"
+	}
+},
+{
+	id:"8A",
+	name:"Lateral Consonants",
+	enum: {
+		"/l/, no obstruent laterals",
+		"/l/ and lateral obstruent",
+		"Laterals, but no /l/, no obstruent laterals",
+		"No laterals",
+		"No /l/, but lateral obstruents"
+	}
+},
+{
+	id:"9A",
+	name:"The Velar Nasal",
+	enum: {
+		"No velar nasal",
+		"No initial velar nasal",
+		"Initial velar nasal"
+	}
+},
+{
+	id:"10A",
+	name:"Vowel Nasalization",
+	enum: {
+		"Contrast absent",
+		"Contrast present"
+	}
+},
+{
+	id:"11A",
+	name:"Front Rounded Vowels",
+	enum: {
+		"None",
+		"High and mid",
+		"High only",
+		"Mid only"
+	}
+},
+{
+	id:"12A",
+	name:"Syllable Structure",
+	enum: {
+		"Complex",
+		"Simple",
+		"Moderately complex"
+	}
+},
+{
+	id:"13A",
+	name:"Tone",
+	enum: {
+		"No tones",
+		"Simple tone system",
+		"Complex tone system"
+	}
+},
+{
+	id:"14A",
+	name:"Fixed Stress Locations",
+	enum: {
+		"No fixed stress",
+		"Ultimate",
+		"Initial",
+		"Penultimate",
+		"Second",
+		"Antepenultimate",
+		"Third"
+	}
+},
+{
+	id:"15A",
+	name:"Weight-Sensitive Stress",
+	enum: {
+		"Right-oriented: One of the last three",
+		"Not predictable",
+		"Fixed stress (no weight-sensitivity)",
+		"Unbounded: Stress can be anywhere",
+		"Right-edge: Ultimate or penultimate",
+		"Combined: Right-edge and unbounded",
+		"Left-edge: First or second",
+		"Left-oriented: One of the first three"
+	}
+},
+{
+	id:"16A",
+	name:"Weight Factors in Weight-Sensitive Stress Systems",
+	enum: {
+		"Long vowel or coda consonant",
+		"Lexical stress",
+		"Prominence",
+		"No weight",
+		"Combined",
+		"Long vowel",
+		"Coda consonant"
+	}
+},
+{
+	id:"17A",
+	name:"Rhythm Types",
+	enum: {
+		"Trochaic",
+		"Iambic",
+		"No rhythmic stress",
+		"Undetermined",
+		"Dual: both trochaic and iambic"
+	}
+},
+{
+	id:"18A",
+	name:"Absence of Common Consonants",
+	enum: {
+		"All present",
+		"No nasals",
+		"No fricatives",
+		"No bilabials",
+		"No bilabials or nasals",
+		"No fricatives or nasals"
+	}
+},
+{
+	id:"19A",
+	name:"Presence of Uncommon Consonants",
+	enum: {
+		"None",
+		"Pharyngeals",
+		"'Th' sounds",
+		"Labial-velars",
+		"Clicks",
+		"Clicks, pharyngeals, and 'th'",
+		"Pharyngeals and "th""
+	}
+},
+{
+	id:"20A",
+	name:"Fusion of Selected Inflectional Formatives",
+	enum: {
+		"Exclusively concatenative",
+		"Ablaut/concatenative",
+		"Isolating/concatenative",
+		"Exclusively isolating",
+		"Exclusively tonal",
+		"Tonal/concatenative",
+		"Tonal/isolating"
+	}
+},
+{
+	id:"21A",
+	name:"Exponence of Selected Inflectional Formatives",
+	enum: {
+		"No case",
+		"Monoexponential case",
+		"Case + number",
+		"Case + referentiality",
+		"Case + TAM"
+	}
+},
+{
+	id:"22A",
+	name:"Inflectional Synthesis of the Verb",
+	enum: {
+		"10-11 categories per word",
+		"4-5 categories per word",
+		"6-7 categories per word",
+		"2-3 categories per word",
+		"8-9 categories per word",
+		"12-13 categories per word",
+		"0-1 category per word"
+	}
+},
+{
+	id:"23A",
+	name:"Locus of Marking in the Clause",
+	enum: {
+		"Head marking",
+		"No marking",
+		"Dependent marking",
+		"Double marking",
+		"Other"
+	}
+},
+{
+	id:"24A",
+	name:"Locus of Marking in Possessive Noun Phrases",
+	enum: {
+		"Head marking",
+		"No marking",
+		"Dependent marking",
+		"Double marking",
+		"Other"
+	}
+},
+{
+	id:"25A",
+	name:"Locus of Marking: Whole-language Typology",
+	enum: {
+		"Head-marking",
+		"Inconsistent or other",
+		"Dependent-marking",
+		"Double-marking",
+		"Zero-marking"
+	}
+},
+{
+	id:"26A",
+	name:"Prefixing vs. Suffixing in Inflectional Morphology",
+	enum: {
+		"Strongly suffixing",
+		"Equal prefixing and suffixing",
+		"Little affixation",
+		"Weakly prefixing",
+		"Weakly suffixing",
+		"Strong prefixing"
+	}
+},
+{
+	id:"27A",
+	name:"Reduplication",
+	enum: {
+		"Productive full and partial reduplication",
+		"No productive reduplication",
+		"Full reduplication only"
+	}
+},
+{
+	id:"28A",
+	name:"Case Syncretism",
+	enum: {
+		"No case marking",
+		"Core and non-core",
+		"No syncretism",
+		"Core cases only"
+	}
+},
+{
+	id:"29A",
+	name:"Syncretism in Verbal Person/Number Marking",
+	enum: {
+		"Syncretic",
+		"Not syncretic",
+		"No subject person/number marking"
+	}
+},
+{
+	id:"30A",
+	name:"Number of Genders",
+	enum: {
+		"Three",
+		"None",
+		"Two",
+		"Four",
+		"Five or more"
+	}
+},
+{
+	id:"31A",
+	name:"Sex-based and Non-sex-based Gender Systems",
+	enum: {
+		"Sex-based",
+		"No gender",
+		"Non-sex-based"
+	}
+},
+{
+	id:"32A",
+	name:"Systems of Gender Assignment",
+	enum: {
+		"Semantic",
+		"No gender",
+		"Semantic and formal"
+	}
+},
+{
+	id:"33A",
+	name:"Coding of Nominal Plurality",
+	enum: {
+		"No plural",
+		"Plural suffix",
+		"Plural word",
+		"Mixed morphological plural",
+		"Plural prefix",
+		"Plural clitic",
+		"Plural complete reduplication",
+		"Plural stem change",
+		"Plural tone"
+	}
+},
+{
+	id:"34A",
+	name:"Occurrence of Nominal Plurality",
+	enum: {
+		"All nouns, always obligatory",
+		"No nominal plural",
+		"All nouns, always optional",
+		"Only human nouns, obligatory",
+		"Only human nouns, optional",
+		"All nouns, optional in inanimates"
+	}
+},
+{
+	id:"35A",
+	name:"Plurality in Independent Personal Pronouns",
+	enum: {
+		"Person-number stem",
+		"No independent subject pronouns",
+		"Person-number affixes",
+		"Person-number stem + nominal plural affix",
+		"Person-number stem + pronominal plural affix",
+		"Person stem + pronominal plural affix",
+		"Number-indifferent pronouns",
+		"Person stem + nominal plural affix"
+	}
+},
+{
+	id:"36A",
+	name:"The Associative Plural",
+	enum: {
+		"Unique affixal associative plural",
+		"No associative plural",
+		"Unique periphrastic associative plural",
+		"Associative same as additive plural"
+	}
+},
+{
+	id:"37A",
+	name:"Definite Articles",
+	enum: {
+		"Definite affix",
+		"Definite word distinct from demonstrative",
+		"Demonstrative word used as definite article",
+		"No definite or indefinite article",
+		"No definite, but indefinite article"
+	}
+},
+{
+	id:"38A",
+	name:"Indefinite Articles",
+	enum: {
+		"No indefinite, but definite article",
+		"Indefinite word same as 'one'",
+		"Indefinite word distinct from 'one'",
+		"No definite or indefinite article",
+		"Indefinite affix"
+	}
+},
+{
+	id:"39A",
+	name:"Inclusive/Exclusive Distinction in Independent Pronouns",
+	enum: {
+		"No inclusive/exclusive",
+		"Inclusive/exclusive",
+		"No 'we'",
+		"Only inclusive",
+		"'We' the same as 'I'"
+	}
+},
+{
+	id:"40A",
+	name:"Inclusive/Exclusive Distinction in Verbal Inflection",
+	enum: {
+		"'We' the same as 'I'",
+		"No inclusive/exclusive",
+		"Inclusive/exclusive",
+		"No person marking",
+		"Only inclusive"
+	}
+},
+{
+	id:"41A",
+	name:"Distance Contrasts in Demonstratives",
+	enum: {
+		"Two-way contrast",
+		"Three-way contrast",
+		"Four-way contrast",
+		"No distance contrast",
+		"Five (or more)-way contrast"
+	}
+},
+{
+	id:"42A",
+	name:"Pronominal and Adnominal Demonstratives",
+	enum: {
+		"Identical",
+		"Different stem",
+		"Different inflection"
+	}
+},
+{
+	id:"43A",
+	name:"Third Person Pronouns and Demonstratives",
+	enum: {
+		"Related by gender markers",
+		"Unrelated",
+		"Related for all demonstratives",
+		"Related to remote demonstratives",
+		"Related to non-remote demonstratives",
+		"Related for non-human reference"
+	}
+},
+{
+	id:"44A",
+	name:"Gender Distinctions in Independent Personal Pronouns",
+	enum: {
+		"No gender distinctions",
+		"In 3rd person + 1st and/or 2nd person",
+		"3rd person singular only",
+		"3rd person only, but also non-singular",
+		"1st or 2nd person but not 3rd",
+		"3rd person non-singular only"
+	}
+},
+{
+	id:"45A",
+	name:"Politeness Distinctions in Pronouns",
+	enum: {
+		"No politeness distinction",
+		"Binary politeness distinction",
+		"Pronouns avoided for politeness",
+		"Multiple politeness distinctions"
+	}
+},
+{
+	id:"46A",
+	name:"Indefinite Pronouns",
+	enum: {
+		"Special",
+		"Interrogative-based",
+		"Generic-noun-based",
+		"Mixed",
+		"Existential construction"
+	}
+},
+{
+	id:"47A",
+	name:"Intensifiers and Reflexive Pronouns",
+	enum: {
+		"Differentiated",
+		"Identical"
+	}
+},
+{
+	id:"48A",
+	name:"Person Marking on Adpositions",
+	enum: {
+		"No person marking",
+		"Pronouns and nouns",
+		"No adpositions",
+		"Pronouns only"
+	}
+},
+{
+	id:"49A",
+	name:"Number of Cases",
+	enum: {
+		"No morphological case-marking",
+		"2 cases",
+		"Exclusively borderline case-marking",
+		"8-9 cases",
+		"4 cases",
+		"5 cases",
+		"10 or more cases",
+		"6-7 cases",
+		"3 cases"
+	}
+},
+{
+	id:"50A",
+	name:"Asymmetrical Case-Marking",
+	enum: {
+		"No case-marking",
+		"Symmetrical",
+		"Syncretism in relevant NP-types",
+		"Subtractive-quantitatively asymmetrical",
+		"Additive-quantitatively asymmetrical",
+		"Qualitatively asymmetrical"
+	}
+},
+{
+	id:"51A",
+	name:"Position of Case Affixes",
+	enum: {
+		"Case suffixes",
+		"No case affixes or adpositional clitics",
+		"Postpositional clitics",
+		"Inpositional clitics",
+		"Prepositional clitics",
+		"Case prefixes",
+		"Mixed morphological case",
+		"Case tone",
+		"Case stem change"
+	}
+},
+{
+	id:"52A",
+	name:"Comitatives and Instrumentals",
+	enum: {
+		"Differentiation",
+		"Identity",
+		"Mixed"
+	}
+},
+{
+	id:"53A",
+	name:"Ordinal Numerals",
+	enum: {
+		"First/one-th, two-th, three-th",
+		"None",
+		"First, two-th, three-th",
+		"First, two, three",
+		"First, second, three-th",
+		"One-th, two-th, three-th",
+		"Various",
+		"One, two, three"
+	}
+},
+{
+	id:"54A",
+	name:"Distributive Numerals",
+	enum: {
+		"Marked by mixed or other strategies",
+		"No distributive numerals",
+		"Marked by reduplication",
+		"Marked by following word",
+		"Marked by preceding word",
+		"Marked by suffix",
+		"Marked by prefix"
+	}
+},
+{
+	id:"55A",
+	name:"Numeral Classifiers",
+	enum: {
+		"Absent",
+		"Obligatory",
+		"Optional"
+	}
+},
+{
+	id:"56A",
+	name:"Conjunctions and Universal Quantifiers",
+	enum: {
+		"Formally similar, without interrogative",
+		"Formally similar, with interrogative",
+		"Formally different"
+	}
+},
+{
+	id:"57A",
+	name:"Position of Pronominal Possessive Affixes",
+	enum: {
+		"No possessive affixes",
+		"Prefixes and suffixes",
+		"Possessive prefixes",
+		"Possessive suffixes"
+	}
+},
+{
+	id:"58A",
+	name:"Obligatory Possessive Inflection",
+	enum: {
+		"Absent",
+		"Exists"
+	}
+},
+{
+	id:"59A",
+	name:"Possessive Classification",
+	enum: {
+		"No possessive classification",
+		"Two classes",
+		"More than five classes",
+		"Three to five classes"
+	}
+},
+{
+	id:"60A",
+	name:"Genitives, Adjectives and Relative Clauses",
+	enum: {
+		"Highly differentiated",
+		"Adjectives and relative clauses collapsed",
+		"Weakly differentiated",
+		"Moderately differentiated in other ways",
+		"Genitives and relative clauses collapsed",
+		"Genitives and adjectives collapsed"
+	}
+},
+{
+	id:"61A",
+	name:"Adjectives without Nouns",
+	enum: {
+		"Without marking",
+		"Marked by preceding word",
+		"Marked by suffix",
+		"Marked by prefix",
+		"Marked by mixed or other strategies",
+		"Marked by following word",
+		"Not without noun"
+	}
+},
+{
+	id:"62A",
+	name:"Action Nominal Constructions",
+	enum: {
+		"Ergative-Possessive",
+		"Mixed",
+		"No action nominals",
+		"Possessive-Accusative",
+		"Sentential",
+		"Double-Possessive",
+		"Restricted",
+		"Other"
+	}
+},
+{
+	id:"63A",
+	name:"Noun Phrase Conjunction",
+	enum: {
+		"'And' different from 'with'",
+		"'And' identical to 'with'"
+	}
+},
+{
+	id:"64A",
+	name:"Nominal and Verbal Conjunction",
+	enum: {
+		"Identity",
+		"Differentiation",
+		"Both expressed by juxtaposition"
+	}
+},
+{
+	id:"65A",
+	name:"Perfective/Imperfective Aspect",
+	enum: {
+		"No grammatical marking",
+		"Grammatical marking"
+	}
+},
+{
+	id:"66A",
+	name:"The Past Tense",
+	enum: {
+		"No past tense",
+		"Present, no remoteness distinctions",
+		"Present, 2-3 remoteness distinctions",
+		"Present, 4 or more remoteness distinctions"
+	}
+},
+{
+	id:"67A",
+	name:"The Future Tense",
+	enum: {
+		"No inflectional future",
+		"Inflectional future exists"
+	}
+},
+{
+	id:"68A",
+	name:"The Perfect",
+	enum: {
+		"No perfect",
+		"Other perfect",
+		"From 'finish', 'already'",
+		"From possessive"
+	}
+},
+{
+	id:"69A",
+	name:"Position of Tense-Aspect Affixes",
+	enum: {
+		"Tense-aspect suffixes",
+		"No tense-aspect inflection",
+		"Tense-aspect prefixes",
+		"Mixed type",
+		"Tense-aspect tone"
+	}
+},
+{
+	id:"70A",
+	name:"The Morphological Imperative",
+	enum: {
+		"Second singular and second plural",
+		"No second-person imperatives",
+		"Second person number-neutral",
+		"Second singular",
+		"Second plural"
+	}
+},
+{
+	id:"71A",
+	name:"The Prohibitive",
+	enum: {
+		"Special imperative + normal negative",
+		"Normal imperative + special negative",
+		"Special imperative + special negative",
+		"Normal imperative + normal negative"
+	}
+},
+{
+	id:"72A",
+	name:"Imperative-Hortative Systems",
+	enum: {
+		"Neither type of system",
+		"Maximal system",
+		"Minimal system",
+		"Both types of system"
+	}
+},
+{
+	id:"73A",
+	name:"The Optative",
+	enum: {
+		"Inflectional optative present",
+		"Inflectional optative absent"
+	}
+},
+{
+	id:"74A",
+	name:"Situational Possibility",
+	enum: {
+		"Verbal constructions",
+		"Affixes on verbs",
+		"Other kinds of markers"
+	}
+},
+{
+	id:"75A",
+	name:"Epistemic Possibility",
+	enum: {
+		"Verbal constructions",
+		"Affixes on verbs",
+		"Other"
+	}
+},
+{
+	id:"76A",
+	name:"Overlap between Situational and Epistemic Modal Marking",
+	enum: {
+		"Overlap for either possibility or necessity",
+		"No overlap",
+		"Overlap for both possibility and necessity"
+	}
+},
+{
+	id:"77A",
+	name:"Semantic Distinctions of Evidentiality",
+	enum: {
+		"No grammatical evidentials",
+		"Indirect only",
+		"Direct and indirect"
+	}
+},
+{
+	id:"78A",
+	name:"Coding of Evidentiality",
+	enum: {
+		"No grammatical evidentials",
+		"Verbal affix or clitic",
+		"Separate particle",
+		"Part of the tense system",
+		"Mixed",
+		"Modal morpheme"
+	}
+},
+{
+	id:"79A",
+	name:"Suppletion According to Tense and Aspect",
+	enum: {
+		"Tense",
+		"None",
+		"Tense and aspect",
+		"Aspect"
+	}
+},
+{
+	id:"80A",
+	name:"Verbal Number and Suppletion",
+	enum: {
+		"None",
+		"Singular-plural pairs, suppletion",
+		"Singular-plural pairs, no suppletion",
+		"Singular-dual-plural triples, suppletion",
+		"Singular-dual-plural triples, no suppletion"
+	}
+},
+{
+	id:"81A",
+	name:"Order of Subject, Object and Verb",
+	enum: {
+		"SVO",
+		"SOV",
+		"No dominant order",
+		"VSO",
+		"VOS",
+		"OVS",
+		"OSV"
+	}
+},
+{
+	id:"82A",
+	name:"Order of Subject and Verb",
+	enum: {
+		"SV",
+		"No dominant order",
+		"VS"
+	}
+},
+{
+	id:"83A",
+	name:"Order of Object and Verb",
+	enum: {
+		"VO",
+		"OV",
+		"No dominant order"
+	}
+},
+{
+	id:"84A",
+	name:"Order of Object, Oblique, and Verb",
+	enum: {
+		"VOX",
+		"XOV",
+		"No dominant order",
+		"OXV",
+		"OVX",
+		"XVO"
+	}
+},
+{
+	id:"85A",
+	name:"Order of Adposition and Noun Phrase",
+	enum: {
+		"Postpositions",
+		"Prepositions",
+		"No adpositions",
+		"No dominant order",
+		"Inpositions"
+	}
+},
+{
+	id:"86A",
+	name:"Order of Genitive and Noun",
+	enum: {
+		"Genitive-Noun",
+		"No dominant order",
+		"Noun-Genitive"
+	}
+},
+{
+	id:"87A",
+	name:"Order of Adjective and Noun",
+	enum: {
+		"Noun-Adjective",
+		"No dominant order",
+		"Adjective-Noun",
+		"Only internally-headed relative clauses"
+	}
+},
+{
+	id:"88A",
+	name:"Order of Demonstrative and Noun",
+	enum: {
+		"Noun-Demonstrative",
+		"Demonstrative-Noun",
+		"Demonstrative prefix",
+		"Demonstrative suffix",
+		"Mixed",
+		"Demonstrative before and after Noun"
+	}
+},
+{
+	id:"89A",
+	name:"Order of Numeral and Noun",
+	enum: {
+		"Noun-Numeral",
+		"No dominant order",
+		"Numeral-Noun",
+		"Numeral only modifies verb"
+	}
+},
+{
+	id:"90A",
+	name:"Order of Relative Clause and Noun",
+	enum: {
+		"Noun-Relative clause",
+		"Relative clause-Noun",
+		"Mixed",
+		"Correlative",
+		"Internally headed",
+		"Adjoined",
+		"Doubly headed"
+	}
+},
+{
+	id:"91A",
+	name:"Order of Degree Word and Adjective",
+	enum: {
+		"Degree word-Adjective",
+		"Adjective-Degree word",
+		"No dominant order"
+	}
+},
+{
+	id:"92A",
+	name:"Position of Polar Question Particles",
+	enum: {
+		"Final",
+		"No question particle",
+		"In either of two positions",
+		"Initial",
+		"Second position",
+		"Other position"
+	}
+},
+{
+	id:"93A",
+	name:"Position of Interrogative Phrases in Content Questions",
+	enum: {
+		"Not initial interrogative phrase",
+		"Initial interrogative phrase",
+		"Mixed"
+	}
+},
+{
+	id:"94A",
+	name:"Order of Adverbial Subordinator and Clause",
+	enum: {
+		"Initial subordinator word",
+		"Subordinating suffix",
+		"Mixed",
+		"Final subordinator word",
+		"Internal subordinator word"
+	}
+},
+{
+	id:"95A",
+	name:"Relationship between the Order of Object and Verb and the Order of Adposition and Noun Phrase",
+	enum: {
+		"OV and Postpositions",
+		"VO and Prepositions",
+		"Other",
+		"VO and Postpositions",
+		"OV and Prepositions"
+	}
+},
+{
+	id:"96A",
+	name:"Relationship between the Order of Object and Verb and the Order of Relative Clause and Noun",
+	enum: {
+		"OV and NRel",
+		"VO and NRel",
+		"OV and RelN",
+		"Other",
+		"VO and RelN"
+	}
+},
+{
+	id:"97A",
+	name:"Relationship between the Order of Object and Verb and the Order of Adjective and Noun",
+	enum: {
+		"VO and NAdj",
+		"OV and NAdj",
+		"Other",
+		"OV and AdjN",
+		"VO and AdjN"
+	}
+},
+{
+	id:"98A",
+	name:"Alignment of Case Marking of Full Noun Phrases",
+	enum: {
+		"Neutral",
+		"Ergative - absolutive",
+		"Nominative - accusative (standard)",
+		"Nominative - accusative (marked nominative)",
+		"Active-inactive",
+		"Tripartite"
+	}
+},
+{
+	id:"99A",
+	name:"Alignment of Case Marking of Pronouns",
+	enum: {
+		"Neutral",
+		"Ergative - absolutive",
+		"Nominative - accusative (standard)",
+		"Nominative - accusative (marked nominative)",
+		"Active - inactive",
+		"None",
+		"Tripartite"
+	}
+},
+{
+	id:"100A",
+	name:"Alignment of Verbal Person Marking",
+	enum: {
+		"Accusative",
+		"Ergative",
+		"Neutral",
+		"Active",
+		"Split",
+		"Hierarchical"
+	}
+},
+{
+	id:"101A",
+	name:"Expression of Pronominal Subjects",
+	enum: {
+		"Subject affixes on verb",
+		"Obligatory pronouns in subject position",
+		"Subject pronouns in different position",
+		"Mixed",
+		"Subject clitics on variable host",
+		"Optional pronouns in subject position"
+	}
+},
+{
+	id:"102A",
+	name:"Verbal Person Marking",
+	enum: {
+		"Both the A and P arguments",
+		"No person marking",
+		"Only the P argument",
+		"Only the A argument",
+		"A or P argument"
+	}
+},
+{
+	id:"103A",
+	name:"Third Person Zero of Verbal Person Marking",
+	enum: {
+		"Zero in some 3sg forms",
+		"No zero realization",
+		"No person marking",
+		"Zero in all 3rd person forms",
+		"Zero in all 3sg forms",
+		"Zero only in 3rd nonsingular"
+	}
+},
+{
+	id:"104A",
+	name:"Order of Person Markers on the Verb",
+	enum: {
+		"A precedes P",
+		"P precedes A",
+		"A and P do not or do not both occur on the verb",
+		"A and P are fused",
+		"Both orders of A and P occur"
+	}
+},
+{
+	id:"105A",
+	name:"Ditransitive Constructions: The Verb 'Give'",
+	enum: {
+		"Indirect-object construction",
+		"Mixed",
+		"Secondary-object construction",
+		"Double-object construction"
+	}
+},
+{
+	id:"106A",
+	name:"Reciprocal Constructions",
+	enum: {
+		"Distinct from reflexive",
+		"No reciprocals",
+		"Identical to reflexive",
+		"Mixed"
+	}
+},
+{
+	id:"107A",
+	name:"Passive Constructions",
+	enum: {
+		"Absent",
+		"Present"
+	}
+},
+{
+	id:"108A",
+	name:"Antipassive Constructions",
+	enum: {
+		"No antipassive",
+		"Implicit patient",
+		"Oblique patient"
+	}
+},
+{
+	id:"109A",
+	name:"Applicative Constructions",
+	enum: {
+		"Benefactive and other; only transitive",
+		"Benefactive and other; both bases",
+		"No applicative construction",
+		"Benefactive object; both bases",
+		"Benefactive object; only transitive",
+		"Non-benefactive object; both bases",
+		"Non-benefactive object; only intransitive",
+		"Non-benefactive object; only transitive"
+	}
+},
+{
+	id:"110A",
+	name:"Periphrastic Causative Constructions",
+	enum: {
+		"Purposive but no sequential",
+		"Sequential but no purposive",
+		"Both"
+	}
+},
+{
+	id:"111A",
+	name:"Nonperiphrastic Causative Constructions",
+	enum: {
+		"Morphological but no compound",
+		"Both",
+		"Neither",
+		"Compound but no morphological"
+	}
+},
+{
+	id:"112A",
+	name:"Negative Morphemes",
+	enum: {
+		"Negative particle",
+		"Negative affix",
+		"Double negation",
+		"Negative auxiliary verb",
+		"Negative word, unclear if verb or particle",
+		"Variation between negative word and affix"
+	}
+},
+{
+	id:"113A",
+	name:"Symmetric and Asymmetric Standard Negation",
+	enum: {
+		"Both",
+		"Asymmetric",
+		"Symmetric"
+	}
+},
+{
+	id:"114A",
+	name:"Subtypes of Asymmetric Standard Negation",
+	enum: {
+		"A/Cat",
+		"A/Fin",
+		"Non-assignable",
+		"A/NonReal",
+		"A/Fin and A/Cat",
+		"A/Fin and A/NonReal",
+		"A/NonReal and A/Cat"
+	}
+},
+{
+	id:"115A",
+	name:"Negative Indefinite Pronouns and Predicate Negation",
+	enum: {
+		"Predicate negation also present",
+		"Negative existential construction",
+		"No predicate negation",
+		"Mixed behaviour"
+	}
+},
+{
+	id:"116A",
+	name:"Polar Questions",
+	enum: {
+		"Question particle",
+		"Interrogative verb morphology",
+		"Interrogative intonation only",
+		"Mixture of previous two types",
+		"Interrogative word order",
+		"Absence of declarative morphemes",
+		"No interrogative-declarative distinction"
+	}
+},
+{
+	id:"117A",
+	name:"Predicative Possession",
+	enum: {
+		"'Have'",
+		"Locational",
+		"Topic",
+		"Conjunctional",
+		"Genitive"
+	}
+},
+{
+	id:"118A",
+	name:"Predicative Adjectives",
+	enum: {
+		"Verbal encoding",
+		"Mixed",
+		"Nonverbal encoding"
+	}
+},
+{
+	id:"119A",
+	name:"Nominal and Locational Predication",
+	enum: {
+		"Different",
+		"Identical"
+	}
+},
+{
+	id:"120A",
+	name:"Zero Copula for Predicate Nominals",
+	enum: {
+		"Impossible",
+		"Possible"
+	}
+},
+{
+	id:"121A",
+	name:"Comparative Constructions",
+	enum: {
+		"Conjoined",
+		"Locational",
+		"Particle",
+		"Exceed"
+	}
+},
+{
+	id:"122A",
+	name:"Relativization on Subjects",
+	enum: {
+		"Gap",
+		"Relative pronoun",
+		"Non-reduction",
+		"Pronoun-retention"
+	}
+},
+{
+	id:"123A",
+	name:"Relativization on Obliques",
+	enum: {
+		"Gap",
+		"Relative pronoun",
+		"Pronoun-retention",
+		"Non-reduction",
+		"Not possible"
+	}
+},
+{
+	id:"124A",
+	name:"'Want' Complement Subjects",
+	enum: {
+		"Subject is expressed overtly",
+		"Subject is left implicit",
+		"Desiderative verbal affix",
+		"Both construction types exist",
+		"Desiderative particle"
+	}
+},
+{
+	id:"125A",
+	name:"Purpose Clauses",
+	enum: {
+		"Balanced/deranked",
+		"Deranked",
+		"Balanced"
+	}
+},
+{
+	id:"126A",
+	name:"'When' Clauses",
+	enum: {
+		"Deranked",
+		"Balanced",
+		"Balanced/deranked"
+	}
+},
+{
+	id:"127A",
+	name:"Reason Clauses",
+	enum: {
+		"Deranked",
+		"Balanced",
+		"Balanced/deranked"
+	}
+},
+{
+	id:"128A",
+	name:"Utterance Complement Clauses",
+	enum: {
+		"Balanced/deranked",
+		"Balanced",
+		"Deranked"
+	}
+},
+{
+	id:"129A",
+	name:"Hand and Arm",
+	enum: {
+		"Different",
+		"Identical"
+	}
+},
+{
+	id:"130A",
+	name:"Finger and Hand",
+	enum: {
+		"Different",
+		"Identical"
+	}
+},
+{
+	id:"131A",
+	name:"Numeral Bases",
+	enum: {
+		"Hybrid vigesimal-decimal",
+		"Decimal",
+		"Restricted",
+		"Pure vigesimal",
+		"Extended body-part system",
+		"Other base"
+	}
+},
+{
+	id:"132A",
+	name:"Number of Non-Derived Basic Colour Categories",
+	enum: {
+		"3.5",
+		"5",
+		"5.5",
+		"6",
+		"3",
+		"4",
+		"4.5"
+	}
+},
+{
+	id:"133A",
+	name:"Number of Basic Colour Categories",
+	enum: {
+		"4.5-5.5",
+		"6-6.5",
+		"7-7.5",
+		"8-8.5",
+		"11",
+		"3-4",
+		"9-10"
+	}
+},
+{
+	id:"134A",
+	name:"Green and Blue",
+	enum: {
+		"Green/blue",
+		"Green vs. blue",
+		"Black/green/blue",
+		"Yellow/green vs. blue",
+		"Black/blue vs. green",
+		"Yellow/green/blue",
+		"None"
+	}
+},
+{
+	id:"135A",
+	name:"Red and Yellow",
+	enum: {
+		"Red/yellow",
+		"Red vs. yellow",
+		"Yellow/green vs. red",
+		"Yellow/green/blue vs. red",
+		"None"
+	}
+},
+{
+	id:"136A",
+	name:"M-T Pronouns",
+	enum: {
+		"No M-T pronouns",
+		"M-T pronouns, paradigmatic",
+		"M-T pronouns, non-paradigmatic"
+	}
+},
+{
+	id:"137A",
+	name:"N-M Pronouns",
+	enum: {
+		"No N-M pronouns",
+		"N-M pronouns, non-paradigmatic",
+		"N-M pronouns, paradigmatic"
+	}
+},
+{
+	id:"138A",
+	name:"Tea",
+	enum: {
+		"Others",
+		"Words derived from Sinitic cha",
+		"Words derived from Min Nan Chinese te"
+	}
+},
+{
+	id:"139A",
+	name:"Irregular Negatives in Sign Languages",
+	enum: {
+		"Some (2-5)",
+		"Many (more than 5)",
+		"One",
+		"None"
+	}
+},
+{
+	id:"140A",
+	name:"Question Particles in Sign Languages",
+	enum: {
+		"None",
+		"One",
+		"More than one"
+	}
+},
+{
+	id:"141A",
+	name:"Writing Systems",
+	enum: {
+		"Syllabic",
+		"Alphasyllabic"
+	}
+},
+{
+	id:"142A",
+	name:"Para-Linguistic Usages of Clicks",
+	enum: {
+		"Logical meanings",
+		"Affective meanings",
+		"Other or none"
+	}
+},
+{
+	id:"143F",
+	name:"Postverbal Negative Morphemes",
+	enum: {
+		"VNeg",
+		"[V-Neg]",
+		"None",
+		"VNeg&[V-Neg]"
+	}
+},
+{
+	id:"90B",
+	name:"Prenominal relative clauses",
+	enum: {
+		"Relative clause-Noun (RelN) dominant",
+		"RelN or internally-headed",
+		"RelN or NRel",
+		"RelN or correlative",
+		"RelN or double-headed"
+	}
+},
+{
+	id:"144Y",
+	name:"The Position of Negative Morphemes in Object-Initial Languages",
+	enum: {
+		"O[V-Neg]S/SO[V-Neg]",
+		"O[Neg-V-Neg]S",
+		"O[V-Neg]S",
+		"OSVNeg",
+		"OVNegS/SOVNeg",
+		"ONegVS",
+		"O[Neg-V]S/NegSVO",
+		"OVS & NegV",
+		"OVNegS",
+		"OS(Neg)[V(-Neg)]",
+		"NegOVS/NegSOV"
+	}
+},
+{
+	id:"90C",
+	name:"Postnominal relative clauses",
+	enum: {
+		"Noun-Relative clause (NRel) dominant",
+		"NRel or RelN",
+		"NRel or internally-headed",
+		"NRel or correlative"
+	}
+},
+{
+	id:"144P",
+	name:"NegSOV Order",
+	enum: {
+		"No NegSOV",
+		"OnlyWithAnotherNeg",
+		"NoDoubleNeg",
+		"OptDoubleNeg"
+	}
+},
+{
+	id:"144J",
+	name:"SVNegO Order",
+	enum: {
+		"No SVNegO",
+		"Suffix&NoDoubleNeg",
+		"Suffix&OnlyWithAnotherNeg",
+		"Word&NoDoubleNeg",
+		"Word&OnlyWithAnotherNeg",
+		"Word&OptDoubleNeg",
+		"Suffix&OptDoubleNeg"
+	}
+},
+{
+	id:"144N",
+	name:"Obligatory Double Negation in SOV languages",
+	enum: {
+		"SO[Neg-V-Neg]",
+		"SOV & Neg[V-Neg]",
+		"SV & OV & Neg[V-Neg]",
+		"SV & OV & [Neg-V-Neg]",
+		"SNegO[V-Neg]/SONeg[V-Neg]",
+		"SONegVNeg/SONeg[V-Neg]",
+		"SVO but NegSNegOV",
+		"SO[Neg-V]Neg",
+		"SOV & Neg[Neg-V]",
+		"NegSO[V-Neg]",
+		"SONeg[V-Neg]",
+		"SNegOVNeg/SNegVONeg",
+		"SNegOVNeg/SVONeg&NegTone",
+		"SOV & NegVNeg",
+		"SO[Neg-V] with negative tone on verb	SO[Neg-V]&NegTone",
+		"SO[V-Neg]Neg & OptNegPref/Infix",
+		"SVO but SONeg[V-Neg]/SO[Neg-V-Neg]",
+		"SONegVNeg"
+	}
+},
+{
+	id:"144S",
+	name:"SOVNeg Order",
+	enum: {
+		"Word&NoDoubleNeg",
+		"Suffix&NoDoubleNeg",
+		"NoSOVNeg",
+		"Word&OptDoubleNeg",
+		"Suffix&OptDoubleNeg",
+		"Suffix&OnlyWithAnotherNeg",
+		"Type 5 / Type 6",
+		"Word&OnlyWithAnotherNeg",
+		"Type 1 / Type 6",
+		"Type 1 / Type 2",
+		"Type 5 / Type 4"
+	}
+},
+{
+	id:"144X",
+	name:"Verb-Initial with Clause-Final Negative",
+	enum: {
+		"No clause-final neg",
+		"OnlyWithAnotherNeg",
+		"OptDoubleNeg",
+		"NoDoubleNeg"
+	}
+},
+{
+	id:"144A",
+	name:"Position of Negative Word With Respect to Subject, Object, and Verb",
+	enum: {
+		"SVONeg",
+		"MorphNeg",
+		"SOVNeg",
+		"Other",
+		"ObligDoubleNeg",
+		"SNegVO",
+		"More than one position",
+		"OptDoubleNeg",
+		"NegVSO",
+		"SONegV",
+		"NegVOS",
+		"SVNegO",
+		"SNegOV",
+		"NegSVO",
+		"NegSOV",
+		"OSVNeg",
+		"ONegVS",
+		"VSONeg",
+		"OVNegS",
+		"VSNegO",
+		"OptSingleNeg"
+	}
+},
+{
+	id:"90G",
+	name:"Double-headed relative clauses",
+	enum: {
+		"Double-headed as nondominant type",
+		"Double-headed or internally-headed",
+		"Double-headed dominant",
+		"Double-headed or RelN"
+	}
+},
+{
+	id:"90E",
+	name:"Correlative relative clauses",
+	enum: {
+		"Correlative relative clause dominant",
+		"Correlative or RelN",
+		"Correlative or NRel",
+		"Correlative or adjoined",
+		"Correlative as nondominant type",
+		"Correlative or internally-headed",
+		"Correlative exists"
+	}
+},
+{
+	id:"144V",
+	name:"Verb-Initial with Preverbal Negative",
+	enum: {
+		"Separate word, no double negation	Word&NoDoubleNeg",
+		"Prefix&OnlyWithAnotherNeg",
+		"Word&Opt",
+		"Prefix&OptDoubleNeg",
+		"Word&OnlyWithAnotherNeg",
+		"Prefix, no double negation	Prefix&NoDoubleNeg",
+		"Type 1 / Type 2",
+		"No preverbal neg",
+		"Type 3 / Type 6"
+	}
+},
+{
+	id:"144I",
+	name:"SNegVO Order",
+	enum: {
+		"No SNegVO",
+		"Word&OnlyWithAnotherNeg",
+		"Word&NoDoubleNeg",
+		"Prefix&OptDoubleNeg",
+		"Type 1 / Type 2",
+		"Prefix&NoDoubleNeg",
+		"Word&OptDoubleNeg",
+		"Prefix&OnlyWithAnotherNeg"
+	}
+},
+{
+	id:"144R",
+	name:"SONegV Order",
+	enum: {
+		"No SONegV",
+		"Prefix&NoDoubleNeg",
+		"Word&NoDoubleNeg",
+		"Word&OptDoubleNeg",
+		"Prefix&OnlyWithAnotherNeg",
+		"Prefix&OptDoubleNeg",
+		"Word&OnlyWithAnotherNeg",
+		"Type 1 / Type 2"
+	}
+},
+{
+	id:"143B",
+	name:"Obligatory Double Negation",
+	enum: {
+		"NegVNeg",
+		"[Neg-V-Neg]",
+		"Neg[V-Neg]",
+		"Type 1 / Type 2",
+		"NegNegV",
+		"Negative tone & VNeg",
+		"Type 1 / Type 7",
+		"[Neg-V]Neg",
+		"Neg[Neg-V]",
+		"Negative tone & [Neg-V]",
+		"ObligDoubleNeg&OptTripleNeg",
+		"VNegNeg",
+		"Type 1 / Type 5",
+		"Type 1 / Type 3",
+		"Type 1 / Type 9",
+		"Type 2 / Type 4"
+	}
+},
+{
+	id:"144M",
+	name:"Multiple Negative Constructions in SOV Languages",
+	enum: {
+		"SO[Neg-V]/SO[V-Neg]",
+		"SOV & NegV/VNeg (b)",
+		"SOV & NegV/[Neg-V]",
+		"SO[V-Neg]/O[V-Neg]S",
+		"SONegV/SO[Neg-V]/SNegVO/S[Neg-V]O",
+		"SOV & NegV/[V-Neg]",
+		"SNegOV/SONegV",
+		"SOV & NegV/VNeg (a)",
+		"SV & OV & NegV/VNeg",
+		"SONegV/SOVNeg/SNegVO/SVONeg",
+		"NegSOV/SNegOV/SONegV",
+		"NegSOV/2ndPos",
+		"SV & OV & [Neg-V]/[V-Neg]",
+		"SONegV/SVONeg",
+		"SONegV/SOVNeg",
+		"SOVNeg/SO[V-Neg]",
+		"SO[V-Neg]/S[V-Neg]O/",
+		"SNegOV/SOVNeg/SVONeg",
+		"SV & OV & NegV/[V-Neg]",
+		"SOVNeg/OVNegS",
+		"NegSOV/SNegOV/NegSVO/SVNegO",
+		"SO[Neg-V]/SOVwithNegInfix",
+		"SV & OV & VNeg/[V-Neg]",
+		"SNegOV/SONegV/SO[V-Neg]",
+		"SOVNeg/SVNegO",
+		"SO[Neg-V]/S[Neg-V]O",
+		"NegSOV/NegOVS"
+	}
+},
+{
+	id:"144U",
+	name:"Double negation in verb-initial languages",
+	enum: {
+		"VS & VO & [Neg-V-Neg]",
+		"VS&VO&Neg[(Neg-)V]",
+		"SVO/VSO but [Neg-V]SO(Neg)",
+		"NegVNegOS",
+		"VOS & NegVNeg",
+		"VS&VO&NegV/[(Neg-)V-Neg]",
+		"VNegSONeg",
+		"NegVNegSO",
+		"NegVSONeg",
+		"V(Neg)SONeg",
+		"NegVOSNeg/VNegOSNeg/SNegVONeg/SVNegONeg",
+		"NegVSO/[Neg-V-Neg]SO",
+		"Neg(Neg)VSO",
+		"VSO/SVO & (Neg)V(Neg)",
+		"NegNegVSO",
+		"NegVSO&OptStemChange"
+	}
+},
+{
+	id:"144G",
+	name:"Optional Double Negation in SVO languages",
+	enum: {
+		"S[Neg-V]O(Neg)",
+		"SNeg[V-Neg]O/S[Neg-V-Neg]O",
+		"SNegVO(Neg)",
+		"S(Neg)VONeg",
+		"S[Neg-V]O/NegSVNegO",
+		"SNegV(Neg)O",
+		"S(Neg)VNegO",
+		"SNegVO/SVNegO&NegTone",
+		"(Neg)SVONeg",
+		"SVO/SOV & (Neg)[V-Neg]",
+		"(Neg)SVONeg/S(Neg)VONeg",
+		"SVNegO(Neg)",
+		"S[(Neg-)V]NegO",
+		"S(Neg)[V(-Neg)]O",
+		"SVO/VSO & NegV/VNeg/NegVNeg",
+		"NegS[V(-Neg)]O",
+		"S[Neg-V(-Neg)]O",
+		"S[V(-Neg)]O & NegV"
+	}
+},
+{
+	id:"144K",
+	name:"SVONeg Order",
+	enum: {
+		"NoDoubleNeg",
+		"No SVONeg",
+		"OnlyWithAnotherNeg",
+		"OptDoubleNeg"
+	}
+},
+{
+	id:"144B",
+	name:"Position of negative words relative to beginning and end of clause and with respect to adjacency to verb",
+	enum: {
+		"End, not immed postverbal",
+		"Immed postverbal",
+		"Immed preverbal",
+		"Beginning, not immed preverbal",
+		"Preverbal, not beginning or immed",
+		"Postverbal, not immed or end"
+	}
+},
+{
+	id:"144F",
+	name:"Obligatory Double Negation in SVO languages",
+	enum: {
+		"SNegVONeg",
+		"SNegVNegO/SNegVONeg",
+		"SVO & NegVNeg",
+		"SVNegO&NegTone",
+		"SNegNegVO/SNegVNegO",
+		"S[Neg-V]O&NegTone",
+		"SNeg[V-Neg]O&NegTone/SNegVNegO",
+		"S[Neg-V-Neg]O",
+		"S(Neg)[Neg-V-Neg]O",
+		"SNegVNegO",
+		"SNegVONeg/SNegOVNeg",
+		"SNeg[V-Neg]O",
+		"S[Neg-V]ONeg",
+		"SVONeg&NegTone/SNegOVNeg",
+		"SNeg[V(-Neg)]ONeg/S[Neg-V(-Neg)]ONeg",
+		"S[Neg-V]NegO",
+		"SNegVONeg/S[Neg-V]ONeg",
+		"SNegVONeg/SVNegONeg/NegVOSNeg/VNegOSNeg",
+		"SVO/VSO but NegSVONeg",
+		"(Neg)S(Neg)VONeg",
+		"S[Neg-V]O & NegV",
+		"NegS[V-Neg]O",
+		"SVNegONeg"
+	}
+},
+{
+	id:"90D",
+	name:"Internally-headed relative clauses",
+	enum: {
+		"Internally-headed or RelN",
+		"Internally-headed occurs as nondominant type",
+		"Internally-headed relative clause dominant",
+		"Internally-headed or NRel",
+		"Internally-headed exists",
+		"Internally-headed or double-headed",
+		"Internally-headed or correlative"
+	}
+},
+{
+	id:"144E",
+	name:"Multiple Negative Constructions in SVO Languages",
+	enum: {
+		"SVO & NegV/VNeg",
+		"SNegVO/SVNegO",
+		"SVO/SOV & NegV/VNeg",
+		"NegSVO/SNegVO",
+		"SNegVO/SONegV/S[Neg-V]O/SO[Neg-V]",
+		"SNegVO/NegVSO",
+		"SNegVO/SVONeg",
+		"SVO & Flexible Neg",
+		"SVO/VSO & NegV",
+		"SNegVO/SONegV/SVONeg/SOVNeg",
+		"NegSVO/NegVOS",
+		"SVONeg/SONegV",
+		"S[Neg-V]O/[Neg-V]OS",
+		"SVO/VOS & NegV",
+		"SVO & NegV/[V-Neg]",
+		"S[V-Neg]O/SO[V-Neg]",
+		"SVONeg/SNegOV/SOVNeg",
+		"NegSVO/SVNegO",
+		"SVONeg/VSONeg",
+		"SVNegO/SVONeg",
+		"NegSVO/O[Neg-V]S",
+		"S[Neg-V]O/SVNegO",
+		"NegSVO/SVNegO/NegSOV/SNegOV",
+		"NegSVO/SNegVO/S[V-Neg]O",
+		"SNegVO/NegVOS",
+		"SVNegO/SOVNeg",
+		"S[Neg-V]O/SO[Neg-V]",
+		"SNegVO/S[V-Neg]O"
+	}
+},
+{
+	id:"144D",
+	name:"The Position of Negative Morphemes in SVO Languages",
+	enum: {
+		"SVONeg",
+		"Other NegV",
+		"ObligNeg",
+		"SNegVO",
+		"More than one construction",
+		"S[V-Neg]O",
+		"OptNeg",
+		"S[Neg-V]O",
+		"SVNegO",
+		"Other VNeg",
+		"NegSVO",
+		"SVO/SOV but SVONeg",
+		"SVO&Tone",
+		"VSO but NegSVO",
+		"SOV/SOV but SNegVO"
+	}
+},
+{
+	id:"81B",
+	name:"Languages with two Dominant Orders of Subject, Object, and Verb",
+	enum: {
+		"SOV or SVO",
+		"VSO or VOS",
+		"SOV or OVS",
+		"SVO or VSO",
+		"SVO or VOS"
+	}
+},
+{
+	id:"143E",
+	name:"Preverbal Negative Morphemes",
+	enum: {
+		"None",
+		"NegV",
+		"[Neg-V]",
+		"NegV&[Neg-V]"
+	}
+},
+{
+	id:"143C",
+	name:"Optional Double Negation",
+	enum: {
+		"(Neg)VNeg",
+		"[Neg-V](Neg)",
+		"NegV/[Neg-V-Neg]",
+		"NegV/[V-Neg]/Neg[V-Neg]",
+		"Neg[(Neg-)]V",
+		"[Neg-V(-Neg)]",
+		"NegV(Neg)",
+		"[(Neg-)V-Neg]",
+		"[(Neg-)V]Neg",
+		"(Neg)[V-Neg]",
+		"[Neg-V]/NegVNeg",
+		"NegV/[V-Neg]/[Neg-V-Neg]",
+		"VNeg/[Neg-V-Neg]",
+		"NegV or NegativeTone&VNeg",
+		"OptDoubleNeg&OptTripleNeg",
+		"V(Neg)Neg",
+		"[V-Neg](Neg)",
+		"NegV/[Neg-V]/Neg[Neg-V]",
+		"Neg(Neg)V",
+		"NegV/VNeg/NegVNeg",
+		"Neg[V(-Neg)]",
+		"[Neg-V]/VNeg/[Neg-V-Neg]",
+		"NegV&OptChangeVerbStem"
+	}
+},
+{
+	id:"90F",
+	name:"Adjoined relative clauses",
+	enum: {
+		"Adjoined relative clause dominant",
+		"Adjoined or correlative"
+	}
+},
+{
+	id:"143A",
+	name:"Order of Negative Morpheme and Verb",
+	enum: {
+		"VNeg",
+		"[V-Neg]",
+		"NegV",
+		"Type 3 / Type 4",
+		"ObligDoubleNeg",
+		"Type 1 / Type 2",
+		"Type 1 / Type 4",
+		"OptDoubleNeg",
+		"[Neg-V]",
+		"Type 1 / Type 3",
+		"OptTripleNeg&ObligDoubleNeg",
+		"Negative Tone",
+		"Type 2 / Type 4",
+		"OptTripleNeg&OptDoubleNeg",
+		"Type 2 / Type 3",
+		"Type 3 / Negative Infix",
+		"OptSingleNeg"
+	}
+},
+{
+	id:"144W",
+	name:"Verb-Initial with Negative that is Immediately Postverbal or between Subject and Object",
+	enum: {
+		"None",
+		"Suffix&OnlyWithAnotherNeg",
+		"Word&OnlyWithAnotherNeg",
+		"Suffix&OptDoubleNeg",
+		"Suffix&NoDoubleNeg",
+		"WordBetweenSAndO"
+	}
+},
+{
+	id:"144O",
+	name:"Optional Double Negation in SOV languages",
+	enum: {
+		"S(Neg)OVNeg",
+		"S(Neg)O[V(-Neg)]/SO(Neg)[V(-Neg)]",
+		"SO[Neg-V(-Neg)]",
+		"SV & OV &  [(Neg-)V-Neg]",
+		"SO[(Neg-)V]Neg",
+		"SOVNeg/SO[Neg-V-Neg]",
+		"SOV & (Neg)[V(-Neg)]",
+		"(Neg)SOVNeg/S(Neg)OVNeg/SO(Neg)VNeg",
+		"SOV/SVO & Neg[V-(Neg)]",
+		"SO[(Neg-)V-Neg]",
+		"SOV & (Neg)[V-Neg]",
+		"SNegO[V(-Neg)](Neg)",
+		"SOV but S[Neg-V-Neg]O/SO[V-Neg]",
+		"SO[V-Neg](Neg)",
+		"SNegOV(Neg)",
+		"NegSOV(Neg)",
+		"SV & OV &  [Neg-V(-Neg)]",
+		"SV & OV & (Neg)V(Neg)",
+		"SO[Neg-V-(Neg)]/SOVNeg",
+		"SNegO[V(-Neg)]",
+		"SV & OV &  (Neg)[V-Neg]"
+	}
+},
+{
+	id:"144Q",
+	name:"SNegOV Order",
+	enum: {
+		"No SNegOV",
+		"OnlyWithAnotherNeg",
+		"OptDoubleNeg",
+		"NoDoubleNeg"
+	}
+},
+{
+	id:"144L",
+	name:"The Position of Negative Morphemes in SOV Languages",
+	enum: {
+		"SV&OV&[V-Neg]",
+		"SOVNeg",
+		"More than one construction",
+		"Other NegV",
+		"OptDoubleNeg",
+		"SVO but SO[Neg-V]",
+		"SONegV",
+		"SO[V-Neg]",
+		"ObligDoubleNeg",
+		"SV&OV&[Neg-V]",
+		"SO[Neg-V]",
+		"SNegOV",
+		"SV&OV&NegV",
+		"SV&OV&InitialNeg",
+		"SV&OV&VNeg",
+		"NegSOV",
+		"SVO/SOV but SNegOV",
+		"SV&OV&ImmedPreverbal",
+		"SVO but SNegOV",
+		"SVO but SOVNeg",
+		"SVO but SO[V-Neg]",
+		"SVO but SONegV",
+		"SVO/SOV but SOVNeg"
+	}
+},
+{
+	id:"144H",
+	name:"NegSVO Order",
+	enum: {
+		"No NegSVO",
+		"NoDoubleNeg",
+		"OnlyWithAnotherNeg",
+		"OptDoubleNeg"
+	}
+},
+{
+	id:"144C",
+	name:"Languages with different word order in negative clauses",
+	enum: {
+		"SVO but SO[Neg-V]",
+		"SVO, but NegSNegOV",
+		"SVO/VSO, but [Neg-V]SO(Neg)",
+		"SVO, but NegVSO",
+		"SVO/SOV, but SVONeg",
+		"SVO/SOV, but SNegOV",
+		"SVO, but SNegOV",
+		"VSO, but NegSVO",
+		"SVO/SOV, but SNegVO",
+		"SOV but  SONeg[V-Neg]/S[Neg-V-Neg] O",
+		"SVO, but SOVNeg",
+		"SVO but SO[V-Neg]",
+		"SVO/VSO, but NegSVONeg",
+		"SVO, but SONegV",
+		"OSV but NegSVO/O[Neg-V]S",
+		"SVO/SOV, but SOVNeg",
+		"SVO, but SONeg[V-Neg]/SO[Neg-V-Neg]"
+	}
+},
+{
+	id:"144T",
+	name:"The Position of Negative Morphemes in Verb-Initial Languages",
+	enum: {
+		"NegVSO",
+		"NegV & VS & VO",
+		"ObligDoubleNeg",
+		"NegVOS",
+		"OptDoubleNeg",
+		"NegVSO/SNegVO",
+		"NegV & VSO/SVO",
+		"[Neg-V]OS",
+		"[Neg-V]SO",
+		"SVO but NegVSO",
+		"NegVOS/NegSVO",
+		"NegVSO/NegVOS",
+		"[Neg-V]OS/S[Neg-V]O",
+		"NegV & VOS/SVO",
+		"NegVSO/[Neg-V]SO",
+		"[V-Neg]OS",
+		"VSONeg/SVONeg",
+		"[V-Neg] & VS &VO",
+		"VSONeg",
+		"NegVOS/SNegVO",
+		"VSNegO",
+		"OptSingleNeg",
+		"NegVOS/[Neg-V]OS"
+	}
+},
+{
+	id:"143G",
+	name:"Minor morphological means of signaling negation",
+	enum: {
+		"None",
+		"NegTone",
+		"NegInfix",
+		"NegStemChange"
+	}
+},
+{
+	id:"143D",
+	name:"Optional Triple Negation",
+	enum: {
+		"Neg[V-Neg]/NegVNeg&NegTone",
+		"(Neg)[Neg-V-Neg]",
+		"Neg[V(-Neg)]Neg/[Neg-V(-Neg)]Neg",
+		"Neg[V-(Neg)](Neg)",
+		"NegVNeg/NegNegVNeg",
+		"[V-Neg]Neg&OptNegInfix or Pref"
+	}
+},
+{
+	id:"39B",
+	name:"Inclusive/Exclusive Forms in Pama-Nyungan",
+	enum: {
+		"Inclusive and exclusive differentiated",
+		"No inclusive/exclusive opposition"
+	}
+},
+{
+	id:"137B",
+	name:"M in Second Person Singular",
+	enum: {
+		"m in second person singular",
+		"No m in second person singular"
+	}
+},
+{
+	id:"136B",
+	name:"M in First Person Singular",
+	enum: {
+		"No m in first person singular",
+		"m in first person singular"
+	}
+},
+{
+	id:"109B",
+	name:"Other Roles of Applied Objects",
+	enum: {
+		"Instrument",
+		"Instrument and locative",
+		"No other roles (= Only benefactive)",
+		"No applicative construction",
+		"Locative"
+	}
+},
+{
+	id:"10B",
+	name:"Nasal Vowels in West Africa",
+	enum: {
+		"no nasal vs. oral vowel contrast",
+		"two-way nasal vs. oral vowel contrast (/ṽ/ vs. /V/) without nasal spreading",
+		"four-way nasal vs. oral vowel contrast (/ṽ/ vs. /ṽː/ vs. /V/ vs. /Vː/) without nasal spreading",
+		"two-way nasal vs. oral vowel contrast (/ṽ/ vs. /V/) with nasal spreading",
+		"four-way nasal vs. oral vowel contrast (/ṽ/ vs. /ṽː/ vs. /V/ v /Vː/) with nasal spreading"
+	}
+},
+{
+	id:"25B",
+	name:"Zero Marking of A and P Arguments",
+	enum: {
+		"Non-zero marking",
+		"Zero-marking"
+	}
+},
+{
+	id:"21B",
+	name:"Exponence of Tense-Aspect-Mood Inflection",
+	enum: {
+		"monoexponential TAM",
+		"TAM+agreement",
+		"TAM+agreement+diathesis",
+		"no TAM",
+		"TAM+polarity",
+		"TAM+agreement+construct"
+	}
+},
+{
+	id:"108B",
+	name:"Productivity of the Antipassive Construction",
+	enum: {
+		"no antipassive",
+		"productive",
+		"partially productive",
+		"not productive"
+	}
+},
+{
+	id:"130B",
+	name:"Cultural Categories of Languages with Identity of 'Finger' and 'Hand'",
+	enum: {
+		"Hunter-gatherers",
+		"Farmer-foragers",
+		"Full-fledged farmers"
+	}
+},
+{
+	id:"58B",
+	name:"Number of Possessive Nouns",
+	enum: {
+		"None reported",
+		"Two to four",
+		"One",
+		"Five or more"
+	}
+},
+{
+	id:"79B",
+	name:"Suppletion in Imperatives and Hortatives",
+	enum: {
+		"None (= no suppletive imperatives reported in the reference material)",
+		"Hortative",
+		"Imperative",
+		"Imperative and Hortative",
+		"A regular and a suppletive form alternate"
+	}
+}

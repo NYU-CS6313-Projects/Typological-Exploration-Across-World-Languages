@@ -449,9 +449,9 @@
 {
 	pk:60,
 	id:"60A",
-	name:""Genitives",
-	ordinal_qualifier:" Adjectives and Relative Clauses"",
-	number_of_languages:A,138
+	name:"Genitives, Adjectives and Relative Clauses",
+	ordinal_qualifier:"A",
+	number_of_languages:138
 },
 {
 	pk:61,
@@ -603,16 +603,16 @@
 {
 	pk:81,
 	id:"81A",
-	name:""Order of Subject",
-	ordinal_qualifier:" Object and Verb"",
-	number_of_languages:A,1377
+	name:"Order of Subject, Object and Verb",
+	ordinal_qualifier:"A",
+	number_of_languages:1377
 },
 {
 	pk:168,
 	id:"81B",
-	name:""Languages with two Dominant Orders of Subject",
-	ordinal_qualifier:" Object",
-	number_of_languages: and Verb",B,67
+	name:"Languages with two Dominant Orders of Subject, Object, and Verb",
+	ordinal_qualifier:"B",
+	number_of_languages:67
 },
 {
 	pk:82,
@@ -631,9 +631,9 @@
 {
 	pk:84,
 	id:"84A",
-	name:""Order of Object",
-	ordinal_qualifier:" Oblique",
-	number_of_languages: and Verb",A,500
+	name:"Order of Object, Oblique, and Verb",
+	ordinal_qualifier:"A",
+	number_of_languages:500
 },
 {
 	pk:85,
@@ -1170,9 +1170,9 @@
 {
 	pk:152,
 	id:"144A",
-	name:""Position of Negative Word With Respect to Subject",
-	ordinal_qualifier:" Object",
-	number_of_languages: and Verb",A,1189
+	name:"Position of Negative Word With Respect to Subject, Object, and Verb",
+	ordinal_qualifier:"A",
+	number_of_languages:1189
 },
 {
 	pk:163,

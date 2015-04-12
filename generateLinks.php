@@ -4,14 +4,14 @@ $languages = array_map(
 		"array_filter",
 		array_map(
 			"str_getcsv", 
-			file("data_orig.csv")
+			file("wals_data/data_orig.csv")
 		)
 );
 
 $language_data = array_shift( //TODO: Use this to map language information
 			array_map(
 				"str_getcsv", 
-				file("lab_table.csv")
+				file("wals_data/lab_table.csv")
 			)
 );
 
@@ -29,15 +29,14 @@ for($i=0; $i<count($languages); $i++) {
 			//get the key of the first element
 			reset($common_features);
 			$feature1 = key($common_features);
+			$feature1_value = $common_features[$feature1];
 			//remove that element
 			unset($common_features[$feature1]);
 			//link with remaining features
 			foreach($common_features as $feature2 => $value) {
-				if(!isset($links[$feature1][$feature2])) {
-					$links[$feature1][$feature2] = 0;
-				}
-				//add to link strength for this feature pair
-				$links[$feature1][$feature2]++;
+				//note that these features are linked on these languages
+				$links["$feature1,$feature2"][$i] = 1;
+				$links["$feature1,$feature2"][$j] = 1;
 			}
 		}
 	}
@@ -45,10 +44,9 @@ for($i=0; $i<count($languages); $i++) {
 }
 
 $output = "";
-foreach($links as $feature => $features) {
-	foreach($features as $mapped_feature => $strength) {
-		$output .= "{\n\tsource:$feature,\n\ttarget:$mapped_feature,\n\tstrength:$strength\n},\n";
-	}
+foreach($links as $features => $languages) {
+	$features_array = explode(",",$features);
+	$output .= "{\n\tsource:".$features_array[0].",\n\ttarget:".$features_array[1].",\n\tstrength:".count($languages)."\n},\n";
 }
 $output = rtrim($output,",\n");
-file_put_contents("link_json.csv",$output);
+file_put_contents("wals_data/link_json.csv",$output);
