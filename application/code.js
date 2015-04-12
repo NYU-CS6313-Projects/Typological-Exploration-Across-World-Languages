@@ -70,7 +70,12 @@ var ForceGraph = (function(){
 		/**
 		 * this only needs to be recalculated every now and then
 		 */
-		getMaxLinkStrengthCache:0
+		max_link_strength:0,
+
+		/**
+		 * number of disconnected subgraphs in the collection of nodes
+		 */
+		group_count: 0
 	}
 
 	//public interface
@@ -94,7 +99,7 @@ var ForceGraph = (function(){
 				/*.friction(.5)*/
 				.linkStrength(0.5)
 				.linkDistance(function(d){
-					return (self.getMaxLinkStrength()/Math.max(d.strength,0.0001))*100;
+					return (private_data.max_link_strength/Math.max(d.strength,0.0001))*100;
 				});
 
 			//do the initial link up with empty data
@@ -108,9 +113,10 @@ var ForceGraph = (function(){
 					.attr("x2", function(d) { return d.target.x; })
 					.attr("y2", function(d) { return d.target.y; });
 
+				screen_size = self.screenToSimulation(width,height);
 				private_data.node_selection
-					.attr("cx", function(d) { return d.x; })
-					.attr("cy", function(d) { return d.y; });
+					.attr("cx", function(d) { return d.x = Math.max(0, Math.min(screen_size.x, d.x)); })
+					.attr("cy", function(d) { return d.y = Math.max(0, Math.min(screen_size.y, d.y)); });
 			});
 
 			self.setSize(height, width);
@@ -122,7 +128,9 @@ var ForceGraph = (function(){
 				private_data.zoom.x = d3.event.translate[0];
 				private_data.zoom.y = d3.event.translate[1];
 				private_data.main_group
-					.attr("transform", "translate("+private_data.zoom.x+","+private_data.zoom.y+") scale("+private_data.zoom.scale+")");
+//					.attr("transform", "translate("+private_data.zoom.x+","+private_data.zoom.y+") scale("+private_data.zoom.scale+")");
+					.attr("transform", "translate("+private_data.zoom.x+","+private_data.zoom.y+")");
+//					.attr("transform", "scale("+private_data.zoom.scale+")");
 			});
 			var zoom_selection = svg.call(private_data.zoom.behavior);
 			var mouse_handler = zoom_selection.on("mousedown.zoom");
@@ -156,29 +164,24 @@ var ForceGraph = (function(){
 		},
 
 		/**
-		 * get's the max strength out of the data
-		 */
-		getMaxLinkStrength:function(){
-			var self = this;
-			if(!(private_data.getMaxLinkStrengthCache > 0)){
-				private_data.getMaxLinkStrengthCache = 0;
-				private_data.data.links.forEach(function(d){
-					private_data.getMaxLinkStrengthCache = Math.max(private_data.getMaxLinkStrengthCache, d.strength);
-				});
-			}
-			return private_data.getMaxLinkStrengthCache;
-		},
-
-		/**
 		 * apply a new set of data to the visualization
 		 */
 		setData: function(data){
 			var self = this;
-			private_data.getMaxLinkStrengthCache = 0;
+			private_data.max_link_strength = 0;
 
 			private_data.data = data;
 
-			private_data.layout.charge(-this.getMaxLinkStrength())
+			private_data.max_link_strength = 0;
+			private_data.data.links.forEach(function(d){
+				private_data.max_link_strength = Math.max(private_data.max_link_strength, d.strength);
+			});
+			private_data.group_count = 0;
+			private_data.data.nodes.forEach(function(d){
+				private_data.group_count = Math.max(private_data.group_count, d.group);
+			});
+
+			private_data.layout.charge(-private_data.max_link_strength)
 
 			//update the layout with the new data
 			private_data.layout
@@ -216,24 +219,23 @@ var ForceGraph = (function(){
 						return d.id;
 					}
 				)
-				.style("fill", function(d) { return 'black'; });
+				.style("fill", function(d) {
+					var colors = ['red','green','blue','yellow','cyan','magenta'];
+					return colors[d.group%colors.length]
+				});
 
 			private_data.node_selection.enter()
 				.append("circle")
-				.attr("r", self.getMaxLinkStrength()/10)
+				.attr("r", private_data.max_link_strength/10)
 				.attr("class", "node")
-				.call(private_data.layout.drag);
+				.call(private_data.layout.drag)
+				.style("fill", function(d) {
+					var colors = ['red','green','blue','yellow','cyan','magenta'];
+					return colors[d.group%colors.length]
+				});
 
 			private_data.node_selection.exit()
 				.remove();
-
-			var singles = [];
-			private_data.node_selection
-				.filter(function(d, i){
-					if(d.weight <= 0){
-						singles.push(i);
-					}
-				});
 		},
 
 		/**
@@ -242,6 +244,17 @@ var ForceGraph = (function(){
 		setMinimumDisplayLink: function(min){
 			private_data.minimum_display_link = min;
 			this.setData(private_data.data);
+		},
+
+		/**
+		 * given screen coords return visualization coords
+		 */
+		screenToSimulation :function(x,y){
+			x /= private_data.zoom.scale;
+			y /= private_data.zoom.scale;
+			x += private_data.zoom.x;
+			y += private_data.zoom.y;
+			return {x:x,y:y};
 		}
 	}
 })();
@@ -255,7 +268,8 @@ function main(){
 	ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"), window.innerHeight, window.innerWidth);
 
 	//this should be done in an ajax call if we end up with non-static data
-	ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
+	//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
+	setFlooredData(0);
 }
 
 /**
@@ -321,7 +335,6 @@ function floorData(data, threshold){
 			source.group != group_id;
 		}
 	}
-	
 	return data;
 }
 
