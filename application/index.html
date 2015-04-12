@@ -4,12 +4,27 @@
 	<meta charset="UTF-8">
 	<title>Typological Exploration Across World Languages</title>
 	<!-- Load the D3 Library -->
+	<script type="text/javascript" src="jquery.js"> </script>
 	<script type="text/javascript" src="d3.min.js"> </script>
+	<script type="text/javascript" src="UI.js"> </script>
 	<script type="text/javascript" src="test_data.js"> </script>
-	<script type="text/javascript" src="code.js"> </script>
+	<script type="text/javascript" src="ForceGraph.js"> </script>
+	<script type="text/javascript" src="Application.js"> </script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body onload="main();">
-<div class="ForceGraph"></div>
+<body onload="Application.main();">
+	<div class="UI_control_pallet">
+		Parameters: 
+		<span class="UI_label">Minimum Corelation:</span>
+		<input id="UI_minimum_corelation" type="text" onchange="UI.onCorelationChange();" value="0"></input>
+
+		<span class="UI_label">Subgraph Separation:</span>
+		<input id="UI_subgraph_seperation" type="text" onchange="UI.onSeperationChange();" value="0"></input>
+	</div>
+	<div id="UI_right_pannel" class="UI_resize UI_resize_right">
+		<div class="UI_tab"><h2>Data</h2></div>
+		not implemented yet
+	</div>
+	<div class="ForceGraph"></div>
 </body>
 </html>
