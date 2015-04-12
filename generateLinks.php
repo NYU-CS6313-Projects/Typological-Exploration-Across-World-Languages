@@ -1,4 +1,11 @@
 <?php
+/**
+ * Finds pairs of features that are the same across languages and
+ * counts how many languages share those pairs.
+ * Stores this data as json objects.
+ *
+ * TODO: Add information about languages/features to objects
+ */
 
 $languages = array_map(
 		"array_filter",
