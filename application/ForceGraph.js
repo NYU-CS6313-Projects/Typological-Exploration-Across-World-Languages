@@ -164,6 +164,7 @@ var ForceGraph = (function(){
 					mouse_handler.call(this);
 				}
 			});
+
 		},
 
 		/**
@@ -171,7 +172,6 @@ var ForceGraph = (function(){
 		 */
 		setData: function(data){
 			var self = this;
-			P.max_link_strength = 0;
 
 			P.data = data;
 
@@ -212,15 +212,19 @@ var ForceGraph = (function(){
 			P.link_selection.enter()
 				.append("line")
 				.attr("class", "link")
-				.attr("stroke-width", function(d) { return d.strength/100; });
-
+				.attr("stroke-width", function(d) { return d.strength/1000; })
+				//pretty debug output
+				.on("click", function(d) { alert(JSON.stringify(d,null,4));}); 
 			P.link_selection.exit()
 				.remove();
 
 			//regrab the nodes
 			P.node_selection = P.node_group.selectAll("g.node")
 				.data(
-					P.data.nodes,
+					P.data.nodes
+						.filter(function(d){
+							return d.group != null;
+						}),
 					function(d){
 						return d.id;
 					}
@@ -235,7 +239,9 @@ var ForceGraph = (function(){
 
 			var new_node_group = P.node_selection.enter()
 				.append('g')
-				.attr("class", "node");
+				.attr("class", "node")
+				//pretty debug output
+				.on("click", function(d) { alert(JSON.stringify(d,null,4)); });
 
 			new_node_group
 				.append("circle")
