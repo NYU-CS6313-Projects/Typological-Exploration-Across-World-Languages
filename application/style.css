@@ -17,6 +17,10 @@ svg {
   stroke: #888;
 }
 
+.highlighted-link {
+  stroke: #ff0;
+}
+
 .node text{
 	stroke:none;
 }

@@ -31,6 +31,11 @@ var ForceGraph = (function(){
 		link_group:null,
 
 		/**
+		 * selection of svg group that all highlighted links are supposed to be in
+		 */
+		link_group:null,
+
+		/**
 		 * the force directed layout object
 		 */
 		layout:null,
@@ -44,9 +49,19 @@ var ForceGraph = (function(){
 		},
 
 		/**
+		 *links that are being highlighted
+		 */
+		highlighted_links:[],
+
+		/**
 		 * the d3 selection of links
 		 */
 		link_selection:null,
+
+		/**
+		 * the d3 selection of highlighted links (mouse over node effect)
+		 */
+		highlighted_link_group:null,
 
 		/**
 		 * the d3 selection of nodes
@@ -95,7 +110,172 @@ var ForceGraph = (function(){
 		gravity_ring_radius: 0
 	}
 
-	//public interface
+
+	/*******************\
+	|* PRIVATE METHODS *|
+	\*******************/
+
+	/**
+	 *get a gravity ring point for the given group
+	 */
+	function getGravityRingPoint(node){
+		if('group' in node){
+			var a  = (node.group/P.group_count)*Math.PI*2;
+			var r = P.gravity_ring_radius;
+			return {
+				x:r*Math.sin(a), 
+				y:r*Math.cos(a)
+			};
+		}
+		else{
+			return {x:0,y:0};
+		}
+	}
+
+	/**
+	 *calculate a impulse for a node
+	 */
+	function getGravityImpulse(node){
+		var center = getGravityRingPoint(node); //where the node wants to be
+		var to_center = {x:center.x-node.x, y:center.y-node.y} //displacement to center
+
+		return to_center;
+	}
+
+	/**
+	 * adds new, removes old nodes
+	 */
+	function bookKeepNode(node_selection){
+
+		//remove missing nodes
+		node_selection.exit()
+			.remove();
+
+		//add the group
+		var new_node_group = node_selection.enter()
+			.append('g')
+			.attr("class", "node");
+
+		//add the circle for the group
+		new_node_group
+			.append("circle")
+			.attr("class", "node")
+			.call(P.layout.drag)
+			.on("mouseover.force", null)
+			.on("mouseover", function(d){
+				setHighlightedLinks(d);
+			})
+			.on("mouseout", function(d){
+				setHighlightedLinks(null);
+			});
+
+		//add the text
+		new_node_group
+			.append('text')
+			.attr('x',13);
+
+		updateNode(node_selection);
+	}
+
+	/**
+	 * all of the stuff that needs to happen for drawing a selection of nodes
+	 */
+	function updateNode(node_selection){
+		//update the circle
+		node_selection.select('circle')
+			.attr("r", 10)
+			.style("fill", function(d) {
+				var colors = ['red','green','blue','yellow','cyan','magenta'];
+				return colors[d.group%colors.length]
+			});
+
+		//update the text
+		node_selection.select('text')
+			.text(function(d){
+				return d.name;
+			});
+
+		//update location
+		node_selection
+			.attr("transform", function(d){
+				if(!isNaN(d.x) && isFinite(d.x) && !isNaN(d.y) && isFinite(d.y)){
+					var impulse = getGravityImpulse(d);
+					d.x += event.alpha*impulse.x;
+					d.y += event.alpha*impulse.y;
+				}
+				return "translate("+d.x+","+d.y+")";
+			});
+	}
+
+	/**
+	 * adds new, removes old links
+	 */
+	function bookKeepLink(link_selection, link_class){
+
+		//remove missing links
+		link_selection.exit()
+			.remove();
+
+		//add new links
+		/*link_selection.enter()
+			.append("line")
+			.attr("class", "link");*/
+
+		updateLink(link_selection);
+	}
+
+	/**
+	 *all of the stuff that needs to happen for a selection of links
+	 */
+	function updateLink(link_selection){
+		//update properties
+		link_selection
+			.attr("x1", function(d) { return d.source.x; })
+			.attr("y1", function(d) { return d.source.y; })
+			.attr("x2", function(d) { return d.target.x; })
+			.attr("y2", function(d) { return d.target.y; })
+			.attr("stroke-width", function(d) { return d.strength/100; });
+	}
+
+	
+
+	/**
+	 * set the highlighted links to the links that have the given node as a source or target
+	 */
+	function setHighlightedLinks(node){
+		P.highlighted_links = [];
+
+		if(node !== null){
+			P.data.links.forEach(function(d){
+				if(d.source.id === node.id || d.target.id === node.id){
+					P.highlighted_links.push(d);
+				}
+			});
+		}
+
+		//regrab the links
+		P.highlighted_link_selection = P.highlighted_link_group.selectAll(".highlighted-link")
+			.data(
+				P.highlighted_links,
+				function(d){
+					return d.source.id+','+d.target.id;
+				}
+			);
+
+		P.highlighted_link_selection.enter()
+			.append("line")
+			.attr("class", "highlighted-link")
+			.attr("stroke-width", function(d) { return d.strength/100; });
+
+		P.highlighted_link_selection.exit()
+			.remove();
+
+		bookKeepLink(P.highlighted_link_selection);
+	}
+
+	/******************\
+	|* PUBLIC METHODS *|
+	\******************/
 	return {
 		/**
 		 * main setup function
@@ -111,6 +291,7 @@ var ForceGraph = (function(){
 
 			P.main_group = svg.append("svg:g");
 			P.link_group = P.main_group.append("svg:g");
+			P.highlighted_link_group = P.main_group.append("svg:g");
 			P.node_group = P.main_group.append("svg:g");
 
 			//setup the force directed layout 
@@ -136,11 +317,9 @@ var ForceGraph = (function(){
 						return "translate("+d.x+","+d.y+")";
 					})
 
-				P.link_selection
-					.attr("x1", function(d) { return d.source.x; })
-					.attr("y1", function(d) { return d.source.y; })
-					.attr("x2", function(d) { return d.target.x; })
-					.attr("y2", function(d) { return d.target.y; });
+				//I love hos d3 has no apparent mechanism for unioning selections
+				updateLink(P.highlighted_link_selection);
+				updateLink(P.link_selection);
 			});
 
 			//setup zooming
@@ -164,6 +343,40 @@ var ForceGraph = (function(){
 					mouse_handler.call(this);
 				}
 			});
+		},
+
+		/**
+		 * set the highlighted links to the links that have the given node as a source or target
+		 */
+		setHighlightedLinks: function(node){
+			P.highlighted_links = [];
+
+			if(node !== null){
+				P.data.links.forEach(function(d){
+					if(d.source.id === node.id || d.target.id === node.id){
+						P.highlighted_links.push(d);
+					}
+				});
+			}
+
+			//regrab the links
+			P.highlighted_link_selection = P.highlighted_link_group.selectAll(".highlighted-link")
+				.data(
+					P.highlighted_links,
+					function(d){
+						return d.source.id+','+d.target.id;
+					}
+				);
+
+			P.highlighted_link_selection.enter()
+				.append("line")
+				.attr("class", "highlighted-link")
+				.attr("stroke-width", function(d) { return d.strength/100; });
+
+			P.highlighted_link_selection.exit()
+				.remove();
+
+			updateLink(P.highlighted_link_selection);
 		},
 
 		/**
@@ -239,14 +452,22 @@ var ForceGraph = (function(){
 
 			new_node_group
 				.append("circle")
-				.attr("r", 10)
 				.attr("class", "node")
 				.call(P.layout.drag)
+				.on("mouseover.force", null)
+				.on("mouseover", function(d){
+					self.setHighlightedLinks(d);
+				})
+				.on("mouseout", function(d){
+					self.setHighlightedLinks(null);
+				});
+
+			new_node_group.select('circle')
+				.attr("r", 10)
 				.style("fill", function(d) {
 					var colors = ['red','green','blue','yellow','cyan','magenta'];
 					return colors[d.group%colors.length]
-				});
-
+				})
 			new_node_group
 				.append('text')
 				.attr('x',13)
@@ -256,6 +477,9 @@ var ForceGraph = (function(){
 
 			P.node_selection.exit()
 				.remove();
+
+			//reset the highlighted links
+			self.setHighlightedLinks(null);
 		},
 
 		/**
