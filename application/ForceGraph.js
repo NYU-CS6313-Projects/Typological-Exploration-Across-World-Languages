@@ -159,6 +159,7 @@ var ForceGraph = (function(){
 		//add the circle for the group
 		new_node_group
 			.append("circle")
+			.attr("r", 10)
 			.attr("class", "node")
 			.call(P.layout.drag)
 			.on("mouseover.force", null)
@@ -183,7 +184,6 @@ var ForceGraph = (function(){
 	function updateNode(node_selection){
 		//update the circle
 		node_selection.select('circle')
-			.attr("r", 10)
 			.style("fill", function(d) {
 				var colors = ['red','green','blue','yellow','cyan','magenta'];
 				return colors[d.group%colors.length]
@@ -198,13 +198,9 @@ var ForceGraph = (function(){
 		//update location
 		node_selection
 			.attr("transform", function(d){
-				if(!isNaN(d.x) && isFinite(d.x) && !isNaN(d.y) && isFinite(d.y)){
-					var impulse = getGravityImpulse(d);
-					d.x += event.alpha*impulse.x;
-					d.y += event.alpha*impulse.y;
-				}
 				return "translate("+d.x+","+d.y+")";
 			});
+
 	}
 
 	/**
@@ -217,9 +213,9 @@ var ForceGraph = (function(){
 			.remove();
 
 		//add new links
-		/*link_selection.enter()
+		link_selection.enter()
 			.append("line")
-			.attr("class", "link");*/
+			.attr("class", link_class);
 
 		updateLink(link_selection);
 	}
@@ -270,7 +266,7 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.exit()
 			.remove();
 
-		bookKeepLink(P.highlighted_link_selection);
+		bookKeepLink(P.highlighted_link_selection, 'link');
 	}
 
 	/******************\
@@ -309,13 +305,15 @@ var ForceGraph = (function(){
 			//the graph animation
 			P.layout.on("tick", function(event) {
 
-				P.node_selection
-					.attr("transform", function(d){
-						var impulse = self.getGravityImpulse(d);
-						d.x += event.alpha*impulse.x;
-						d.y += event.alpha*impulse.y;
-						return "translate("+d.x+","+d.y+")";
-					})
+				//do the custom physics
+				P.data.nodes.forEach(function(d){
+					var impulse = getGravityImpulse(d);
+					d.x += event.alpha*impulse.x;
+					d.y += event.alpha*impulse.y;
+				});
+
+				//update the selections
+				updateNode(P.node_selection);
 
 				//I love hos d3 has no apparent mechanism for unioning selections
 				updateLink(P.highlighted_link_selection);
@@ -343,6 +341,7 @@ var ForceGraph = (function(){
 					mouse_handler.call(this);
 				}
 			});
+
 		},
 
 		/**
@@ -376,7 +375,7 @@ var ForceGraph = (function(){
 			P.highlighted_link_selection.exit()
 				.remove();
 
-			updateLink(P.highlighted_link_selection);
+			bookKeepLink(P.highlighted_link_selection, "highlighted-link");
 		},
 
 		/**
@@ -384,7 +383,6 @@ var ForceGraph = (function(){
 		 */
 		setData: function(data){
 			var self = this;
-			P.max_link_strength = 0;
 
 			P.data = data;
 
@@ -425,15 +423,19 @@ var ForceGraph = (function(){
 			P.link_selection.enter()
 				.append("line")
 				.attr("class", "link")
-				.attr("stroke-width", function(d) { return d.strength/100; });
-
+				.attr("stroke-width", function(d) { return d.strength/1000; })
+				//pretty debug output
+				.on("click", function(d) { alert(JSON.stringify(d,null,4));}); 
 			P.link_selection.exit()
 				.remove();
 
 			//regrab the nodes
 			P.node_selection = P.node_group.selectAll("g.node")
 				.data(
-					P.data.nodes,
+					P.data.nodes
+						.filter(function(d){
+							return d.group != null;
+						}),
 					function(d){
 						return d.id;
 					}
@@ -448,7 +450,9 @@ var ForceGraph = (function(){
 
 			var new_node_group = P.node_selection.enter()
 				.append('g')
-				.attr("class", "node");
+				.attr("class", "node")
+				//pretty debug output
+				.on("click", function(d) { alert(JSON.stringify(d,null,4)); });
 
 			new_node_group
 				.append("circle")
@@ -488,33 +492,6 @@ var ForceGraph = (function(){
 		setMinimumDisplayLink: function(min){
 			P.minimum_display_link = min;
 			this.setData(P.data);
-		},
-
-		/**
-		 *get a gravity ring point for the given group
-		 */
-		getGravityRingPoint: function(node){
-			if('group' in node){
-				var a  = (node.group/P.group_count)*Math.PI*2;
-				var r = P.gravity_ring_radius;
-				return {
-					x:r*Math.sin(a), 
-					y:r*Math.cos(a)
-				};
-			}
-			else{
-				return {x:0,y:0};
-			}
-		},
-
-		/**
-		 *calculate a impulse for a node
-		 */
-		getGravityImpulse: function(node){
-			var center = this.getGravityRingPoint(node); //where the node wants to be
-			var to_center = {x:center.x-node.x, y:center.y-node.y} //displacement to center
-
-			return to_center;
 		},
 
 		/**

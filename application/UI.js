@@ -67,22 +67,22 @@ var UI = (function(){
 	/**
 	 *the user has changed the minimum corelation
 	 */
-	function onCorelationChange(){
+	function onCorrelationChange(){
 		var new_corelation = parseInt($('#UI_minimum_corelation').val(),10);
-		Application.setMinimumCorelation(new_corelation);
+		Application.setMinimumCorrelation(new_corelation);
 	}
 
 	/**
 	 *the user has changed the subgraph seperation
 	 */
-	function onSeperationChange(){
+	function onSeparationChange(){
 		var new_seperation = parseFloat($('#UI_subgraph_seperation').val());
-		Application.setSubgraphSeperation(new_seperation);
+		Application.setSubgraphSeparation(new_seperation);
 	}
 
 
 	return {
-		onCorelationChange:onCorelationChange,
-		onSeperationChange:onSeperationChange
+		onCorrelationChange:onCorrelationChange,
+		onSeparationChange:onSeparationChange
 	};
 }());

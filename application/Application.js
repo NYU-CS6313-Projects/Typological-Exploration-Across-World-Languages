@@ -81,13 +81,14 @@ var Application = (function(){
 			}
 		}
 		//now actually delete things
+		deletion_group.reverse();//needed because if you remove items [0,1], after you remove 0, 1 is now 0, but if you remove 1 first 0 doesn't change
 		for(var i = 0; i<deletion_group.length; i++){
 			data.nodes.splice(deletion_group[i], 1);
 			for(var j = 0; j<data.links.length; j++){
-				if(data.links[j].source > deletion_group[i]){
+				if(data.links[j].source >= deletion_group[i]){
 					data.links[j].source--;
 				}
-				if(data.links[j].target > deletion_group[i]){
+				if(data.links[j].target >= deletion_group[i]){
 					data.links[j].target--;
 				}
 			}
@@ -98,8 +99,8 @@ var Application = (function(){
 
 
 	return {
-		setMinimumCorelation:setFlooredData,
-		setSubgraphSeperation:ForceGraph.setGroupRingSize,
+		setMinimumCorrelation:setFlooredData,
+		setSubgraphSeparation:ForceGraph.setGroupRingSize,
 		main:main
 	};
 }());

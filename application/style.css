@@ -83,6 +83,7 @@ div.ForceGraph{
 
 .UI_resize_right .UI_tab
 {
+	float:left;
 	height:100%;
 	width:3ex;
 	border-left-style:solid;
