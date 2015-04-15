@@ -68,7 +68,7 @@ var UI = (function(){
 	 *the user has changed the minimum corelation
 	 */
 	function onCorrelationChange(){
-		var new_corelation = parseInt($('#UI_minimum_corelation').val());
+		var new_corelation = parseInt($('#UI_minimum_corelation').val(),10);
 		Application.setMinimumCorrelation(new_corelation);
 	}
 

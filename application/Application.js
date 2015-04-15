@@ -81,6 +81,7 @@ var Application = (function(){
 			}
 		}
 		//now actually delete things
+		deletion_group.reverse();//needed because if you remove items [0,1], after you remove 0, 1 is now 0, but if you remove 1 first 0 doesn't change
 		for(var i = 0; i<deletion_group.length; i++){
 			data.nodes.splice(deletion_group[i], 1);
 			for(var j = 0; j<data.links.length; j++){
