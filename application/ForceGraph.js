@@ -331,7 +331,7 @@ var ForceGraph = (function(){
 				//update the selections
 				updateNode(P.node_selection);
 
-				//I love hos d3 has no apparent mechanism for unioning selections
+				//I love how d3 has no apparent mechanism for unioning selections
 				updateLink(P.highlighted_link_selection);
 				updateLink(P.link_selection);
 			});
