@@ -306,10 +306,26 @@ var ForceGraph = (function(){
 			P.layout.on("tick", function(event) {
 
 				//do the custom physics
+				//calculate group center of mass
+				var com = Array.apply(null, new Array(P.group_count)).map(function(){return {x:0,y:0,count:0};});
 				P.data.nodes.forEach(function(d){
-					var impulse = getGravityImpulse(d);
-					d.x += event.alpha*impulse.x;
-					d.y += event.alpha*impulse.y;
+					if('group' in d){
+						com[d.group].x += d.x;
+						com[d.group].y += d.y;
+						com[d.group].count++;
+					}
+				});
+				//calculate group impulse
+				var impulse = Array.apply(null, new Array(P.group_count)).map(function(){return {x:0,y:0};});
+				com.forEach(function(d,i){
+					d.x /= d.count;
+					d.y /= d.count;
+					d.group = i;
+					impulse[i] = getGravityImpulse(d);
+				});
+				P.data.nodes.forEach(function(d){
+					d.x += event.alpha*impulse[d.group].x;
+					d.y += event.alpha*impulse[d.group].y;
 				});
 
 				//update the selections
@@ -337,7 +353,7 @@ var ForceGraph = (function(){
 			var zoom_selection = svg.call(P.zoom.behavior);
 			var mouse_handler = zoom_selection.on("mousedown.zoom");
 			zoom_selection.on("mousedown.zoom", function(){
-				if(d3.event.ctrlKey){
+				if(d3.event.which == 2){
 					mouse_handler.call(this);
 				}
 			});
