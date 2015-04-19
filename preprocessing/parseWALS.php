@@ -1,18 +1,18 @@
 <?php
 /**
- * Combines wals_dump and lab_table (from the original matlab file)
+ * Combines ../wals_dump and lab_table (from the original matlab file)
  * and massages data to produce a friendlier to work work csv
  * for language information
  */
 
 $languages = array_map(
 	"str_getcsv",
-	file("wals_data/wals_dump.csv")
+	file("../wals_data/wals_dump.csv")
 );
 
 $subfam_set = array_map(
 	"str_getcsv",
-	file("wals_data/lab_table.csv")
+	file("../wals_data/lab_table.csv")
 );
 
 //extract subfamilies from lab_table
@@ -21,7 +21,7 @@ foreach($subfam_set as $lang) {
 	$subfamily_by_iso[$lang[6]] = $lang[3];
 }
 
-$output = "wals_code,iso_code,glottocode,name,lat,lon,genus,family,subfamily\n";
+$output = "../wals_code,iso_code,glottocode,name,lat,lon,genus,family,subfamily\n";
 
 $count = 1;
 $firstloop = true;
@@ -66,4 +66,4 @@ foreach($languages as $language) {
 	$output .= "\n";
 }
 
-file_put_contents("wals_data/better_languages",$output);
+file_put_contents("../wals_data/better_languages",$output);

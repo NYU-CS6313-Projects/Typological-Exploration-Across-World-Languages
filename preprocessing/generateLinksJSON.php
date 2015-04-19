@@ -11,14 +11,14 @@ $languages = array_map(
 		"array_filter",
 		array_map(
 			"str_getcsv", 
-			file("wals_data/data_orig.csv")
+			file("../wals_data/data_orig.csv")
 		)
 );
 
 $language_data = array_shift( //TODO: Use this to map language information
 			array_map(
 				"str_getcsv", 
-				file("wals_data/lab_table.csv")
+				file("../wals_data/lab_table.csv")
 			)
 );
 
@@ -56,4 +56,4 @@ foreach($links as $features => $languages) {
 	$output .= "{\n\tsource:".$features_array[0].",\n\ttarget:".$features_array[1].",\n\tstrength:".count($languages)."\n},\n";
 }
 $output = rtrim($output,",\n");
-file_put_contents("wals_data/link_json.csv",$output);
+file_put_contents("../wals_data/link_json.csv",$output);
