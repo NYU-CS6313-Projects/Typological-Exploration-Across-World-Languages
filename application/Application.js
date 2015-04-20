@@ -1,4 +1,8 @@
 var Application = (function(){
+	/**
+	 * Holds parsed json data for nodes/links
+	 */
+	var source_data = new Object();
 
 	/**
 	 * main function, entry point for the application,
@@ -10,12 +14,81 @@ var Application = (function(){
 		MatrixView.setTable(d3.select(".MatrixView").append("table"));
 
 		//this should be done in an ajax call if we end up with non-static data
+
 		//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
-		setFlooredData(600);
-		ForceGraph.setGroupRingSize(0);
+		setFlooredData(0);
+		ForceGraph.setGroupRingSize(5000);
 
 		//reset the highlighted links
 		Application.highlightNode(null);
+	}
+
+	/**
+	 * load preprocessed data into appropriate node/link format
+	 */
+	function loadSourceData(src_data) {
+		console.time("loadtime");
+		//need an efficient intersection function for sorted arrays
+		function intersection(a, b) {
+			var x=0,y=0,ret=[];
+			while (x<a.length && y<b.length) {
+				if (a[x] === b[y]){
+					ret.push(a[x]);
+					x++;
+					y++;
+		 
+				//if current element of `a` is smaller than current element of `b`
+				//then loop through `a` until we found an element that is equal or greater
+				//than the current element of `b`.
+				} else if (a[x]<b[y]){
+					x++;
+				//same but for `b`
+				} else {
+					y++;
+				}
+			}
+			return ret;
+		}
+
+		source_data.nodes = [];
+		source_data.links = [];
+
+		var features = JSON.parse(JSON.stringify(src_data.features));
+		var feature1;
+		var feature2;
+		var value1;
+		var value2;
+		var strength = 0;
+		//loop through every feature
+		for(var feature1 = 0; feature1 < features.length; feature1++) {
+			//take the opportunity to populate nodes with feature data
+			source_data.nodes.push({"id":features[feature1].id,"name":features[feature1].name});
+			//every value for this feature
+			for(value1 in features[feature1]["values"]) {
+				//compare to every OTHER feature
+				for(var feature2 = feature1+1; feature2 < features.length; feature2++) {
+					//reset
+					strength = 0;
+					//every value for every OTHER fature
+					for(value2 in features[feature2]["values"]) {
+						//strength = # of intersecting languages
+						strength += intersection(
+								features[feature1]["values"][value1],
+								features[feature2]["values"][value2]
+								).length;
+					}
+					if(strength > 0) {
+						//populate links with intersection data
+						source_data.links.push({
+							"source":feature1,
+							"target":feature2,
+							"strength":strength
+						});
+					}
+				}
+			}
+		}
+		console.timeEnd("loadtime");
 	}
 
 	/**
@@ -43,7 +116,7 @@ var Application = (function(){
 	 *UI callable function for flooring the data and setting it into the visualization
 	 */
 	function setFlooredData(threshold){
-		var data = floorData(test_data, threshold);
+		var data = floorData(source_data, threshold);
 		ForceGraph.setData(data);
 		MatrixView.setData(data);
 	}
@@ -132,6 +205,7 @@ var Application = (function(){
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d)},
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,
+		loadSourceData:loadSourceData,
 		main:main
 	};
 }());
