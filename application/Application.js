@@ -6,12 +6,16 @@ var Application = (function(){
 	 * starts up other event handlers that drive the rest of the application
 	 */
 	function main(){
-		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"), window.innerHeight, window.innerWidth);
+		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
+		MatrixView.setTable(d3.select(".MatrixView").append("table"));
 
 		//this should be done in an ajax call if we end up with non-static data
 		//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
-		setFlooredData(0);
-		ForceGraph.setGroupRingSize(500);
+		setFlooredData(600);
+		ForceGraph.setGroupRingSize(0);
+
+		//reset the highlighted links
+		Application.highlightNode(null);
 	}
 
 	/**
@@ -41,6 +45,7 @@ var Application = (function(){
 	function setFlooredData(threshold){
 		var data = floorData(test_data, threshold);
 		ForceGraph.setData(data);
+		MatrixView.setData(data);
 	}
 
 	/**
@@ -97,10 +102,36 @@ var Application = (function(){
 		return data;
 	}
 
+	/**
+	 * give it a node to highlight
+	 * give it null to unhighlight the node
+	 * highlighting a new node without first unhighlighting the previous node is undefined
+	 * highlighting a new node without first unhighlighting a previous link is also undefined
+	 */
+	function highlightNode(node){
+		ForceGraph.setHighlightedNode(node);
+		MatrixView.setHighlightedNode(node)
+	}
+
+	/**
+	 * give it a link to highlight
+	 * give it null to unhighlight the link
+	 * highlighting a new link without first unhighlighting the previous link is undefined
+	 * highlighting a new link without first unhighlighting a previous node is also undefined
+	 */
+	function highlightLink(node){
+		ForceGraph.setHighlightedLink(node);
+		MatrixView.setHighlightedLink(node)
+	}
+
 
 	return {
 		setMinimumCorrelation:setFlooredData,
-		setSubgraphSeparation:ForceGraph.setGroupRingSize,
+		setSubgraphSeparation:function(d){ForceGraph.setGroupRingSize(d);},
+		setDrawLinks:function(d){ForceGraph.setDrawLinks(d);},
+		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d)},
+		highlightNode:highlightNode,
+		highlightLink:highlightLink,
 		main:main
 	};
 }());

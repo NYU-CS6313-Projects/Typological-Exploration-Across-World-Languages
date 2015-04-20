@@ -107,7 +107,12 @@ var ForceGraph = (function(){
 		/**
 		 *radius of the gravity ring
 		 */
-		gravity_ring_radius: 0
+		gravity_ring_radius: 0,
+
+		/**
+		 * boolean flag telling us if we should draw links or not
+		 */
+		draw_links: false
 	}
 
 
@@ -164,10 +169,10 @@ var ForceGraph = (function(){
 			.call(P.layout.drag)
 			.on("mouseover.force", null)
 			.on("mouseover", function(d){
-				setHighlightedLinks(d);
+				Application.highlightNode(d);
 			})
 			.on("mouseout", function(d){
-				setHighlightedLinks(null);
+				Application.highlightNode(null);
 			});
 
 		//add the text
@@ -215,7 +220,13 @@ var ForceGraph = (function(){
 		//add new links
 		link_selection.enter()
 			.append("line")
-			.attr("class", link_class);
+			.attr("class", link_class)
+			.on("mouseover", function(d){
+				Application.highlightLink(d);
+			})
+			.on("mouseout", function(d){
+				Application.highlightLink(null);
+			});
 
 		updateLink(link_selection);
 	}
@@ -233,21 +244,11 @@ var ForceGraph = (function(){
 			.attr("stroke-width", function(d) { return d.strength/100; });
 	}
 
-	
-
 	/**
-	 * set the highlighted links to the links that have the given node as a source or target
+	 * given a set of links to highlight highlight them
 	 */
-	function setHighlightedLinks(node){
-		P.highlighted_links = [];
-
-		if(node !== null){
-			P.data.links.forEach(function(d){
-				if(d.source.id === node.id || d.target.id === node.id){
-					P.highlighted_links.push(d);
-				}
-			});
-		}
+	function setHighlightedLinks(links){
+		P.highlighted_links = links;
 
 		//regrab the links
 		P.highlighted_link_selection = P.highlighted_link_group.selectAll(".highlighted-link")
@@ -261,12 +262,12 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.enter()
 			.append("line")
 			.attr("class", "highlighted-link")
-			.attr("stroke-width", function(d) { return d.strength/100; });
+			.attr("stroke-width", function(d) { return (d.strength/100)*1.5; });
 
 		P.highlighted_link_selection.exit()
 			.remove();
 
-		bookKeepLink(P.highlighted_link_selection, 'link');
+		bookKeepLink(P.highlighted_link_selection, "highlighted-link");
 	}
 
 	/******************\
@@ -276,7 +277,7 @@ var ForceGraph = (function(){
 		/**
 		 * main setup function
 		 */
-		setSVG: function(svg, height, width){
+		setSVG: function(svg){
 			if(P.svg !== null){
 				throw "svg has already been set, no takebacks!";
 			}
@@ -363,35 +364,30 @@ var ForceGraph = (function(){
 		/**
 		 * set the highlighted links to the links that have the given node as a source or target
 		 */
-		setHighlightedLinks: function(node){
+		setHighlightedNode: function(node){
 			P.highlighted_links = [];
 
+			links = [];
 			if(node !== null){
 				P.data.links.forEach(function(d){
 					if(d.source.id === node.id || d.target.id === node.id){
-						P.highlighted_links.push(d);
+						links.push(d);
 					}
 				});
 			}
+			setHighlightedLinks(links);
+		},
 
-			//regrab the links
-			P.highlighted_link_selection = P.highlighted_link_group.selectAll(".highlighted-link")
-				.data(
-					P.highlighted_links,
-					function(d){
-						return d.source.id+','+d.target.id;
-					}
-				);
-
-			P.highlighted_link_selection.enter()
-				.append("line")
-				.attr("class", "highlighted-link")
-				.attr("stroke-width", function(d) { return d.strength/100; });
-
-			P.highlighted_link_selection.exit()
-				.remove();
-
-			bookKeepLink(P.highlighted_link_selection, "highlighted-link");
+		/**
+		 * highlight the given link
+		 */
+		setHighlightedLink: function(link){
+			if(link !== null){
+				setHighlightedLinks([link]);
+			}
+			else{
+				setHighlightedLinks([]);
+			}
 		},
 
 		/**
@@ -436,12 +432,20 @@ var ForceGraph = (function(){
 					}
 				);
 
-			P.link_selection.enter()
-				.append("line")
-				.attr("class", "link")
-				.attr("stroke-width", function(d) { return d.strength/1000; })
-				//pretty debug output
-				.on("click", function(d) { alert(JSON.stringify(d,null,4));}); 
+			if(P.draw_links){
+				P.link_selection.enter()
+					.append("line")
+					.attr("class", "link")
+					.attr("stroke-width", function(d) { return d.strength/1000; })
+					//pretty debug output
+					.on("click", function(d) { alert(JSON.stringify(d,null,4));})
+					.on("mouseover", function(d){
+						Application.highlightLink(d);
+					})
+					.on("mouseout", function(d){
+						Application.highlightLink(null);
+					});
+			}
 			P.link_selection.exit()
 				.remove();
 
@@ -464,42 +468,7 @@ var ForceGraph = (function(){
 					return colors[d.group%colors.length]
 				});
 
-			var new_node_group = P.node_selection.enter()
-				.append('g')
-				.attr("class", "node")
-				//pretty debug output
-				.on("click", function(d) { alert(JSON.stringify(d,null,4)); });
-
-			new_node_group
-				.append("circle")
-				.attr("class", "node")
-				.call(P.layout.drag)
-				.on("mouseover.force", null)
-				.on("mouseover", function(d){
-					self.setHighlightedLinks(d);
-				})
-				.on("mouseout", function(d){
-					self.setHighlightedLinks(null);
-				});
-
-			new_node_group.select('circle')
-				.attr("r", 10)
-				.style("fill", function(d) {
-					var colors = ['red','green','blue','yellow','cyan','magenta'];
-					return colors[d.group%colors.length]
-				})
-			new_node_group
-				.append('text')
-				.attr('x',13)
-				.text(function(d){
-					return d.name;
-				});
-
-			P.node_selection.exit()
-				.remove();
-
-			//reset the highlighted links
-			self.setHighlightedLinks(null);
+			bookKeepNode(P.node_selection);
 		},
 
 		/**
@@ -516,6 +485,14 @@ var ForceGraph = (function(){
 		setGroupRingSize: function(size){
 			P.gravity_ring_radius = size;
 			P.layout.resume();
+		},
+
+		setDrawLinks: function(draw_links){
+			P.draw_links = draw_links;
+			if(!draw_links){
+				P.link_selection.remove();
+			}
+			this.setData(P.data);
 		}
 	}
 })();

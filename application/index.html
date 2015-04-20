@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="UI.js"> </script>
 	<script type="text/javascript" src="test_data.js"> </script>
 	<script type="text/javascript" src="ForceGraph.js"> </script>
+	<script type="text/javascript" src="MatrixView.js"> </script>
 	<script type="text/javascript" src="Application.js"> </script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -20,11 +21,22 @@
 
 		<span class="UI_label">Subgraph Separation:</span>
 		<input id="UI_subgraph_seperation" type="text" onchange="UI.onSeparationChange();" value="0"></input>
+
+		<span class="UI_label">Draw Links:</span>
+		<input id="UI_draw_links" type="checkbox" onclick="UI.onDrawLinkChange();" value="0"></input>
 	</div>
 	<div id="UI_right_pannel" class="UI_resize UI_resize_right">
 		<div class="UI_tab"><h2>Data</h2></div>
 		<div>not implemented yet</div>
 	</div>
 	<div class="ForceGraph"></div>
+	<div id="UI_bottom_pannel" class="UI_resize UI_resize_bottom">
+		<div class="UI_tab">
+			<h2>Matrix</h2>
+			<span class="UI_label">Labels:</span>
+			<input id="UI_draw_matrix_labels" type="checkbox" onclick="UI.onDrawMatrixLabelsChange();" value="0"></input>
+		</div>
+		<div class="MatrixView">
+	</div>
 </body>
 </html>

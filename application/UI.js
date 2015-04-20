@@ -80,9 +80,26 @@ var UI = (function(){
 		Application.setSubgraphSeparation(new_seperation);
 	}
 
+	/**
+	 * the user has decided to change the drawing of links
+	 */
+	function onDrawLinkChange(){
+		var is_checked = $('#UI_draw_links').prop('checked');
+		Application.setDrawLinks(is_checked);
+	}
+
+	/**
+	 * the user has decided to change showing of labels on the matrix
+	 */
+	function onDrawMatrixLabelsChange(){
+		var is_checked = $('#UI_draw_matrix_labels').prop('checked');
+		Application.setDrawMatrixLabels(is_checked);
+	}
 
 	return {
 		onCorrelationChange:onCorrelationChange,
-		onSeparationChange:onSeparationChange
+		onSeparationChange:onSeparationChange,
+		onDrawLinkChange:onDrawLinkChange,
+		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange
 	};
 }());

@@ -26,6 +26,41 @@ svg {
 }
 
 
+
+.MatrixView th{
+	text-align:right;
+}
+
+.MatrixView td{
+	height:5px;
+	min-width:5px;
+	color:white;
+	border-width:1px;
+	border-style:solid;
+	border-color:black;
+}
+
+.MatrixView td.highlighted,
+.MatrixView th.highlighted,
+.MatrixView highlighted td,
+.MatrixView highlighted th{
+	border-color:yellow;
+}
+
+.MatrixView{
+	height:100%;
+	width:100%;
+	font-size: 8px;
+	overflow:auto;
+}
+
+.MatrixView table{
+	border-collapse:separate;
+	border-spacing: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 div.ForceGraph{
 	position:fixed;
 	top:0;
@@ -45,7 +80,6 @@ div.ForceGraph{
 	z-index:10;
 	position:relative;
 	top:0;
-	width:100%;
 	background-color:#EEEEEE;
 	border-bottom-style:solid;
 	padding:2px;
@@ -113,18 +147,22 @@ div{
 .UI_resize_bottom
 {
 	bottom:0;
-	height:2em; /*default size, will be overrode by code*/
+	height:5em; /*default size, will be overrode by code*/
 	width:100%;
 	background-color:#F2F2F2;
 }
 
 .UI_resize_bottom .UI_tab
 {
+	position:relative;
+	margin-bottom:-2em;
+	bottom:2em;
 	height:4ex;
 	border-bottom-style:solid;
 	border-top-style:solid;
 	border-bottom-width:2px;
 	border-top-width:1px;
+	background-color:inherit;
 }
 
 .UI_resize_bottom .UI_tab h2
