@@ -35,20 +35,24 @@ foreach($languages as $language_id => $language) {
 	}
 }
 
-$output = "\"features\":{";
+//build json object from feature_data and feature_structures
+$output = "\"features\":[";
 foreach($feature_data as $feature => $values) {
-	$output .= "\n\t".$feature_structures[$feature]["Name"]."\": {";
+	$output .= "\n\t{";
+	$output .= "\n\t\t\"name\":\"".$feature_structures[$feature]["Name"]."\",";
+	$output .= "\n\t\t\"id\":\"".$feature_structures[$feature]["ID"]."\",";
+	$output .= "\n\t\t\"values\":{";
 	foreach($values as $value => $language_ids) {
-		$output .= "\n\t\t\"".$feature_structures[$feature]["Enum"][$value]."\": [";
+		$output .= "\n\t\t\t\"".$feature_structures[$feature]["Enum"][$value]."\": [";
 		foreach($language_ids as $language_id) {
-			$output .= "\"$language_id\",";
+			$output .= "$language_id,";
 		}
 		$output = rtrim($output,",");
 		$output .= "],";
 	}
 	$output = rtrim($output,",");
-	$output .= "\n\t},";
+	$output .= "\n\t\t}\n\t},";
 }
 $output = rtrim($output,",");
-$output .= "\n}";
+$output .= "\n]";
 file_put_contents("../wals_data/feature_language_json",$output);
