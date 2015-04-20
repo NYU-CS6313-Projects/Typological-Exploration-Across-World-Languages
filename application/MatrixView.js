@@ -82,7 +82,7 @@ var MatrixView = (function(){
 			});
 
 		header_cells
-			.sort()
+			.sort(dataSort)
 			.order()
 			.text(function(d){
 				if(P.draw_labels){
@@ -229,50 +229,22 @@ var MatrixView = (function(){
 	/**
 	 * sorting comparator function for the data
 	 */
-	function dataSort(feature){
-		if(!feature){
-			//null sort, sort by id
-			return function(a,b){
-				//these are unique ids so I'm ignoreing the case of the ids being equal
-				a = a.feature.id;
-				b = b.feature.id;
-				if(a.length > b.length){
-					return 1;
-				}
-				else if(a.length < b.length){
-					return -1;
-				}
-				else{
-					if(a > b){
-						return 1;
-					}
-					else{
-						return -1;
-					}
-				}
-			}
+	function dataSort(a,b){
+		//these are unique ids so I'm ignoreing the case of the ids being equal
+		a = a.feature.id;
+		b = b.feature.id;
+		if(a.length > b.length){
+			return 1;
+		}
+		else if(a.length < b.length){
+			return -1;
 		}
 		else{
-			//lookup table
-			var lookup = {};
-			var feature_row = feature_row = P.processed_data.findIndex(function(d){
-				d.id = feature;
-			});
-			P.processed_data[feature_row].forEach(function(d){
-				lookup[d.id] = d;
-			});
-
-			//sort by feature value
-			return function(a,b){
-				//find the link that has our feature as one end and the specified feature as the other end
-				var a = lookup[a.id];
-				var b = lookup[b.id];
-				if(a>b){
-					return 1;
-				}
-				else{
-					return -1;
-				}
+			if(a > b){
+				return 1;
+			}
+			else{
+				return -1;
 			}
 		}
 	};
