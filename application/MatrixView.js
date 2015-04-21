@@ -14,7 +14,8 @@ var MatrixView = (function(){
 		 */
 		table:null,
 
-		header_row:null,
+		column_order:[],
+		row_order:[],
 
 		/**
 		 * boolean flag saying if we should draw the labels or not
@@ -63,140 +64,127 @@ var MatrixView = (function(){
 	\*******************/
 
 	/**
-	 * setup the header row at the top of the matrix
+	 * sorting comparator function for the data
 	 */
-	function buildHeaderRow(header_cells){
-		header_cells.exit()
-			.remove();
+	function featureSort(feature){
+		//lookup table
+		var lookup = {};
+		
+		for(var i = 0; i<P.raw_data.links.length; i++){
+			var source = P.raw_data.links[i].source;
+			var target = P.raw_data.links[i].target;
+			if(target.id == feature){
+				lookup[source.id] = P.raw_data.links[i];
+			}
+			else if(source.id == feature){
+				lookup[target.id] = P.raw_data.links[i];
+			}
+		}
 
-		var new_header_column = header_cells.enter();
+		//sort by feature value
+		return function(a,b){
+			//find the link that has our feature as one end and the specified feature as the other end
+			a = (a && 'feature' in a)?a.feature:a;
+			b = (b && 'feature' in b)?b.feature:b;
 
-		new_header_column
-			.append('th')
-			.attr('class','header')
-			.on("mouseover", function(d){
-				Application.highlightNode(d.feature);
-			})
-			.on("mouseout", function(d){
-				Application.highlightNode(null);
-			});
+			a = (!a)?a:('id' in a)?a.id:((a.source.id == feature)?a.target.id:a.source.id);
+			b = (!b)?b:('id' in b)?b.id:((b.source.id == feature)?b.target.id:b.source.id);
 
-		header_cells
-			.sort(dataSort)
-			.order()
-			.text(function(d){
-				if(P.draw_labels){
-					return d.feature.id;
-				}
-				return '';
-			})
-			.classed('highlighted', function(d){
-				return P.highlighted_nodes.indexOf(d.feature.id) != -1;
-			});
-	}
+			a = (a in lookup)?lookup[a].strength:-1;
+			b = (b in lookup)?lookup[b].strength:-1;
+
+			a = (a === null)?-1:a;
+			b = (b === null)?-1:b;
+
+			if(a>b || b===null){
+				return -1;
+			}
+			else if(a<b || a===null){
+				return 1;
+			}
+			return 0;
+		}
+	};
 
 	/**
-	 * setup the data portion of the matrix
+	 *the data has been changed in some way, redraw the table
 	 */
-	function buildDataRows(data_rows){
-		data_rows.exit()
-			.remove();
+	function redrawData(){
+		$(P.table).empty();
 
-		var new_data_rows = data_rows.enter();
+		//do the header row
+		var header_row = $('<tr/>');
+		header_row.addClass('header');
 
-		var new_rows = new_data_rows
-			.append('tr')
-			.attr('class','data');
+		$(P.table).append(header_row);
+		header_row.append($('<th/>'));//spacer for the label on the data rows
 
-		new_rows
-			.append('th')	//always add the label for the row first
-			.attr('class','header')
-			.on("mouseover", function(d){
-				Application.highlightNode(d.feature);
-			})
-			.on("mouseout", function(d){
+		$.each(P.column_order, function(i, column_id){
+			var feature = P.processed_data.nodes[column_id];
+			var header_cell = $('<th/>');
+			header_cell.addClass('header');
+			if(P.draw_labels){
+				header_cell.text(feature.id);
+			}
+			header_cell.addClass('feature_'+feature.id);
+			header_cell.on( "mouseover", function(){
+				Application.highlightNode(feature);
+			} );
+			header_cell.on( "mouseout", function(){
 				Application.highlightNode(null);
-			});
+			} );			
+			header_row.append(header_cell);
+		});
 
-		data_rows
-			.selectAll('th.header')
-			.html(function(d){
+		//do the data rows
+		$.each(P.row_order, function(i, row_id){
+			var row_feature = P.processed_data.nodes[row_id];
+
+			//header column
+			var data_row = $('<tr/>');
+			data_row.addClass('data');
+			$(P.table).append(data_row);
+
+			var header_cell = $('<th/>');
+			header_cell.addClass('header');
+			if(P.draw_labels){
+				header_cell.text(row_feature.name.replace(/\s+/g, '&nbsp;')+' ('+row_feature.id+')');
+			}
+			header_cell.addClass('feature_'+row_id);
+			header_cell.on( "mouseover", function(){
+				Application.highlightNode(row_feature);
+			} );
+			header_cell.on( "mouseout", function(){
+				Application.highlightNode(null);
+			} );
+			data_row.append(header_cell);
+
+			$.each(P.column_order, function(j, column_id){
+				var link = P.processed_data.links[row_id][column_id];
+
+				var bg_color = 'rgb(0,0,128)';
+				var strength = '';
+				if(link){
+					strength = link.strength;
+					bg_color = 'rgb('+Math.round((strength/P.max_link_strength)*255)+',0,0)';
+				}
+
+				var data_cell = $('<td/>');
+				data_cell.addClass('data');
+				data_cell.css('background-color', bg_color);
 				if(P.draw_labels){
-					return d.feature.name.replace(/\s+/g, '&nbsp;')+' ('+d.feature.id+')';
+					data_cell.text(strength);
 				}
-				return ''
-			})
-			.classed('highlighted', function(d){
-				return P.highlighted_nodes.indexOf(d.feature.id) != -1;
+				data_cell.addClass('feature_'+row_id+' feature_'+column_id);
+				data_cell.on( "mouseover", function(){
+					Application.highlightLink(link);
+				} );
+				data_cell.on( "mouseout", function(){
+					Application.highlightLink(null);
+				} );
+				data_row.append(data_cell);
 			});
-
-		data_rows.order();
-
-		var data_cells = data_rows
-			.selectAll('td.data')
-			.data(function(d){
-				return d;
-			});
-
-		//deal with the cells in each row
-		data_cells.exit()
-			.remove();
-
-		var new_data_cells = data_cells.enter();
-		new_data_cells
-			.append('td')
-			.attr('class','data')
-			.on("mouseover", function(d){
-				Application.highlightLink(d);
-			})
-			.on("mouseout", function(d){
-				Application.highlightLink(null);
-			});
-
-
-		data_cells.order();
-
-		data_cells
-			.style('background-color', function(d){
-				if(!d){
-					return 'rgb(0,0,128)';
-				}
-				var strength = d.strength/P.max_link_strength;
-				return 'rgb('+Math.round(strength*255)+',0,0)';
-			})
-			.attr('data-tool_tip_text', function(d){
-				if(d){
-					var strength = d.strength/P.max_link_strength;
-					var color = 'rgb('+Math.round(strength*255)+',0,0)';
-					return '<div style=\'background-color: '+color+'\'>'+d.source.name + '<br/>+<br/>' + d.target.name + '<br/>=<br/>' + d.strength+'</div>';
-				}
-				return 'no data';
-			})
-			.text(function(d){
-				if(d && P.draw_labels){
-					return d.strength;
-				}
-				else{
-					return '';
-				}
-			})
-			.classed('highlighted', function(d){
-				if(d){
-					var in_highlighted_links = 
-						P.highlighted_links.some(function(link){
-							if(
-								d.source.id == link.source.id
-								&&
-								d.target.id == link.target.id
-							){
-								return true;
-							}
-							return false;
-						
-						});
-					return in_highlighted_links || P.highlighted_nodes.indexOf(d.source.id) != -1 || P.highlighted_nodes.indexOf(d.target.id) != -1;
-				}
-			});
+		});
 	}
 
 	/**
@@ -210,72 +198,32 @@ var MatrixView = (function(){
 			row_map[d.id] = i;
 		});
 
+		P.column_order = [];
+		P.row_order = [];
 
-		P.processed_data = [];
+		P.processed_data = {
+			nodes:{},
+			links:{}
+		};
 		P.raw_data.nodes.forEach(function(a){
-			var row = [];
+			P.column_order.push(a.id);
+			P.row_order.push(a.id);
+			P.processed_data.nodes[a.id] = a;
+			var row = {};
 			P.raw_data.nodes.forEach(function(b){
-				row.push(null);
+				row[b.id] = null;
 			});
-			row.feature = a;
-			P.processed_data.push(row);
+			P.processed_data.links[a.id] = row;
 		});
-		P.raw_data.links.forEach(function(d){
-			P.processed_data[row_map[d.source.id]][row_map[d.target.id]] = d;
-			P.processed_data[row_map[d.target.id]][row_map[d.source.id]] = d;
+
+		P.max_link_strength = 0;
+		P.raw_data.links.forEach(function(l){
+			P.processed_data.links[l.source.id][l.target.id] = l;
+			P.processed_data.links[l.target.id][l.source.id] = l;
+			if(P.max_link_strength < l.strength){
+				P.max_link_strength = l.strength;
+			}
 		});
-	}
-
-	/**
-	 * sorting comparator function for the data
-	 */
-	function dataSort(a,b){
-		//these are unique ids so I'm ignoreing the case of the ids being equal
-		a = a.feature.id;
-		b = b.feature.id;
-		if(a.length > b.length){
-			return 1;
-		}
-		else if(a.length < b.length){
-			return -1;
-		}
-		else{
-			if(a > b){
-				return 1;
-			}
-			else{
-				return -1;
-			}
-		}
-	};
-
-	/**
-	 * utility function for making an update selection
-	 */
-	function updateRowData(start_selection, selector){
-		return start_selection
-			.selectAll(selector)
-			.data(
-				P.processed_data,
-				function(d){
-					return d.feature.id;
-				}
-			);
-	}
-
-	/**
-	 * something about the data changed, redraw it
-	 */
-	function redrawData(){
-			var header_cells = updateRowData(P.header_row, 'th.header');
-
-			//deal with the header
-			buildHeaderRow(header_cells);
-
-			var data_rows = updateRowData(P.table, 'tr.data');
-
-			//deal with the data
-			buildDataRows(data_rows);
 	}
 
 	/******************\
@@ -294,12 +242,6 @@ var MatrixView = (function(){
 
 			P.table = table;
 
-			P.header_row = P.table.append('tr')
-				.attr("class", "header");
-
-			P.header_row
-				.append('th');//spacer for the row labels
-
 			self.setData(P.raw_data);
 		},
 
@@ -308,11 +250,6 @@ var MatrixView = (function(){
 		 */
 		setData: function(data){
 			var self = this;
-
-			P.max_link_strength = 0;
-			data.links.forEach(function(d){
-				P.max_link_strength = Math.max(P.max_link_strength, d.strength);
-			});
 
 			processData(data);
 
@@ -332,12 +269,11 @@ var MatrixView = (function(){
 		 */
 		setHighlightedNode: function(node){
 			if(node){
-				P.highlighted_nodes = [node.id];
+				$('.feature_'+node.id).addClass('highlighted');
 			}
 			else{
-				P.highlighted_nodes = [];
+				$('.highlighted').removeClass('highlighted');
 			}
-			redrawData();
 		},
 
 		/**
@@ -345,12 +281,13 @@ var MatrixView = (function(){
 		 */
 		setHighlightedLink: function(link){
 			if(link){
-				P.highlighted_links = [link];
+				//select everything that has both source and target, and all th that have either
+				var selector = '.feature_'+link.source.id+'.feature_'+link.target.id+', th.feature_'+link.source.id+', th.feature_'+link.target.id;
+				$(selector).addClass('highlighted');
 			}
 			else{
-				P.highlighted_links = [];
+				$('.highlighted').removeClass('highlighted');
 			}
-			redrawData();
 		}
 	}
 })();

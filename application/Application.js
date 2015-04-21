@@ -11,7 +11,7 @@ var Application = (function(){
 	 */
 	function main(){
 		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
-		MatrixView.setTable(d3.select(".MatrixView").append("table"));
+		MatrixView.setTable($(".MatrixView table"));
 
 		//this should be done in an ajax call if we end up with non-static data
 

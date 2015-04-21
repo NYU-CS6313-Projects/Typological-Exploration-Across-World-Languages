@@ -23,12 +23,16 @@ svg {
 
 .node text{
 	stroke:none;
+	font-size:7em;
 }
 
 
 
 .MatrixView th{
 	text-align:right;
+	border-width:1px;
+	border-style:solid;
+	border-color:transparent;
 }
 
 .MatrixView td{
@@ -41,10 +45,17 @@ svg {
 }
 
 .MatrixView td.highlighted,
-.MatrixView th.highlighted,
-.MatrixView highlighted td,
-.MatrixView highlighted th{
+.MatrixView highlighted td{
+	border-width:1px;
+	border-style:solid;
 	border-color:yellow;
+}
+
+.MatrixView th.highlighted,
+.MatrixView highlighted th{
+	border-width:1px;
+	border-style:solid;
+	border-color:orange;
 }
 
 .MatrixView{

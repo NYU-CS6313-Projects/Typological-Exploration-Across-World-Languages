@@ -164,7 +164,7 @@ var ForceGraph = (function(){
 		//add the circle for the group
 		new_node_group
 			.append("circle")
-			.attr("r", 10)
+			.attr("r", 100)
 			.attr("class", "node")
 			.call(P.layout.drag)
 			.on("mouseover.force", null)
@@ -178,7 +178,7 @@ var ForceGraph = (function(){
 		//add the text
 		new_node_group
 			.append('text')
-			.attr('x',13);
+			.attr('x',130);
 
 		updateNode(node_selection);
 	}
@@ -241,7 +241,7 @@ var ForceGraph = (function(){
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
-			.attr("stroke-width", function(d) { return d.strength/100; });
+			.attr("stroke-width", function(d) { return d.strength/10; });
 	}
 
 	/**
@@ -293,7 +293,7 @@ var ForceGraph = (function(){
 
 			//setup the force directed layout 
 			P.layout = d3.layout.force()
-				/*.friction(.5)*/
+				.friction(0.1)
 				.linkStrength(0.5)
 				.gravity(0)
 				.linkDistance(function(d){
@@ -410,7 +410,7 @@ var ForceGraph = (function(){
 			});
 			P.group_count++;
 
-			P.layout.charge(-P.max_link_strength)
+			P.layout.charge(-P.max_link_strength*2)
 
 			//update the layout with the new data
 			P.layout
