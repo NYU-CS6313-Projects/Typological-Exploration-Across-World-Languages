@@ -83,23 +83,14 @@ var MatrixView = (function(){
 
 		//sort by feature value
 		return function(a,b){
-			//find the link that has our feature as one end and the specified feature as the other end
-			a = (a && 'feature' in a)?a.feature:a;
-			b = (b && 'feature' in b)?b.feature:b;
-
-			a = (!a)?a:('id' in a)?a.id:((a.source.id == feature)?a.target.id:a.source.id);
-			b = (!b)?b:('id' in b)?b.id:((b.source.id == feature)?b.target.id:b.source.id);
 
 			a = (a in lookup)?lookup[a].strength:-1;
 			b = (b in lookup)?lookup[b].strength:-1;
 
-			a = (a === null)?-1:a;
-			b = (b === null)?-1:b;
-
-			if(a>b || b===null){
+			if(a>b){
 				return -1;
 			}
-			else if(a<b || a===null){
+			else if(a<b){
 				return 1;
 			}
 			return 0;
@@ -127,6 +118,9 @@ var MatrixView = (function(){
 				header_cell.text(feature.id);
 			}
 			header_cell.addClass('feature_'+feature.id);
+			header_cell.on( "dblclick", function(){
+				MatrixView.sortRows(feature.id);
+			} );
 			header_cell.on( "mouseover", function(){
 				Application.highlightNode(feature);
 			} );
@@ -148,9 +142,12 @@ var MatrixView = (function(){
 			var header_cell = $('<th/>');
 			header_cell.addClass('header');
 			if(P.draw_labels){
-				header_cell.text(row_feature.name.replace(/\s+/g, '&nbsp;')+' ('+row_feature.id+')');
+				header_cell.html(row_feature.name.replace(/\s+/g, '&nbsp;')+' ('+row_feature.id+')');
 			}
 			header_cell.addClass('feature_'+row_id);
+			header_cell.on( "dblclick", function(){
+				MatrixView.sortColumns(row_id);
+			} );
 			header_cell.on( "mouseover", function(){
 				Application.highlightNode(row_feature);
 			} );
@@ -288,6 +285,22 @@ var MatrixView = (function(){
 			else{
 				$('.highlighted').removeClass('highlighted');
 			}
+		},
+
+		/**
+		 * sort columns by the specified feature
+		 */
+		sortColumns: function(feature){
+			P.column_order.sort(featureSort(feature));
+			redrawData();
+		},
+
+		/**
+		 * sort columns by the specified feature
+		 */
+		sortRows: function(feature){
+			P.row_order.sort(featureSort(feature));
+			redrawData();
 		}
 	}
 })();
