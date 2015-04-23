@@ -14,6 +14,9 @@ var MatrixView = (function(){
 		 */
 		table:null,
 
+		/**
+		 * listed out order of ids of features that should be displayed, in the order that they should be displayed for row and column
+		 */
 		column_order:[],
 		row_order:[],
 
@@ -52,10 +55,9 @@ var MatrixView = (function(){
 		highlighted_links:[],
 
 		/**
-		 *names of features to sort along, null means use feature id, rather than strength of a particular feature
+		 *reference to the selection data, used when we rebuild the matrix;
 		 */
-		horizontal_sort_feature: null,
-		vertical_sort_feature: null
+		selection_data: null
 	}
 
 
@@ -121,6 +123,9 @@ var MatrixView = (function(){
 			header_cell.on( "dblclick", function(){
 				MatrixView.sortRows(feature.id);
 			} );
+			header_cell.on( "click", function(){
+				Application.toggleNodeSelection(feature);
+			} );
 			header_cell.on( "mouseover", function(){
 				Application.highlightNode(feature);
 			} );
@@ -148,6 +153,9 @@ var MatrixView = (function(){
 			header_cell.on( "dblclick", function(){
 				MatrixView.sortColumns(row_id);
 			} );
+			header_cell.on( "click", function(){
+				Application.toggleNodeSelection(row_feature);
+			} );
 			header_cell.on( "mouseover", function(){
 				Application.highlightNode(row_feature);
 			} );
@@ -173,6 +181,9 @@ var MatrixView = (function(){
 					data_cell.text(strength);
 				}
 				data_cell.addClass('feature_'+row_id+' feature_'+column_id);
+				data_cell.on( "click", function(){
+					Application.toggleLinkSelection(link);
+				} );
 				data_cell.on( "mouseover", function(){
 					Application.highlightLink(link);
 				} );
@@ -182,6 +193,9 @@ var MatrixView = (function(){
 				data_row.append(data_cell);
 			});
 		});
+		if(P.selection_data){
+			self.selectionChanged(P.selection_data);
+		}
 	}
 
 	/**
@@ -226,7 +240,7 @@ var MatrixView = (function(){
 	/******************\
 	|* PUBLIC METHODS *|
 	\******************/
-	return {
+	var self = {
 		/**
 		 * main setup function
 		 */
@@ -234,8 +248,6 @@ var MatrixView = (function(){
 			if(P.table !== null){
 				throw "table has already been set, no takebacks!";
 			}
-
-			var self = this;
 
 			P.table = table;
 
@@ -246,7 +258,6 @@ var MatrixView = (function(){
 		 * apply a new set of data to the visualization
 		 */
 		setData: function(data){
-			var self = this;
 
 			processData(data);
 
@@ -266,10 +277,10 @@ var MatrixView = (function(){
 		 */
 		setHighlightedNode: function(node){
 			if(node){
-				$('.feature_'+node.id).addClass('highlighted');
+				$('.MatrixView .feature_'+node.id).addClass('highlighted');
 			}
 			else{
-				$('.highlighted').removeClass('highlighted');
+				$('.MatrixView .highlighted').removeClass('highlighted');
 			}
 		},
 
@@ -283,7 +294,7 @@ var MatrixView = (function(){
 				$(selector).addClass('highlighted');
 			}
 			else{
-				$('.highlighted').removeClass('highlighted');
+				$('.MatrixView .highlighted').removeClass('highlighted');
 			}
 		},
 
@@ -301,6 +312,25 @@ var MatrixView = (function(){
 		sortRows: function(feature){
 			P.row_order.sort(featureSort(feature));
 			redrawData();
+		},
+
+		/**
+		 * notify this view that the selection has changed
+		 */
+		selectionChanged(selected_data){
+			P.selection_data = selected_data;
+			$('.MatrixView .selected').removeClass('selected');
+			var selector = ',';
+			selector += selected_data.nodes.map(function(d){return '.MatrixView th.feature_'+d.id;}).join()+',';
+			selector += selected_data.links.map(function(d){return '.MatrixView .feature_'+d.source.id+'.feature_'+d.target.id;}).join()+',';
+			
+			selector = selector.replace(/^,+|,+$/g,'');//remove leading and trailing commas
+			if(selector !==''){
+				$(selector).addClass('selected');
+			}
+			
 		}
 	}
+
+	return self;
 })();

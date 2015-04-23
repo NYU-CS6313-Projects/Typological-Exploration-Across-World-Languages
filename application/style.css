@@ -19,6 +19,19 @@ svg {
 
 .highlighted-link {
   stroke: #ff0;
+  pointer-events:none;
+}
+
+.selected-link {
+  stroke: #0f0;
+  pointer-events:none;
+}
+
+.selected-node {
+  stroke: #0f0;
+  stroke-width: 20;
+  fill: none;
+  pointer-events:none;
 }
 
 .node text{
@@ -56,6 +69,20 @@ svg {
 	border-width:1px;
 	border-style:solid;
 	border-color:orange;
+}
+
+.MatrixView td.selected,
+.MatrixView selected td{
+	border-width:1px;
+	border-style:solid;
+	border-color:rgb(0,255,0);
+}
+
+.MatrixView th.selected,
+.MatrixView selected th{
+	border-width:1px;
+	border-style:solid;
+	border-color:rgb(0,128,0);
 }
 
 .MatrixView{

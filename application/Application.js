@@ -1,8 +1,23 @@
 var Application = (function(){
 	/**
 	 * Holds parsed json data for nodes/links
+	 * is constant
 	 */
 	var source_data = new Object();
+
+	/**
+	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
+	 * it is source data after filtering and transformations that happen from user input
+	 */
+	var application_data = new Object();
+
+	/**
+	 * list of links and nodes that are currently selected
+	 */
+	var selected_data = {
+		links: [],
+		nodes: []
+	}; 
 
 	/**
 	 * main function, entry point for the application,
@@ -116,9 +131,10 @@ var Application = (function(){
 	 *UI callable function for flooring the data and setting it into the visualization
 	 */
 	function setFlooredData(threshold){
-		var data = floorData(source_data, threshold);
-		ForceGraph.setData(data);
-		MatrixView.setData(data);
+		application_data = floorData(source_data, threshold);
+		clearSelection();
+		ForceGraph.setData(application_data);
+		MatrixView.setData(application_data);
 	}
 
 	/**
@@ -197,8 +213,137 @@ var Application = (function(){
 		MatrixView.setHighlightedLink(node)
 	}
 
+	function selectionChanged(){
+		ForceGraph.selectionChanged(selected_data);
+		MatrixView.selectionChanged(selected_data)
+	}
+
+	/**
+	 * adds a link to the set of selected
+	 */
+	function selectLink(link){
+		selected_data.links.push(link);
+		selectionChanged();
+	}
+
+	/**
+	 * adds a node to the set of selected
+	 */
+	function selectNode(node){
+		selected_data.nodes.push(node);
+		selectionChanged();
+	}
+
+	/**
+	 * removes a link from the set of selected
+	 */
+	function unselectLink(link){
+		for(var i = selected_data.links.length-1; i>-1; i--){
+			var cur_link = selected_data.links[i]
+			if(cur_link.source.id === link.source.id && cur_link.target.id === link.target.id){
+				selected_data.links.splice(i, 1);
+			}
+		}
+		selectionChanged();
+	}
+
+	/**
+	 * removes a node from the set of selected
+	 */
+	function unselectNode(node){
+		for(var i = selected_data.nodes.length-1; i>-1; i--){
+			var cur_node = selected_data.nodes[i]
+			if(cur_node.id === node.id){
+				selected_data.nodes.splice(i, 1);
+			}
+		}
+		selectionChanged();
+	}
+
+	/**
+	 *returns true if the passed link is selected
+	 */
+	function linkIsSelected(link){
+		var is_selected = false;
+		selected_data.links.forEach(function(cur_link){
+			if(cur_link.source.id === link.source.id && cur_link.target.id === link.target.id){
+				is_selected = true;
+			}
+		});
+		return is_selected;
+	}
+
+	/**
+	 *returns true if the passed node is selected
+	 */
+	function nodeIsSelected(node){
+		var is_selected = false;
+		selected_data.nodes.forEach(function(cur_node){
+			if(cur_node.id === node.id){
+				is_selected = true;
+			}
+		});
+		return is_selected;
+	}
+
+	/**
+	 * unselects everything
+	 */
+	function clearSelection(){
+		selected_data.nodes = [];
+		selected_data.links = [];
+		selectionChanged();
+	}
+
+	/**
+	 * selects everything unselected and unselects everything selected
+	 */
+	function invertSelection(){
+		var new_nodes = [];
+		var new_links = [];
+		//yeah, this is _horribly_ inefficent, does it really matter? is this function a performance nottleneck?
+		selected_data.links.forEach(function(cur_link){
+			if(!linkIsSelected(cur_link)){
+				new_links.push(cur_link);
+			}
+		});
+		selected_data.nodes.forEach(function(cur_node){
+			if(!nodeIsSelected(cur_node)){
+				new_node.push(cur_node);
+			}
+		});
+		selected_data.links = new_links;
+		selected_data.nodes = new_nodes;
+		selectionChanged();
+	}
+
+	/**
+	 * if the link is selected unselect it, if it isn't select it select it
+	 */
+	function toggleLinkSelection(link){
+		if(linkIsSelected(link)){
+			unselectLink(link);
+		}
+		else{
+			selectLink(link);
+		}
+	}
+
+	/**
+	 * if the node is selected unselect it, if it isn't select it select it
+	 */
+	function toggleNodeSelection(node){
+		if(nodeIsSelected(node)){
+			unselectNode(node);
+		}
+		else{
+			selectNode(node);
+		}
+	}
+
 
 	return {
+		main:main,
 		setMinimumCorrelation:setFlooredData,
 		setSubgraphSeparation:function(d){ForceGraph.setGroupRingSize(d);},
 		setDrawLinks:function(d){ForceGraph.setDrawLinks(d);},
@@ -206,7 +351,15 @@ var Application = (function(){
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,
 		loadSourceData:loadSourceData,
-		main:main
+		/*selection related functions*/
+		selectLink:selectLink,
+		selectNode:selectNode,
+		unselectLink:unselectLink,
+		unselectNode:unselectNode,
+		clearSelection:clearSelection,
+		invertSelection:invertSelection,
+		toggleNodeSelection:toggleNodeSelection,
+		toggleLinkSelection:toggleLinkSelection
 	};
 }());
 

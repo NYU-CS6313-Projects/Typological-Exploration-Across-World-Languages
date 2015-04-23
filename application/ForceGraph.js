@@ -36,6 +36,21 @@ var ForceGraph = (function(){
 		link_group:null,
 
 		/**
+		 * the d3 selection of highlighted links (mouse over node effect)
+		 */
+		highlighted_link_group:null,
+
+		/**
+		 * the d3 selection of selected links
+		 */
+		selected_link_group:null,
+
+		/**
+		 * the d3 selection of selected nodes
+		 */
+		selected_node_group:null,
+
+		/**
 		 * the force directed layout object
 		 */
 		layout:null,
@@ -59,14 +74,24 @@ var ForceGraph = (function(){
 		link_selection:null,
 
 		/**
-		 * the d3 selection of highlighted links (mouse over node effect)
+		 * the d3 selection of highlighted links
 		 */
-		highlighted_link_group:null,
+		highlighted_link_selection: null,
+
+		/**
+		 * the d3 selection of selected links
+		 */
+		selected_link_selection: null,
 
 		/**
 		 * the d3 selection of nodes
 		 */
 		node_selection:null,
+
+		/**
+		 * the d3 selection of selected nodes
+		 */
+		selected_node_selection:null,
 
 		/**
 		 *info about how we have zoomed/panned
@@ -167,6 +192,9 @@ var ForceGraph = (function(){
 			.attr("r", 100)
 			.attr("class", "node")
 			.call(P.layout.drag)
+			.on("click", function(d) {
+				Application.toggleNodeSelection(d)
+			})
 			.on("mouseover.force", null)
 			.on("mouseover", function(d){
 				Application.highlightNode(d);
@@ -221,6 +249,9 @@ var ForceGraph = (function(){
 		link_selection.enter()
 			.append("line")
 			.attr("class", link_class)
+			.on("click", function(d) {
+				Application.toggleLinkSelection(d)
+			})
 			.on("mouseover", function(d){
 				Application.highlightLink(d);
 			})
@@ -288,8 +319,10 @@ var ForceGraph = (function(){
 
 			P.main_group = svg.append("svg:g");
 			P.link_group = P.main_group.append("svg:g");
+			P.selected_link_group = P.main_group.append("svg:g");
 			P.highlighted_link_group = P.main_group.append("svg:g");
 			P.node_group = P.main_group.append("svg:g");
+			P.selected_node_group = P.main_group.append("svg:g");
 
 			//setup the force directed layout 
 			P.layout = d3.layout.force()
@@ -335,6 +368,11 @@ var ForceGraph = (function(){
 				//I love how d3 has no apparent mechanism for unioning selections
 				updateLink(P.highlighted_link_selection);
 				updateLink(P.link_selection);
+
+				updateLink(P.selected_link_selection);
+				P.selected_node_selection
+					.attr('cx',function(d){return d.x;})
+					.attr('cy',function(d){return d.y;});
 			});
 
 			//setup zooming
@@ -437,8 +475,9 @@ var ForceGraph = (function(){
 					.append("line")
 					.attr("class", "link")
 					.attr("stroke-width", function(d) { return d.strength/1000; })
-					//pretty debug output
-					.on("click", function(d) { alert(JSON.stringify(d,null,4));})
+					.on("click", function(d) {
+						Application.toggleLinkSelection(d)
+					})
 					.on("mouseover", function(d){
 						Application.highlightLink(d);
 					})
@@ -487,12 +526,61 @@ var ForceGraph = (function(){
 			P.layout.resume();
 		},
 
+		/**
+		 *turn the drawing of links on or off
+		 *this could have a better name
+		 */
 		setDrawLinks: function(draw_links){
 			P.draw_links = draw_links;
 			if(!draw_links){
 				P.link_selection.remove();
 			}
 			this.setData(P.data);
+		},
+
+		/**
+		 * notify this view that the selection has changed
+		 */
+		selectionChanged(selected_data){
+			//update the links
+			P.selected_link_selection = P.selected_link_group.selectAll(".selected-link")
+				.data(
+					selected_data.links,
+					function(d){
+						return d.source.id+','+d.target.id;
+					}
+				);
+
+			P.selected_link_selection.enter()
+				.append("line")
+				.attr("class", "selected-link")
+				.attr("stroke-width", function(d) { return (d.strength/100)*1.25; });
+
+			P.selected_link_selection.exit()
+				.remove();
+
+			bookKeepLink(P.selected_link_selection, "selected-link");
+
+			//update the nodes
+			P.selected_node_selection = P.selected_node_group.selectAll(".selected-node")
+				.data(
+					selected_data.nodes,
+					function(d){
+						return d.id;
+					}
+				);
+
+			//remove missing nodes
+			P.selected_node_selection.exit()
+				.remove();
+
+			//add the group
+			var new_node_group = P.selected_node_selection.enter()
+				.append('circle')
+				.attr("class", "selected-node")
+				.attr("r", 100)
+				.attr('cx',function(d){return d.x;})
+				.attr('cy',function(d){return d.y;});
 		}
 	}
 })();
