@@ -115,11 +115,6 @@ var ForceGraph = (function(){
 		},
 
 		/**
-		 *lower bound for a link to be displaied
-		 */
-		minimum_display_link:1,
-
-		/**
 		 * this only needs to be recalculated every now and then
 		 */
 		max_link_strength:0,
@@ -461,10 +456,7 @@ var ForceGraph = (function(){
 			//regrab the links
 			P.link_selection = P.link_group.selectAll(".link")
 				.data(
-					P.data.links
-						.filter(function(d){
-							return d.total_strength > P.minimum_display_link;
-						}),
+					P.data.links,
 					function(d){
 						return d.source.id+','+d.target.id;
 					}
@@ -508,14 +500,6 @@ var ForceGraph = (function(){
 				});
 
 			bookKeepNode(P.node_selection);
-		},
-
-		/**
-		 * set the minimum link value, less then this and it will be like it doesn't even exsist
-		 */
-		setMinimumDisplayLink: function(min){
-			P.minimum_display_link = min;
-			this.setData(P.data);
 		},
 
 		/**
