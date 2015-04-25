@@ -99,27 +99,90 @@ var MatrixView = (function(){
 		}
 	};
 
+	function element(tag){
+		return {
+			getCode:function(){
+				var output = '<'+this.tag;
+				if(this.css_class.length > 0){
+					output += ' class="'+this.css_class.join(' ')+'"'
+				}
+				if(Object.keys(this.style).length > 0){
+					
+					output += ' style="';
+					for(key in this.style){
+						output += key+':'+this.style[key]+';';
+					}
+					output += '"';
+				}
+				for(key in this.data){
+					output += ' data-'+key+'="'+this.data[key]+'"';
+				}
+				output += '>';
+				this.children.forEach(function(child){
+					var text = child;
+					if(typeof(text) === 'object'){
+						text = text.getCode();
+					}
+					output += text;
+				});
+				return output+'</'+this.tag+'>';
+			},
+			addClass:function(class_name){
+				this.css_class.push(class_name);
+			},
+			append:function(child){
+				this.children.push(child);
+			},
+			text:function(text){
+				this.children.push(text);
+			},
+			html:function(text){
+				this.children.push(text);
+			},
+			on:function(event_name, handler){
+				this.events[event_name] = handler;
+			},
+			css:function(attribute,value){
+				this.style[attribute] = value;
+			},
+			setData:function(key,value){
+				this.data[key]=value;
+			},
+			tag:tag,
+			css_class:[],
+			style:{},
+			children:[],
+			events:{},
+			data:{}
+		};
+	}
+
 	/**
 	 *the data has been changed in some way, redraw the table
 	 */
 	function redrawData(){
-		$(P.table).empty();
+		var table = element('table');
+
+		var output = '';
 
 		//do the header row
-		var header_row = $('<tr/>');
+		var header_row = element('tr');
 		header_row.addClass('header');
-
-		$(P.table).append(header_row);
-		header_row.append($('<th/>'));//spacer for the label on the data rows
+		table.append(header_row);
+		
+		header_row.append(element('th'));//spacer for the label on the data rows
 
 		$.each(P.column_order, function(i, column_id){
 			var feature = P.processed_data.nodes[column_id];
-			var header_cell = $('<th/>');
+			var header_cell = element('th');
 			header_cell.addClass('header');
 			if(P.draw_labels){
 				header_cell.text(feature.id);
 			}
 			header_cell.addClass('feature_'+feature.id);
+			header_cell.setData('feature_id', feature.id);
+			header_cell.setData('row_or_column', 'column');
+/*
 			header_cell.on( "dblclick", function(){
 				MatrixView.sortRows(feature.id);
 			} );
@@ -131,7 +194,8 @@ var MatrixView = (function(){
 			} );
 			header_cell.on( "mouseout", function(){
 				Application.highlightNode(null);
-			} );			
+			} );
+*/
 			header_row.append(header_cell);
 		});
 
@@ -140,16 +204,19 @@ var MatrixView = (function(){
 			var row_feature = P.processed_data.nodes[row_id];
 
 			//header column
-			var data_row = $('<tr/>');
+			var data_row = element('tr');
 			data_row.addClass('data');
-			$(P.table).append(data_row);
+			table.append(data_row);
 
-			var header_cell = $('<th/>');
+			var header_cell = element('th');
 			header_cell.addClass('header');
 			if(P.draw_labels){
 				header_cell.html(row_feature.name.replace(/\s+/g, '&nbsp;')+' ('+row_feature.id+')');
 			}
 			header_cell.addClass('feature_'+row_id);
+			header_cell.setData('feature_id', row_id);
+			header_cell.setData('row_or_column', 'row');
+/*
 			header_cell.on( "dblclick", function(){
 				MatrixView.sortColumns(row_id);
 			} );
@@ -162,6 +229,7 @@ var MatrixView = (function(){
 			header_cell.on( "mouseout", function(){
 				Application.highlightNode(null);
 			} );
+*/
 			data_row.append(header_cell);
 
 			$.each(P.column_order, function(j, column_id){
@@ -174,13 +242,16 @@ var MatrixView = (function(){
 					bg_color = 'rgb('+Math.round((strength/P.max_link_strength)*255)+',0,0)';
 				}
 
-				var data_cell = $('<td/>');
+				var data_cell = element('td');
 				data_cell.addClass('data');
 				data_cell.css('background-color', bg_color);
 				if(P.draw_labels){
 					data_cell.text(strength);
 				}
-				data_cell.addClass('feature_'+row_id+' feature_'+column_id);
+				data_cell.addClass('feature_'+row_id+' feature_'+column_id);			
+				data_cell.setData('row_id', row_id);			
+				data_cell.setData('column_id', column_id);
+/*
 				data_cell.on( "click", function(){
 					Application.toggleLinkSelection(link);
 				} );
@@ -190,12 +261,39 @@ var MatrixView = (function(){
 				data_cell.on( "mouseout", function(){
 					Application.highlightLink(null);
 				} );
+*/
 				data_row.append(data_cell);
 			});
 		});
 		if(P.selection_data){
 			self.selectionChanged(P.selection_data);
 		}
+
+		$(P.table).empty();
+		var code = table.getCode();
+		$(P.table).html(code);
+
+		//event handlers
+		var header_cells = $('.MatrixView th.header');
+		header_cells.on( "dblclick", function(){
+			if($(this).getData('row_or_column') === 'column'){
+				MatrixView.sortRows($(this).data('feature_id'));
+			}
+			else{
+				MatrixView.sortColumns($(this).data('feature_id'));
+			}
+		} );
+		header_cells.on( "click", function(){
+			var feature = Application.getNode($(this).data('feature_id'));
+			Application.toggleNodeSelection(feature);
+		} );
+		header_cells.on( "mouseover", function(){
+			var feature = Application.getNode($(this).data('feature_id'));
+			Application.highlightNode(feature);
+		} );
+		header_cells.on( "mouseout", function(){
+			Application.highlightNode(null);
+		} );
 	}
 
 	/**
