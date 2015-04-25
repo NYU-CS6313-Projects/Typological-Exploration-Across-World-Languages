@@ -341,6 +341,38 @@ var Application = (function(){
 		}
 	}
 
+	/*************************\
+	|* data access utilities *|
+	\*************************/
+
+	/**
+	 * gets the node with the specified id from the application_data
+	 * returns null if no node has that id
+	 */
+	function getNode(id){
+		for(var i = 0; i<application_data.nodes.length; i++){
+			if(application_data.nodes[i].id === id){
+				return application_data.nodes[i];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * gets the link with the specified ids from the application_data
+	 * returns null if no link has that set of ids
+	 */
+	function getlink(id_a, id_b){
+		var source_id = Math.min(id_a, id_b);
+		var target_id = Math.max(id_a, id_b);
+		for(var i = 0; i<application_data.links.length; i++){
+			if(application_data.links[i].source.id === source_id && application_data.links[i].target.id === target_id){
+				return application_data.links[i];
+			}
+		}
+		return null;
+	}
+
 
 	return {
 		main:main,
@@ -359,7 +391,10 @@ var Application = (function(){
 		clearSelection:clearSelection,
 		invertSelection:invertSelection,
 		toggleNodeSelection:toggleNodeSelection,
-		toggleLinkSelection:toggleLinkSelection
+		toggleLinkSelection:toggleLinkSelection,
+		/*data access functions*/
+		getNode:getNode,
+		getlink:getlink
 	};
 }());
 
