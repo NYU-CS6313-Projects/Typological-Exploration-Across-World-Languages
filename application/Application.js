@@ -20,11 +20,19 @@ var Application = (function(){
 	}; 
 
 	/**
+	 * Number of custom features created by collapsing features
+	 */
+	var custom_feature_count = 0;
+
+	/**
 	 * main function, entry point for the application,
 	 * sets up D3,
 	 * starts up other event handlers that drive the rest of the application
 	 */
 	function main(){
+		//load the default data
+		loadSourceData(PreprocessedData);
+
 		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
 		MatrixView.setTable($(".MatrixView table"));
 
@@ -42,6 +50,32 @@ var Application = (function(){
 	 * load preprocessed data into appropriate node/link format
 	 */
 	function loadSourceData(src_data) {
+		buildFeatureNodes(src_data);
+		buildLinks(src_data);
+	}
+
+	/**
+	 * Build data features from given json data
+	 */
+	function buildFeatureNodes(data) {
+		source_data.nodes = [];
+		var features = JSON.parse(JSON.stringify(data.features));
+
+		//populate nodes with feature data
+		for(feature in features) {
+			source_data.nodes.push({
+				"id":features[feature].id,
+				"name":features[feature].name,
+				"type":features[feature].type,
+				"values":features[feature].values
+			});
+		}
+	}
+
+	/**
+	 * Build data links from given json data and existing node data
+	 */
+	function buildLinks(data) {
 		//need an efficient intersection function for sorted arrays
 		function intersection(a, b) {
 			var x=0,y=0,ret=[];
@@ -64,11 +98,8 @@ var Application = (function(){
 			return ret;
 		}
 
-		source_data.nodes = [];
 		source_data.links = [];
-
-		var languages = JSON.parse(JSON.stringify(src_data.languages));
-		var features = JSON.parse(JSON.stringify(src_data.features));
+		var languages = JSON.parse(JSON.stringify(data.languages));
 		var feature1;
 		var feature2;
 		var value1;
@@ -80,20 +111,18 @@ var Application = (function(){
 		var interlanguage_strength = 0;
 		var intersecting_languages;
 		//loop through every feature
-		for(var feature1 = 0; feature1 < features.length; feature1++) {
-			//take the opportunity to populate nodes with feature data
-			source_data.nodes.push({"id":features[feature1].id,"name":features[feature1].name});
+		for(var feature1 = 0; feature1 < source_data.nodes.length; feature1++) {
 			//every value for this feature
-			for(value1 in features[feature1]["values"]) {
+			for(value1 in source_data.nodes[feature1]["values"]) {
 				//compare to every OTHER feature
-				for(var feature2 = feature1+1; feature2 < features.length; feature2++) {
+				for(var feature2 = feature1+1; feature2 < source_data.nodes.length; feature2++) {
 					//reset
 					total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
 					//every value for every OTHER fature
-					for(value2 in features[feature2]["values"]) {
+					for(value2 in source_data.nodes[feature2]["values"]) {
 						intersecting_languages = intersection(
-								features[feature1]["values"][value1],
-								features[feature2]["values"][value2]
+								source_data.nodes[feature1]["values"][value1],
+								source_data.nodes[feature2]["values"][value2]
 								);
 						//strength = # of intersecting languages
 						if(intersecting_languages.length > 1) {
@@ -130,6 +159,43 @@ var Application = (function(){
 				}
 			}
 		}
+	}
+
+	/**
+	 * Collapse the given list of features into one
+	 */
+	function collapseFeatures(data, features){
+		features.sort();
+		features.reverse();
+		var new_id = "custom_feature_"+custom_feature_count;
+		var new_name = "Custom Feature: ";
+		var new_type = "custom_feature_"+custom_feature_count;
+		var new_values = new Object();
+		for(feature in features) {
+			new_name += data.nodes[features[feature]].name + " / ";
+			for(value in data.nodes[feature]["values"]) {
+				new_values[data.nodes[feature].id+"-"+value] = data.nodes[feature]["values"][value];
+			}
+		data.nodes.splice(feature,1);
+		}
+		data.nodes.push({
+			"id":new_id,
+			"name":new_name.slice(0,-3),
+			"type":new_type,
+			"values":new_values
+		});
+
+		buildLinks(data);
+	}
+
+	/**
+	 *UI callable function for collapsing features and setting it into the visualization
+	 */
+	function callCollapseFeatures(features) {
+		collapseFeatures(source_data, features);
+		clearSelection();
+		ForceGraph.setData(source_data);
+		MatrixView.setData(source_data);
 	}
 
 	/**

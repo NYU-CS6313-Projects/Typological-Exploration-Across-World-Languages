@@ -1,4 +1,4 @@
-Application.loadSourceData({
+var PreprocessedData = {
 "features":[
 	{
 		"name":"Consonant Inventories",
@@ -5162,4 +5162,4 @@ Application.loadSourceData({
 	{ "name": "Salish (Straits)", "family": "Salishan", "subfamily": "__", "genus": "Central Salish", "latitude": "48.75", "longitude": "-123.25" },
 	{ "name": "Tarao", "family": "Sino-Tibetan", "subfamily": "Tibeto-Burman", "genus": "Kuki-Chin", "latitude": "24.25", "longitude": "94.1666666667" }
 ]
-});
+};
