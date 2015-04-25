@@ -541,7 +541,7 @@ var ForceGraph = (function(){
 		/**
 		 * notify this view that the selection has changed
 		 */
-		selectionChanged(selected_data){
+		selectionChanged: function(selected_data){
 			//update the links
 			P.selected_link_selection = P.selected_link_group.selectAll(".selected-link")
 				.data(

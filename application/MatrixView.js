@@ -317,7 +317,7 @@ var MatrixView = (function(){
 		/**
 		 * notify this view that the selection has changed
 		 */
-		selectionChanged(selected_data){
+		selectionChanged: function(selected_data){
 			P.selection_data = selected_data;
 			$('.MatrixView .selected').removeClass('selected');
 			var selector = ',';
