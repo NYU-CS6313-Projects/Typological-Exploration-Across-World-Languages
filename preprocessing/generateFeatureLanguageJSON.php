@@ -41,6 +41,7 @@ foreach($feature_data as $feature => $values) {
 	$output .= "\n\t{";
 	$output .= "\n\t\t\"name\":\"".$feature_structures[$feature]["Name"]."\",";
 	$output .= "\n\t\t\"id\":\"".$feature_structures[$feature]["ID"]."\",";
+	$output .= "\n\t\t\"type\":\"".substr($feature_structures[$feature]["ID"],0,-1)."\",";
 	$output .= "\n\t\t\"values\":{";
 	foreach($values as $value => $language_ids) {
 		$output .= "\n\t\t\t\"".$feature_structures[$feature]["Enum"][$value]."\": [";

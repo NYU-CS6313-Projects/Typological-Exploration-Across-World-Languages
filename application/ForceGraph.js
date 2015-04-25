@@ -272,7 +272,7 @@ var ForceGraph = (function(){
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
-			.attr("stroke-width", function(d) { return d.strength/10; });
+			.attr("stroke-width", function(d) { return d.total_strength/100; });
 	}
 
 	/**
@@ -293,7 +293,7 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.enter()
 			.append("line")
 			.attr("class", "highlighted-link")
-			.attr("stroke-width", function(d) { return (d.strength/100)*1.5; });
+			.attr("stroke-width", function(d) { return (d.total_strength/100)*1.5; });
 
 		P.highlighted_link_selection.exit()
 			.remove();
@@ -330,7 +330,7 @@ var ForceGraph = (function(){
 				.linkStrength(0.5)
 				.gravity(0)
 				.linkDistance(function(d){
-					return (P.max_link_strength/Math.max(d.strength,0.0001))*100;
+					return (P.max_link_strength/Math.max(d.total_strength,0.0001))*100;
 				});
 
 			//do the initial link up with empty data
@@ -438,7 +438,7 @@ var ForceGraph = (function(){
 
 			P.max_link_strength = 0;
 			P.data.links.forEach(function(d){
-				P.max_link_strength = Math.max(P.max_link_strength, d.strength);
+				P.max_link_strength = Math.max(P.max_link_strength, d.total_strength);
 			});
 			P.group_count = 0;
 			P.data.nodes.forEach(function(d){
@@ -463,7 +463,7 @@ var ForceGraph = (function(){
 				.data(
 					P.data.links
 						.filter(function(d){
-							return d.strength > P.minimum_display_link;
+							return d.total_strength > P.minimum_display_link;
 						}),
 					function(d){
 						return d.source.id+','+d.target.id;
@@ -474,7 +474,7 @@ var ForceGraph = (function(){
 				P.link_selection.enter()
 					.append("line")
 					.attr("class", "link")
-					.attr("stroke-width", function(d) { return d.strength/1000; })
+					.attr("stroke-width", function(d) { return d.total_strength/1000; })
 					.on("click", function(d) {
 						Application.toggleLinkSelection(d)
 					})
@@ -554,7 +554,7 @@ var ForceGraph = (function(){
 			P.selected_link_selection.enter()
 				.append("line")
 				.attr("class", "selected-link")
-				.attr("stroke-width", function(d) { return (d.strength/100)*1.25; });
+				.attr("stroke-width", function(d) { return (d.total_strength/100)*1.25; });
 
 			P.selected_link_selection.exit()
 				.remove();

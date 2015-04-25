@@ -42,7 +42,6 @@ var Application = (function(){
 	 * load preprocessed data into appropriate node/link format
 	 */
 	function loadSourceData(src_data) {
-		console.time("loadtime");
 		//need an efficient intersection function for sorted arrays
 		function intersection(a, b) {
 			var x=0,y=0,ret=[];
@@ -68,12 +67,18 @@ var Application = (function(){
 		source_data.nodes = [];
 		source_data.links = [];
 
+		var languages = JSON.parse(JSON.stringify(src_data.languages));
 		var features = JSON.parse(JSON.stringify(src_data.features));
 		var feature1;
 		var feature2;
 		var value1;
 		var value2;
-		var strength = 0;
+		var total_strength = 0;
+		var interfamily_strength = 0;
+		var intersubfamily_strength = 0;
+		var intergenus_strength = 0;
+		var interlanguage_strength = 0;
+		var intersecting_languages;
 		//loop through every feature
 		for(var feature1 = 0; feature1 < features.length; feature1++) {
 			//take the opportunity to populate nodes with feature data
@@ -83,27 +88,48 @@ var Application = (function(){
 				//compare to every OTHER feature
 				for(var feature2 = feature1+1; feature2 < features.length; feature2++) {
 					//reset
-					strength = 0;
+					total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
 					//every value for every OTHER fature
 					for(value2 in features[feature2]["values"]) {
-						//strength = # of intersecting languages
-						strength += intersection(
+						intersecting_languages = intersection(
 								features[feature1]["values"][value1],
 								features[feature2]["values"][value2]
-								).length;
+								);
+						//strength = # of intersecting languages
+						if(intersecting_languages.length > 1) {
+							total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
+						}
+						for(var i = 0; i < intersecting_languages.length; i++)
+						{
+							for(var j = i+1; j < intersecting_languages.length; j++)
+							{
+								if(languages[intersecting_languages[i]].family != languages[intersecting_languages[j]].family) {
+									interfamily_strength++;
+								} else if(languages[intersecting_languages[i]].subfamily != languages[intersecting_languages[j]].subfamily) {
+									intersubfamily_strength++;
+								} else if(languages[intersecting_languages[i]].genus != languages[intersecting_languages[j]].genus) {
+									intergenus_strength++;
+								} else {
+									interlanguage_strength++;
+								}
+							}
+						}
 					}
-					if(strength > 0) {
+					if(total_strength > 0) {
 						//populate links with intersection data
 						source_data.links.push({
 							"source":feature1,
 							"target":feature2,
-							"strength":strength
+							"total_strength":total_strength,
+							"interfamily_strength":interfamily_strength,
+							"intersubfamily_strength":intersubfamily_strength,
+							"intergenus_strength":intergenus_strength,
+							"interlanguage_strength":interlanguage_strength
 						});
 					}
 				}
 			}
 		}
-		console.timeEnd("loadtime");
 	}
 
 	/**
@@ -112,12 +138,12 @@ var Application = (function(){
 	function floorData(data, threshold){
 		data = JSON.parse(JSON.stringify(data))
 		for(var i = 0; i<data.links.length; i++){
-			if(data.links[i].strength <=threshold){
+			if(data.links[i].total_strength <=threshold){
 				data.links.splice(i, 1);
 				i--;
 			}
 			else{
-				data.links[i].strength -= threshold;
+				data.links[i].total_strength -= threshold;
 			}
 		}
 
