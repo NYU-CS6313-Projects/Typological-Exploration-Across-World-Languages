@@ -72,6 +72,9 @@ var Application = (function(){
 				"id":features[feature].id,
 				"name":features[feature].name,
 				"type":features[feature].type,
+				"author":features[feature].author,
+				"area":features[feature].area,
+				"language_count":features[feature].language_count,
 				"values":features[feature].values
 			});
 		}

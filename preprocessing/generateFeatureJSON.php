@@ -9,6 +9,12 @@ $data = array_map(
 	file("../wals_data/wals_dump.csv")
 );
 
+//some extra data manually parsed from wals.info
+$extras = array_map(
+	"str_getcsv",
+	file("../wals_data/extra_feature_info.csv")
+);
+
 $features = array();
 $firstloop = true;
 foreach($data as $row) {
@@ -18,7 +24,11 @@ foreach($data as $row) {
 		for($i = 8; $i < count($row); $i++) {
 			//split on first space to get [feature_id, feature_name]
 			$info = preg_split("/\s/", $row[$i], 2);
-			$features[$i] = array("ID" => $info[0], "Name" => $info[1], "Enum" => array());
+			$features[$i] = array(
+				"ID" => $info[0], 
+				"Name" => $info[1], 
+				"Enum" => array()
+			);
 		}
 		continue;
 	}
@@ -38,6 +48,14 @@ foreach($data as $row) {
 usort($features, function($a,$b) {
 	return strnatcmp($a['ID'],$b['ID']);
 });
+//add extra manually fetched data
+for($i = 0; $i < count($extras); $i++) {
+	$features[$i] = array_merge($features[$i],Array(
+		"Number" => $extras[$i][4],
+		"Author" => $extras[$i][2],
+		"Area" => $extras[$i][3]
+	));
+}
 
 //print in JSON format
 //$output = "";
