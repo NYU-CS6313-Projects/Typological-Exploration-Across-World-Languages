@@ -183,7 +183,7 @@ div.ForceGraph{
 
 .UI_resize_right .UI_tab h2
 {
-	margin-right:-0.5em;
+	margin-left:-0.5em;
 	-webkit-transform: rotate(-90deg); 
 	-moz-transform: rotate(-90deg);
 }
@@ -310,7 +310,7 @@ div{
 
 .search_pannel
 {
-	min-width:260px;
+	min-width:300px;
 	direction:ltr;
 	height:100%;
 }
@@ -335,4 +335,14 @@ div{
 	border-style:solid;
 	border-color:black;	
 	background-color: #FFFFFF;
+}
+
+.search_result.highlighted
+{
+	border-color:yellow;
+}
+
+.search_result.selected
+{
+	border-color:green;
 }

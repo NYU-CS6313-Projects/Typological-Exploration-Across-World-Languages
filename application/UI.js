@@ -128,6 +128,11 @@ var UI = (function(){
 	 * sets up the form handlers
 	 */
 	function setupFormHandlers(){
+		setupFeatureSearchForm();
+		setupLinkSearchForm();
+	}
+
+	function setupFeatureSearchForm(){
 		$("#feature_search_form").bind('submit', function(event){
 			try{
 				
@@ -144,7 +149,8 @@ var UI = (function(){
 					'#feature_search_results', 
 					results, 
 					function template(feature){
-						return '<div class="feature_search_result search_result feature feature_'+feature.id+'" data-feature_id="'+feature.id+'">'+feature.name+' ('+feature.id+')</div>';
+						var is_selected = Application.nodeIsSelected(feature);
+						return '<div class="feature_search_result search_result feature feature_'+feature.id+(is_selected?' selected':'')+'" data-feature_id="'+feature.id+'">'+feature.name+' ('+feature.id+')</div>';
 					},
 					function onclick(){
 						var feature = Application.getNode($(this).data('feature_id'));
@@ -153,6 +159,71 @@ var UI = (function(){
 					function onhover(is_in){
 						var feature = Application.getNode($(this).data('feature_id'));
 						Application.highlightNode(is_in?feature:null);
+					}
+				);
+			}
+			catch(err){
+				//please just don't submit the form, even if there is an error
+			}
+			return false;
+		});
+	}
+
+	function setupLinkSearchForm(){
+		$("#link_search_form").bind('submit', function(event){
+			try{
+				
+				var link_search_feature = getSearchStringRegex('link_search_feature');
+				var link_search_total_strength_min = parseInt($('#link_search_total_strength_min').val(),10);
+				var link_search_total_strength_max = parseInt($('#link_search_total_strength_max').val(),10);
+				var link_search_interfamily_strength_min = parseInt($('#link_search_interfamily_strength_min').val(),10);
+				var link_search_interfamily_strength_max = parseInt($('#link_search_interfamily_strength_max').val(),10);
+				var link_search_intersubfamily_strength_min = parseInt($('#link_search_intersubfamily_strength_min').val(),10);
+				var link_search_intersubfamily_strength_max = parseInt($('#link_search_intersubfamily_strength_max').val(),10);
+				var link_search_intergenus_strength_min = parseInt($('#link_search_intergenus_strength_min').val(),10);
+				var link_search_intergenus_strength_max = parseInt($('#link_search_intergenus_strength_max').val(),10);
+				var link_search_interlanguage_strength_min = parseInt($('#link_search_interlanguage_strength_min').val(),10);
+				var link_search_interlanguage_strength_max = parseInt($('#link_search_interlanguage_strength_max').val(),10);
+			
+				var results = Application.searchLink(
+					link_search_feature,
+					link_search_total_strength_min,
+					link_search_total_strength_max,
+					link_search_interfamily_strength_min,
+					link_search_interfamily_strength_max,
+					link_search_intersubfamily_strength_min,
+					link_search_intersubfamily_strength_max,
+					link_search_intergenus_strength_min,
+					link_search_intergenus_strength_max,
+					link_search_interlanguage_strength_min,
+					link_search_interlanguage_strength_max
+				);
+
+				displaySearchResults(
+					'#link_search_results', 
+					results, 
+					function template(link){
+						var is_selected = Application.nodeIsSelected(link);
+						return '<div class="link_search_result search_result link feature_'+link.source.id+' feature_'+link.target.id+(is_selected?' selected':'')+'" data-link_id="'+link.source.id+','+link.target.id+'">'
+							+link.source.id+' - '+link.target.id
+							+'<table>'
+								+'<tr><td>Interfamily Strength:</td><td>'+link.interfamily_strength+'</td></tr>'
+								+'<tr><td>Intergenus Strength:</td><td>'+link.intergenus_strength+'</td></tr>'
+								+'<tr><td>Interlanguage Strength:</td><td>'+link.interlanguage_strength+'</td></tr>'
+								+'<tr><td>Intersubfamily Strength:</td><td>'+link.intersubfamily_strength+'</td></tr>'
+								+'<tr><td>Total Strength:</td><td>'+link.total_strength+'</td></tr>'
+							+'</table>'
+						+'</div>';
+					},
+					function onclick(){
+						var link_ids = $(this).data('link_id').split(',');
+						var link = Application.getLink(link_ids[0], link_ids[1]);
+						Application.toggleLinkSelection(link);
+					},
+					function onhover(is_in){
+						var link_ids = $(this).data('link_id').split(',');
+						var link = Application.getLink(link_ids[0], link_ids[1]);
+						Application.highlightLink(is_in?link:null);
 					}
 				);
 			}
@@ -244,11 +315,47 @@ var UI = (function(){
 		Application.collapseFeatures();
 	}
 
+	/**
+	 * update displayed highlighted search results
+	 */
+	function highlightNodeSearchResults(node){
+		$('.search_result.highlighted').removeClass('highlighted');
+		if(node !== null){
+			$('.feature_search_result.feature_'+node.id).addClass('highlighted');
+		}
+	}
+
+	/**
+	 * update displayed highlighted search results
+	 */
+	function highlightLinkSearchResults(link){
+		$('.search_result.highlighted').removeClass('highlighted');
+		if(link !== null){
+			$('.link_search_result.feature_'+link.source.id+'.feature_'+link.target.id).addClass('highlighted');
+		}
+	}
+
+	/**
+	 * update displayed selected search results
+	 */
+	function selectSearchResults(selection_data){
+		$('.search_result.selected').removeClass('selected');
+		selection_data.nodes.forEach(function(node){
+			$('.feature_search_result.feature_'+node.id).addClass('selected');
+		});
+		selection_data.links.forEach(function(link){
+			$('.link_search_result.feature_'+link.source.id+'.feature_'+link.target.id).addClass('selected');
+		});
+	}
+
 	return {
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
 		onDrawLinkChange:onDrawLinkChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
-		onCollapseSelectedFeatures:onCollapseSelectedFeatures
+		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
+		highlightNodeSearchResults:highlightNodeSearchResults,
+		highlightLinkSearchResults:highlightLinkSearchResults,
+		selectSearchResults:selectSearchResults
 	};
 }());

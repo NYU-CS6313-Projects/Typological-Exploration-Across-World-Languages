@@ -342,7 +342,8 @@ var Application = (function(){
 	 */
 	function highlightNode(node){
 		ForceGraph.setHighlightedNode(node);
-		MatrixView.setHighlightedNode(node)
+		MatrixView.setHighlightedNode(node);
+		UI.highlightNodeSearchResults(node);
 	}
 
 	/**
@@ -353,12 +354,14 @@ var Application = (function(){
 	 */
 	function highlightLink(node){
 		ForceGraph.setHighlightedLink(node);
-		MatrixView.setHighlightedLink(node)
+		MatrixView.setHighlightedLink(node);
+		UI.highlightLinkSearchResults(node);
 	}
 
 	function selectionChanged(){
 		ForceGraph.selectionChanged(selected_data);
-		MatrixView.selectionChanged(selected_data)
+		MatrixView.selectionChanged(selected_data);
+		UI.selectSearchResults(selected_data);
 	}
 
 	/**
@@ -520,11 +523,11 @@ var Application = (function(){
 
 	/**
 	 * searches on features
-	 * @param id string
-	 * @param name string
+	 * @param id regex
+	 * @param name regex
 	 * @param language_count number
-	 * @param area string
-	 * @param values [string]
+	 * @param area regex
+	 * @param values [regex]
 	 * @return [features] -- references to features in application_data
 	 */
 	function searchFeature(id, name, author, language_count, area, values){
@@ -557,6 +560,67 @@ var Application = (function(){
 	}
 
 
+
+	/**
+	 * searches on links
+	 * @param feature regex
+	 * @param total_strength_min number
+	 * @param total_strength_max number
+	 * @param interfamily_strength_min number
+	 * @param interfamily_strength_max number
+	 * @param intersubfamily_strength_min number
+	 * @param intersubfamily_strength_max number
+	 * @param intergenus_strength_min number
+	 * @param intergenus_strength_max number
+	 * @param interlanguage_strength_min number
+	 * @param interlanguage_strength_max number
+	 * @return [features] -- references to features in application_data
+	 */
+	function searchLink(
+		feature,
+		total_strength_min,
+		total_strength_max,
+		interfamily_strength_min,
+		interfamily_strength_max,
+		intersubfamily_strength_min,
+		intersubfamily_strength_max,
+		intergenus_strength_min,
+		intergenus_strength_max,
+		interlanguage_strength_min,
+		interlanguage_strength_max
+	){
+		var results = [];
+		application_data.links.forEach(function(d){
+			if(
+					(feature.test(d.source.id) || feature.test(d.target.id))
+				&&
+					(Number.isNaN(total_strength_min) || d.total_strength >= total_strength_min)
+				&&
+					(Number.isNaN(total_strength_max) || d.total_strength <= total_strength_max)
+				&&
+					(Number.isNaN(interfamily_strength_min) || d.interfamily_strength >= interfamily_strength_min)
+				&&
+					(Number.isNaN(interfamily_strength_max) || d.interfamily_strength <= interfamily_strength_max)
+				&&
+					(Number.isNaN(intersubfamily_strength_min) || d.intersubfamily_strength >= intersubfamily_strength_min)
+				&&
+					(Number.isNaN(intersubfamily_strength_max) || d.intersubfamily_strength <= intersubfamily_strength_max)
+				&&
+					(Number.isNaN(intergenus_strength_min) || d.intergenus_strength >= intergenus_strength_min)
+				&&
+					(Number.isNaN(intergenus_strength_max) || d.intergenus_strength <= intergenus_strength_max)
+				&&
+					(Number.isNaN(interlanguage_strength_min) || d.interlanguage_strength >= interlanguage_strength_min)
+				&&
+					(Number.isNaN(interlanguage_strength_max) || d.interlanguage_strength <= interlanguage_strength_max)
+			){
+				results.push(d);
+			}
+		});
+		return results;
+	}
+
+
 	return {
 		main:main,
 		setMinimumCorrelation:setFlooredData,
@@ -576,11 +640,14 @@ var Application = (function(){
 		invertSelection:invertSelection,
 		toggleNodeSelection:toggleNodeSelection,
 		toggleLinkSelection:toggleLinkSelection,
+		nodeIsSelected:nodeIsSelected,
+		linkIsSelected:linkIsSelected,
 		/*data access functions*/
 		getNode:getNode,
 		getLink:getLink,
 		/*search related functions*/
-		searchFeature:searchFeature
+		searchFeature:searchFeature,
+		searchLink:searchLink
 	};
 }());
 
