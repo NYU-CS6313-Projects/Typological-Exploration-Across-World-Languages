@@ -267,16 +267,11 @@ div{
 
 .UI_tab_content form,
 .UI_tab_content table,
-.UI_tab_content input,
-.UI_tab_content select,
+.UI_tab_content table input,
+.UI_tab_content table select,
 .UI_tab_content table td
 {
 	width:100%;
-}
-
-.UI_tab_content form
-{
-	
 }
 
 .UI_tab_content table th
@@ -311,6 +306,25 @@ div{
 .UI_tab_selected
 {
 	background-color: #EEEEEE;
+}
+
+.search_pannel
+{
+	min-width:260px;
+	direction:ltr;
+	height:100%;
+}
+
+.UI_tab_content.search,
+.UI_tab_content.search table
+{
+	height:100%;
+	overflow-y:auto;
+}
+
+.search_results
+{
+	overflow-y:auto;
 }
 
 .search_result
