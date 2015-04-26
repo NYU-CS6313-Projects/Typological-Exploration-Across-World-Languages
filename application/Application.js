@@ -267,6 +267,7 @@ var Application = (function(){
 			}
 			throw "could not find node with id: "+node_id;
 		}
+		//TODO: this can be greatly optimized by giving nodes adjacency lists during preprocessing!
 		function visit_neighbors(source) {
 			var target;
 			for(var j = 0; j<data.links.length; j++) {
@@ -308,6 +309,10 @@ var Application = (function(){
 					}
 				}
 			}
+		}
+		//reset all groups to null
+		for (var i = 0; i<data.nodes.length; i++){
+			data.nodes[i].group = null;
 		}
 		for (var i = 0; i<data.nodes.length; i++){
 			source = data.nodes[i];
