@@ -18,7 +18,9 @@ foreach($language_data as $language) {
 	$output .= "\n\t{ ";
 	$output .= "\"name\": \"$language[0]\", ";
 	$output .= "\"family\": \"$language[2]\", ";
-	$output .= "\"subfamily\": \"$language[3]\", ";
+	//use family for subfamily if missing
+	if($language[3] == "__") $output .= "\"subfamily\": \"$language[2]\", ";
+	else $output .= "\"subfamily\": \"$language[3]\", ";
 	$output .= "\"genus\": \"$language[1]\", ";
 	$output .= "\"latitude\": \"$language[4]\", ";
 	$output .= "\"longitude\": \"$language[5]\"";
