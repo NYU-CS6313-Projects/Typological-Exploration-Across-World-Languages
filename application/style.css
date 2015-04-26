@@ -165,8 +165,15 @@ div.ForceGraph{
 	user-select: none;
 }
 
-.UI_resize_right .UI_tab h2, .UI_resize_left .UI_tab h2
+.UI_resize_left .UI_tab h2
 {
+	position:absolute;
+	top:25%;
+}
+
+.UI_resize_right .UI_tab h2
+{
+	padding-bottom:25px;
 	position:absolute;
 	top:25%;
 }
@@ -183,7 +190,7 @@ div.ForceGraph{
 
 .UI_resize_right .UI_tab h2
 {
-	margin-left:-0.5em;
+	margin-right:-0.5em;
 	-webkit-transform: rotate(-90deg); 
 	-moz-transform: rotate(-90deg);
 }
@@ -310,7 +317,7 @@ div{
 
 .search_pannel
 {
-	min-width:300px;
+	min-width:342px;
 	direction:ltr;
 	height:100%;
 }
@@ -344,5 +351,5 @@ div{
 
 .search_result.selected
 {
-	border-color:green;
+	border-color:#0F0;
 }

@@ -277,6 +277,31 @@ var UI = (function(){
 	}
 
 	/**
+	 * the user has changed their UI selection
+	 */
+	function selectionChanged(selected_data){
+		var output = "";
+		for(s in selected_data.nodes) {
+			output += "Node<br/>";
+			output += selected_data.nodes[s].id+"<br/>";
+			output += selected_data.nodes[s].name+"<br/>";
+			output += selected_data.nodes[s].author+"<br/>";
+			output += selected_data.nodes[s].area+"<br/>";
+			output += selected_data.nodes[s].group+"<br/>";
+			output += "<br/>";
+		}
+		for(s in selected_data.links) {
+			output += "Link<br/>";
+			output += selected_data.links[s].source.id+"<br/>";
+			output += selected_data.links[s].target.id+"<br/>";
+			output += selected_data.links[s].total_strength+"<br/>";
+			output += "<br/>";
+		}
+		$(".data_panel").html(output);
+		selectSearchResults(selected_data);
+	}
+
+	/**
 	 *the user has changed the minimum corelation
 	 */
 	function onCorrelationChange(){
@@ -348,6 +373,40 @@ var UI = (function(){
 		});
 	}
 
+	/**
+	 * selects all of the currently visible search results
+	 */
+	function selectAllSearchResults(){
+		$('.UI_tab_content:visible .search_result').each(function(i,result){
+			var feature = $(result).data('feature_id');
+			var link = $(result).data('link_id');
+			if(feature){
+				Application.selectNode(Application.getNode(feature));
+			}
+			if(link){
+				var link_ids = $(this).data('link_id').split(',');
+				Application.selectLink(Application.getLink(link_ids[0],link_ids[1]));
+			}
+		});
+	}
+
+	/**
+	 * selects all of the currently visible search results
+	 */
+	function unselectAllSearchResults(){
+		$('.UI_tab_content:visible .search_result').each(function(i,result){
+			var feature = $(result).data('feature_id');
+			var link = $(result).data('link_id');
+			if(feature){
+				Application.unselectNode(Application.getNode(feature));
+			}
+			if(link){
+				var link_ids = $(this).data('link_id').split(',');
+				Application.unselectLink(Application.getLink(link_ids[0],link_ids[1]));
+			}
+		});
+	}
+
 	return {
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
@@ -356,6 +415,8 @@ var UI = (function(){
 		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
 		highlightNodeSearchResults:highlightNodeSearchResults,
 		highlightLinkSearchResults:highlightLinkSearchResults,
-		selectSearchResults:selectSearchResults
+		selectionChanged:selectionChanged,
+		selectAllSearchResults:selectAllSearchResults,
+		unselectAllSearchResults:unselectAllSearchResults
 	};
 }());

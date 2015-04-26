@@ -72,6 +72,9 @@ var Application = (function(){
 				"id":features[feature].id,
 				"name":features[feature].name,
 				"type":features[feature].type,
+				"author":features[feature].author,
+				"area":features[feature].area,
+				"language_count":features[feature].language_count,
 				"values":features[feature].values
 			});
 		}
@@ -361,7 +364,7 @@ var Application = (function(){
 	function selectionChanged(){
 		ForceGraph.selectionChanged(selected_data);
 		MatrixView.selectionChanged(selected_data);
-		UI.selectSearchResults(selected_data);
+		UI.selectionChanged(selected_data);
 	}
 
 	/**
