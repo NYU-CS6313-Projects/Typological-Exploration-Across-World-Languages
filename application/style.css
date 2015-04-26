@@ -165,8 +165,15 @@ div.ForceGraph{
 	user-select: none;
 }
 
-.UI_resize_right .UI_tab h2, .UI_resize_left .UI_tab h2
+.UI_resize_left .UI_tab h2
 {
+	position:absolute;
+	top:25%;
+}
+
+.UI_resize_right .UI_tab h2
+{
+	padding-bottom:25px;
 	position:absolute;
 	top:25%;
 }

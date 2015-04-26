@@ -361,7 +361,8 @@ var Application = (function(){
 
 	function selectionChanged(){
 		ForceGraph.selectionChanged(selected_data);
-		MatrixView.selectionChanged(selected_data)
+		MatrixView.selectionChanged(selected_data);
+		UI.selectionChanged(selected_data);
 	}
 
 	/**

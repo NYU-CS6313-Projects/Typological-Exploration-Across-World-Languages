@@ -206,6 +206,30 @@ var UI = (function(){
 	}
 
 	/**
+	 * the user has changed their UI selection
+	 */
+	function selectionChanged(selected_data){
+		var output = "";
+		for(s in selected_data.nodes) {
+			output += "Node<br/>";
+			output += selected_data.nodes[s].id+"<br/>";
+			output += selected_data.nodes[s].name+"<br/>";
+			output += selected_data.nodes[s].author+"<br/>";
+			output += selected_data.nodes[s].area+"<br/>";
+			output += selected_data.nodes[s].group+"<br/>";
+			output += "<br/>";
+		}
+		for(s in selected_data.links) {
+			output += "Link<br/>";
+			output += selected_data.links[s].source.id+"<br/>";
+			output += selected_data.links[s].target.id+"<br/>";
+			output += selected_data.links[s].total_strength+"<br/>";
+			output += "<br/>";
+		}
+		$(".data_panel").html(output);
+	}
+
+	/**
 	 *the user has changed the minimum corelation
 	 */
 	function onCorrelationChange(){
@@ -249,6 +273,7 @@ var UI = (function(){
 		onSeparationChange:onSeparationChange,
 		onDrawLinkChange:onDrawLinkChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
-		onCollapseSelectedFeatures:onCollapseSelectedFeatures
+		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
+		selectionChanged:selectionChanged
 	};
 }());
