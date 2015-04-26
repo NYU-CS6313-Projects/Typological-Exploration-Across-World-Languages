@@ -2,6 +2,8 @@ var UI = (function(){
 	$(document).ready(
 		function() {
 			setUpPanels();
+			setUpTabs();
+			setupFormHandlers();
 		}
 	);
 
@@ -55,13 +57,152 @@ var UI = (function(){
 						if(panel.is('.UI_resize_bottom, .UI_resize_top')){
 							panel.height(panel.height() - center_relitive_position.y);
 						}
-						if(panel.is('.UI_resize_left, .UI_resize_right')){
+						if(panel.is('.UI_resize_right')){
 							panel.width(panel.width() - center_relitive_position.x);
+						}
+						if(panel.is('.UI_resize_left')){
+							panel.width(panel.width() + center_relitive_position.x);
 						}
 					}
 				);
 			}
 		);
+	}
+
+	/**
+	 *utility function that gets a regular expression to test against for a given form string identified by it's form element's id
+	 */
+	function getSearchStringRegex(id){
+		var use_regex = $('#UI_search_regex').prop('checked');
+		var val = $('#'+id).val();
+		flags = 'i';
+		if(!use_regex){
+			//escape regex characters
+			val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+		}
+		else{
+			//if the user entered / / style regular expression with flags, split the string up to get the body of the regular expression and flags
+			if(val.test(/^\/.*(?<!\\)\/\w*$/)){
+				flags = val.replace(/.+?[^\\]\/(\w*)/, "$1");
+				val = val.replace(/^\/(.*?)\/\w*$/, "$1");
+			}
+		}
+		return new RegExp(val, flags);
+	}
+
+	/**
+	 *utility function that gets an array of regular expressions to test against for a given form string identified by it's form element's id
+	 */
+	function getSearchStringRegexArray(id){
+		var use_regex = $('#UI_search_regex').prop('checked');
+		var vals = [];
+		if(use_regex){
+			vals = $('#'+id).val().match(/(?<!\\)\/.*?(?<!\\)\//);
+		}
+		else{
+			vals = $('#'+id).val().match(/[^\s]/);
+		}
+		if(vals === null){
+			return [];
+		}
+		for(var i = 0; i<vals.length; i++){
+			var val = vals[i];
+			flags = 'i';
+			if(!use_regex){
+				//escape regex characters
+				val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+			}
+			else{
+				//if the user entered / / style regular expression with flags, split the string up to get the body of the regular expression and flags
+				if(val.test(/^\/.*(?<!\\)\/\w*$/)){
+					flags = val.replace(/.+?[^\\]\/(\w*)/, "$1");
+					val = val.replace(/^\/(.*?)\/\w*$/, "$1");
+				}
+			}
+			vals[i] = new RegExp(val, flags);
+		};
+		return vals;
+	}
+
+	/**
+	 * sets up the form handlers
+	 */
+	function setupFormHandlers(){
+		$("#feature_search_form").bind('submit', function(event){
+			try{
+				
+				var id = getSearchStringRegex('feature_search_id');
+				var name = getSearchStringRegex('feature_search_name');
+				var author = getSearchStringRegex('feature_search_author');
+				var language_count = parseInt($('#feature_search_language_count').val(),10);
+				var area = getSearchStringRegex('feature_search_area');
+				var values = getSearchStringRegexArray('feature_search_values');
+			
+				var results = Application.searchFeature(id, name, author, language_count, area, values);
+
+				displaySearchResults(
+					'#feature_search_results', 
+					results, 
+					function template(feature){
+						return '<div class="feature_search_result search_result feature feature_'+feature.id+'" data-feature_id="'+feature.id+'">'+feature.name+' ('+feature.id+')</div>';
+					},
+					function onclick(){
+						var feature = Application.getNode($(this).data('feature_id'));
+						Application.toggleNodeSelection(feature);
+					},
+					function onhover(is_in){
+						var feature = Application.getNode($(this).data('feature_id'));
+						Application.highlightNode(is_in?feature:null);
+					}
+				);
+			}
+			catch(err){
+				//please just don't submit the form, even if there is an error
+			}
+			return false;
+		});
+	}
+
+	/**
+	 * display search results
+	 */
+	function displaySearchResults(target,results,resultTemplateFunction,clickHandler,hoverHandler){
+		$(target).empty();
+		results.forEach(function(d){
+			var new_result = $(resultTemplateFunction(d));
+			$(target).append(new_result);
+			new_result.on('click', function(){clickHandler.apply(this)});
+			new_result.on('mouseover', function(){hoverHandler.apply(this,[true])});
+			new_result.on('mouseout', function(){hoverHandler.apply(this,[false])});
+		});
+	}
+
+	/**
+	 *sets up the onclick handlers for tab triggers
+	 */
+	function setUpTabs(){
+		$("[data-show_tab]").bind('click', function(event){
+			showTab($(this).data('show_tab'));
+		});
+	}
+
+	/**
+	 *switch tabs
+	 *@param string id -- id of the tab to show
+	 */
+	function showTab(id){
+		//get the tab to show
+		var active_tab = $('#'+id);
+
+		//hide the sibling tabs
+		active_tab.siblings().filter('.UI_tab_content').hide();
+
+		//show this tab
+		active_tab.show();
+
+		//mark the correct tabl label as selected
+		$("[data-show_tab='"+id+"']").siblings().filter('[data-show_tab]').removeClass('UI_tab_selected');
+		$("[data-show_tab='"+id+"']").addClass('UI_tab_selected');
 	}
 
 	/**

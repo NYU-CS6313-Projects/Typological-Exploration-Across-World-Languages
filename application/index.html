@@ -31,6 +31,77 @@
 		<div class="UI_tab"><h2>Data</h2></div>
 		<div>not implemented yet</div>
 	</div>
+	<div id="UI_left_pannel" class="UI_resize UI_resize_left">
+		<div class="UI_tab"><h2>Search</h2></div>
+		<div style="min-width:260px; direction:ltr;">
+			<span class="UI_label">Regular&nbsp;Expression&nbsp;Search:</span>
+			<input id="UI_search_regex" type="checkbox"" value="0"></input>
+			<ul class="UI_tab_selector">
+				<li data-show_tab="UI_features_search" class="UI_tab_selected">Features</li><!--
+				--><li data-show_tab="UI_correlations_search">Correlations</li><!--
+				--><li data-show_tab="UI_languages_search">Languages</li>
+			</ul>
+			<div class="UI_tab_content" id="UI_features_search">
+				<form id="feature_search_form">
+					<fieldset>
+						<legend>Features</legend>
+						<table>
+							<tr>
+								<th>
+									<label for="feature_search_name">Id:</label>
+								</th><td>
+									<input type="text" id="feature_search_id"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="feature_search_name">Name:</label>
+								</th><td>
+									<input type="text" id="feature_search_name"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="feature_search_name">Author:</label>
+								</th><td>
+									<input type="text" id="feature_search_author"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="feature_search_name">Number&nbsp;of&nbsp;Languages:</label>
+								</th><td>
+									<input type="number" id="feature_search_language_count"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="feature_search_name">Area:</label>
+								</th><td>
+									<input type="text" id="feature_search_area"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="feature_search_name">Values:</label>
+								</th><td>
+									<input title="space seperated strings (i.e. 'value1 value2 value3'), unless using regex search then different values should be in this form: '/regexhere/ /regexhere/ /regexhere/'" type="text" id="feature_search_values"></input>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<input type="submit" value="Search"></input>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</form>
+				<div id="feature_search_results"></div>
+			</div>
+			<div class="UI_tab_content" style="display:none;" id="UI_correlations_search">Correlations</div>
+			<div class="UI_tab_content" style="display:none;" id="UI_languages_search">Languages</div>
+		</div>
+	</div>
 	<div class="ForceGraph"></div>
 	<div id="UI_bottom_pannel" class="UI_resize UI_resize_bottom">
 		<div class="UI_tab">

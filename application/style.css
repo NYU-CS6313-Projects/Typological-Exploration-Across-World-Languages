@@ -145,17 +145,15 @@ div.ForceGraph{
 	margin:0;
 }
 
-.UI_resize_right
+.UI_resize_right, .UI_resize_left
 {
-	right:0;
 	height:100%;
 	width:200px; /*default size, will be overrode by code*/
 	background-color:#F2F2F2;
 }
 
-.UI_resize_right .UI_tab
+.UI_resize_right .UI_tab, .UI_resize_left .UI_tab
 {
-	float:left;
 	height:100%;
 	width:3ex;
 	border-left-style:solid;
@@ -167,19 +165,57 @@ div.ForceGraph{
 	user-select: none;
 }
 
-div{
-	-moz-user-select: -moz-none;
-	-webkit-user-select: none;
-	user-select: none;
+.UI_resize_right .UI_tab h2, .UI_resize_left .UI_tab h2
+{
+	position:absolute;
+	top:25%;
+}
+
+.UI_resize_right
+{
+	right:0;
+}
+
+.UI_resize_right .UI_tab
+{
+	float:left;
 }
 
 .UI_resize_right .UI_tab h2
 {
-	margin-left:-0.5em;
-	position:absolute;
-	top:25%;
+	margin-right:-0.5em;
 	-webkit-transform: rotate(-90deg); 
 	-moz-transform: rotate(-90deg);
+}
+
+.UI_resize_left
+{
+	left:0;
+	direction:rtl;
+}
+
+.UI_resize_left UI_tab_content
+{	
+	direction:ltr;
+}
+
+.UI_resize_left .UI_tab
+{
+	float:right;
+	background-color:#EEE;
+}
+
+.UI_resize_left .UI_tab h2
+{
+	margin-right:-1em;
+	-webkit-transform: rotate(90deg); 
+	-moz-transform: rotate(90deg);
+}
+
+div{
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .UI_resize_bottom
@@ -229,7 +265,60 @@ div{
 	left:4ex;
 }
 
+.UI_tab_content form,
+.UI_tab_content table,
+.UI_tab_content input,
+.UI_tab_content select,
+.UI_tab_content table td
+{
+	width:100%;
+}
+
+.UI_tab_content form
+{
+	
+}
+
+.UI_tab_content table th
+{
+	text-align:right;
+}
+
 .UI_resize_bottom .UI_content
 {
 	top:4ex;
+}
+
+.UI_tab_selector{
+	margin:0;
+	padding:3px;
+	background-color: #DDDDDD;
+}
+
+.UI_tab_selector li{
+	cursor:pointer;
+	display: inline;
+	list-style-type: none;
+	margin:0;
+	padding:5px;
+}
+
+.UI_tab_selector li > *{
+	margin:0;
+	padding:0;
+}
+
+.UI_tab_selected
+{
+	background-color: #EEEEEE;
+}
+
+.search_result
+{
+	margin:5px;
+	margin-right: 2em;
+	border-width:1px;
+	border-style:solid;
+	border-color:black;	
+	background-color: #FFFFFF;
 }

@@ -500,15 +500,55 @@ var Application = (function(){
 	 * gets the link with the specified ids from the application_data
 	 * returns null if no link has that set of ids
 	 */
-	function getlink(id_a, id_b){
-		var source_id = Math.min(id_a, id_b);
-		var target_id = Math.max(id_a, id_b);
+	function getLink(id_a, id_b){
 		for(var i = 0; i<application_data.links.length; i++){
-			if(application_data.links[i].source.id === source_id && application_data.links[i].target.id === target_id){
+			if(
+				application_data.links[i].source.id === id_a && application_data.links[i].target.id === id_b
+				||
+				application_data.links[i].source.id === id_b && application_data.links[i].target.id === id_a
+			){
 				return application_data.links[i];
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * searches on features
+	 * @param id string
+	 * @param name string
+	 * @param language_count number
+	 * @param area string
+	 * @param values [string]
+	 * @return [features] -- references to features in application_data
+	 */
+	function searchFeature(id, name, author, language_count, area, values){
+		var results = [];
+		application_data.nodes.forEach(function(d){
+			var has_all_values = true;
+			for(var i = 0; i<values.length; i++){
+				if(d.values.indexOf(values[i]) ==-1){
+					has_all_values = false;
+					break;
+				}
+			};
+			if(
+					id.test(d.id)
+				&&
+					name.test(d.name)
+				&&
+					author.test(d.author)
+				&&
+					(Number.isNaN(language_count) || d.language_count == language_count)
+				&&
+					area.test(d.area)
+				&&
+					has_all_values
+			){
+				results.push(d);
+			}
+		});
+		return results;
 	}
 
 
@@ -533,7 +573,9 @@ var Application = (function(){
 		toggleLinkSelection:toggleLinkSelection,
 		/*data access functions*/
 		getNode:getNode,
-		getlink:getlink
+		getLink:getLink,
+		/*search related functions*/
+		searchFeature:searchFeature
 	};
 }());
 
