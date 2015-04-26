@@ -267,7 +267,7 @@ var ForceGraph = (function(){
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
-			.attr("stroke-width", function(d) { return d.total_strength/100; });
+			.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
 	}
 
 	/**
@@ -288,7 +288,7 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.enter()
 			.append("line")
 			.attr("class", "highlighted-link")
-			.attr("stroke-width", function(d) { return (d.total_strength/100)*1.5; });
+			.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
 
 		P.highlighted_link_selection.exit()
 			.remove();
@@ -466,7 +466,7 @@ var ForceGraph = (function(){
 				P.link_selection.enter()
 					.append("line")
 					.attr("class", "link")
-					.attr("stroke-width", function(d) { return d.total_strength/1000; })
+					.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); })
 					.on("click", function(d) {
 						Application.toggleLinkSelection(d)
 					})
@@ -538,7 +538,7 @@ var ForceGraph = (function(){
 			P.selected_link_selection.enter()
 				.append("line")
 				.attr("class", "selected-link")
-				.attr("stroke-width", function(d) { return (d.total_strength/100)*1.25; });
+				.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
 
 			P.selected_link_selection.exit()
 				.remove();
