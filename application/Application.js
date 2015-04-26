@@ -31,7 +31,7 @@ var Application = (function(){
 	 */
 	function main(){
 		//load the default data
-		loadSourceData(PreprocessedData);
+		source_data = loadData(PreprocessedData);
 
 		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
 		MatrixView.setTable($(".MatrixView table"));
@@ -47,35 +47,42 @@ var Application = (function(){
 	}
 
 	/**
-	 * load preprocessed data into appropriate node/link format
+	 * load json data into appropriate node/link format
 	 */
-	function loadSourceData(src_data) {
-		buildFeatureNodes(src_data);
-		buildLinks(src_data);
+	function loadData(input_data) {
+		var built_data = new Object();
+
+		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
+		built_data.nodes = buildFeatureNodes(input_data);
+		built_data.links = buildLinks(built_data.nodes,built_data.languages);
+
+		return built_data;
 	}
 
 	/**
-	 * Build data features from given json data
+	 * Build data feature nodes from given json data
 	 */
 	function buildFeatureNodes(data) {
-		source_data.nodes = [];
+		var nodes = [];
 		var features = JSON.parse(JSON.stringify(data.features));
 
 		//populate nodes with feature data
 		for(feature in features) {
-			source_data.nodes.push({
+			nodes.push({
 				"id":features[feature].id,
 				"name":features[feature].name,
 				"type":features[feature].type,
 				"values":features[feature].values
 			});
 		}
+
+		return nodes;
 	}
 
 	/**
-	 * Build data links from given json data and existing node data
+	 * Build data links from existing language data and node data
 	 */
-	function buildLinks(data) {
+	function buildLinks(nodes, languages) {
 		//need an efficient intersection function for sorted arrays
 		function intersection(a, b) {
 			var x=0,y=0,ret=[];
@@ -98,8 +105,7 @@ var Application = (function(){
 			return ret;
 		}
 
-		source_data.links = [];
-		var languages = JSON.parse(JSON.stringify(data.languages));
+		var links = [];
 		var feature1;
 		var feature2;
 		var value1;
@@ -111,18 +117,18 @@ var Application = (function(){
 		var interlanguage_strength = 0;
 		var intersecting_languages;
 		//loop through every feature
-		for(var feature1 = 0; feature1 < source_data.nodes.length; feature1++) {
-			//every value for this feature
-			for(value1 in source_data.nodes[feature1]["values"]) {
-				//compare to every OTHER feature
-				for(var feature2 = feature1+1; feature2 < source_data.nodes.length; feature2++) {
-					//reset
-					total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
-					//every value for every OTHER fature
-					for(value2 in source_data.nodes[feature2]["values"]) {
+		for(var feature1 = 0; feature1 < nodes.length; feature1++) {
+			//compare to every OTHER feature
+			for(var feature2 = feature1+1; feature2 < nodes.length; feature2++) {
+				//reset
+				total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
+				//every value for first feature
+				for(value1 in nodes[feature1]["values"]) {
+					//every value for second fature
+					for(value2 in nodes[feature2]["values"]) {
 						intersecting_languages = intersection(
-								source_data.nodes[feature1]["values"][value1],
-								source_data.nodes[feature2]["values"][value2]
+								nodes[feature1]["values"][value1],
+								nodes[feature2]["values"][value2]
 								);
 						//strength = # of intersecting languages
 						if(intersecting_languages.length > 1) {
@@ -143,40 +149,46 @@ var Application = (function(){
 								}
 							}
 						}
+						//do some magic here if you want to create links from value-to-value
+						//instead of feature-to-feature
 					}
-					if(total_strength > 0) {
-						//populate links with intersection data
-						source_data.links.push({
-							"source":feature1,
-							"target":feature2,
-							"total_strength":total_strength,
-							"interfamily_strength":interfamily_strength,
-							"intersubfamily_strength":intersubfamily_strength,
-							"intergenus_strength":intergenus_strength,
-							"interlanguage_strength":interlanguage_strength
-						});
-					}
+				}
+				if(total_strength > 0) {
+					//populate links with intersection data
+					links.push({
+						"source":nodes[feature1],
+						"target":nodes[feature2],
+						"total_strength":total_strength,
+						"interfamily_strength":interfamily_strength,
+						"intersubfamily_strength":intersubfamily_strength,
+						"intergenus_strength":intergenus_strength,
+						"interlanguage_strength":interlanguage_strength
+					});
 				}
 			}
 		}
+		return links;
 	}
 
 	/**
 	 * Collapse the given list of features into one
 	 */
 	function collapseFeatures(data, features){
+		//sorting in reverse makes for easier removal
 		features.sort();
 		features.reverse();
+		custom_feature_count++;
+		var data = JSON.parse(JSON.stringify(data));
 		var new_id = "custom_feature_"+custom_feature_count;
 		var new_name = "Custom Feature: ";
 		var new_type = "custom_feature_"+custom_feature_count;
 		var new_values = new Object();
-		for(feature in features) {
-			new_name += data.nodes[features[feature]].name + " / ";
-			for(value in data.nodes[feature]["values"]) {
-				new_values[data.nodes[feature].id+"-"+value] = data.nodes[feature]["values"][value];
+		for(i in features) {
+			new_name += data.nodes[features[i]].name + " / ";
+			for(value in data.nodes[features[i]]["values"]) {
+				new_values[data.nodes[features[i]].id+"-"+value] = data.nodes[features[i]]["values"][value];
 			}
-		data.nodes.splice(feature,1);
+			data.nodes.splice(features[i],1);
 		}
 		data.nodes.push({
 			"id":new_id,
@@ -185,17 +197,27 @@ var Application = (function(){
 			"values":new_values
 		});
 
-		buildLinks(data);
+		data.links = buildLinks(data.nodes, data.languages);
+		data = makeSubgraphs(data);
+		return data;
 	}
 
 	/**
 	 *UI callable function for collapsing features and setting it into the visualization
 	 */
-	function callCollapseFeatures(features) {
-		collapseFeatures(source_data, features);
+	function callCollapseFeatures() {
+		var features = [];
+		for(selected_node in selected_data.nodes) {
+			for(application_node in application_data.nodes) {
+				if(application_data.nodes[application_node].id == selected_data.nodes[selected_node].id) {
+					features.push(application_node);
+				}
+			}
+		}
+		application_data = collapseFeatures(application_data, features);
 		clearSelection();
-		ForceGraph.setData(source_data);
-		MatrixView.setData(source_data);
+		ForceGraph.setData(application_data);
+		MatrixView.setData(application_data);
 	}
 
 	/**
@@ -213,7 +235,7 @@ var Application = (function(){
 			}
 		}
 
-		makeSubgraphs(data);
+		data = makeSubgraphs(data);
 	
 		return data;
 	}
@@ -232,54 +254,83 @@ var Application = (function(){
 	/**
 	 * Forms nodes into groups
 	 * deletes any single nodes
+	 * operates directly on the reference passed to it!
 	 */
 	function makeSubgraphs(data){
+		var data = JSON.parse(JSON.stringify(data));
 		var group_counter = 0;
-		var marked_for_deletion;
-		var deletion_group = [];
-		var target;
-		for (var i = 0; i<data.nodes.length; i++){
-			//only mark for deletion if we aren't in a group and never find one
-			if(data.nodes[i].group == null){
-				marked_for_deletion=1;
+		function findNodeIndexById(node_id) {
+			for(i in data.nodes) {
+				if(data.nodes[i].id == node_id) {
+					return i;
+				}
 			}
-			//look for any node we connect to
-			for (var j = 0; j<data.links.length; j++){
-				if(data.links[j].source == i){
-					marked_for_deletion=0;
-					target = data.links[j].target;
-					if(data.nodes[target].group != null){
-						//target has a group, join it
-						data.nodes[i].group = data.nodes[target].group;
-					} else if(data.nodes[i].group != null){
+			throw "could not find node with id: "+node_id;
+		}
+		//TODO: this can be greatly optimized by giving nodes adjacency lists during preprocessing!
+		function visit_neighbors(source) {
+			var target;
+			for(var j = 0; j<data.links.length; j++) {
+				if(data.links[j].source.id == source.id) {
+					target = data.nodes[findNodeIndexById(data.links[j].target.id)];
+					if(target.group != null){
+						if(target.group == source.group) {
+							continue;
+						}
+						//target has a group, this is a problem
+						throw "Target has different group than source!"
+					} else if(source.group != null){
 						//we have a group, add target to it
-						data.nodes[target].group = data.nodes[i].group;
+						target.group = source.group;
+						visit_neighbors(target);
 					} else {
 						//make a new group for ourselves and target
-						data.nodes[i].group = data.nodes[target].group = group_counter;
+						source.group = target.group = group_counter;
 						group_counter++;
+						visit_neighbors(target);
+					}
+				}else if(data.links[j].target.id == source.id) {
+					target = data.nodes[findNodeIndexById(data.links[j].source.id)];
+					if(target.group != null){
+						if(target.group == source.group) {
+							continue;
+						}
+						//target has a group, this is a problem
+						throw "Target has different group than source!"
+					} else if(source.group != null){
+						//we have a group, add target to it
+						target.group = source.group;
+						visit_neighbors(target);
+					} else {
+						//make a new group for ourselves and target
+						source.group = target.group = group_counter;
+						group_counter++;
+						visit_neighbors(target);
 					}
 				}
 			}
-			//mark node for deletion if nothing found
-			if(marked_for_deletion == 1){
-				deletion_group.push(i);
+		}
+		//reset all groups to null
+		for (var i = 0; i<data.nodes.length; i++){
+			data.nodes[i].group = null;
+		}
+		for (var i = 0; i<data.nodes.length; i++){
+			source = data.nodes[i];
+			//only mark for deletion if we aren't in a group and never find one
+			if(source.group == null){
+				visit_neighbors(source)
 			}
 		}
 		//now actually delete things
-		deletion_group.reverse();//needed because if you remove items [0,1], after you remove 0, 1 is now 0, but if you remove 1 first 0 doesn't change
-		for(var i = 0; i<deletion_group.length; i++){
-			data.nodes.splice(deletion_group[i], 1);
-			for(var j = 0; j<data.links.length; j++){
-				if(data.links[j].source >= deletion_group[i]){
-					data.links[j].source--;
-				}
-				if(data.links[j].target >= deletion_group[i]){
-					data.links[j].target--;
-				}
+		for(var i = 0; i<data.nodes.length; i++){
+			if(data.nodes[i].group == null || data.nodes[i].group == undefined) {
+				data.nodes.splice(i, 1);
+				i--;
 			}
 		}
-	
+		//rebuild the links
+		data.links = buildLinks(data.nodes, data.languages);
+
 		return data;
 	}
 
@@ -514,7 +565,8 @@ var Application = (function(){
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d)},
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,
-		loadSourceData:loadSourceData,
+		loadData:loadData,
+		collapseFeatures:callCollapseFeatures,
 		/*selection related functions*/
 		selectLink:selectLink,
 		selectNode:selectNode,

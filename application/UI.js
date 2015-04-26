@@ -237,10 +237,18 @@ var UI = (function(){
 		Application.setDrawMatrixLabels(is_checked);
 	}
 
+	/**
+	 *the user has changed the minimum corelation
+	 */
+	function onCollapseSelectedFeatures(){
+		Application.collapseFeatures();
+	}
+
 	return {
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
 		onDrawLinkChange:onDrawLinkChange,
-		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange
+		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
+		onCollapseSelectedFeatures:onCollapseSelectedFeatures
 	};
 }());
