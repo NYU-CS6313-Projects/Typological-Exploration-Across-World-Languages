@@ -1,192 +1,192 @@
-1A,Consonant Inventories,Ian Maddieson,Phonology,563
-2A,Vowel Quality Inventories,Ian Maddieson,Phonology,564
-3A,Consonant-Vowel Ratio,Ian Maddieson,Phonology,564
-4A,Voicing in Plosives and Fricatives,Ian Maddieson,Phonology,567
-5A,Voicing and Gaps in Plosive Systems,Ian Maddieson,Phonology,567
-6A,Uvular Consonants,Ian Maddieson,Phonology,567
-7A,Glottalized Consonants,Ian Maddieson,Phonology,567
-8A,Lateral Consonants,Ian Maddieson,Phonology,567
-9A,The Velar Nasal,Gregory D.S. Anderson,Phonology,469
-10A,Vowel Nasalization,John Hajek,Phonology,244
-10B,Nasal Vowels in West Africa,John Hajek,Phonology,40
-11A,Front Rounded Vowels,Ian Maddieson,Phonology,562
-12A,Syllable Structure,Ian Maddieson,Phonology,486
-13A,Tone,Ian Maddieson,Phonology,527
-14A,Fixed Stress Locations,Rob Goedemans and Harry van der Hulst,Phonology,502
-15A,Weight-Sensitive Stress,Rob Goedemans and Harry van der Hulst,Phonology,500
-16A,Weight Factors in Weight-Sensitive Stress Systems,Rob Goedemans and Harry van der Hulst,Phonology,500
-17A,Rhythm Types,Rob Goedemans and Harry van der Hulst,Phonology,323
-18A,Absence of Common Consonants,Ian Maddieson,Phonology,567
-19A,Presence of Uncommon Consonants,Ian Maddieson,Phonology,567
-20A,Fusion of Selected Inflectional Formatives,Balthasar Bickel and Johanna Nichols,Morphology,165
-21A,Exponence of Selected Inflectional Formatives,Balthasar Bickel and Johanna Nichols,Morphology,162
-21B,Exponence of Tense-Aspect-Mood Inflection,Balthasar Bickel and Johanna Nichols,Morphology,160
-22A,Inflectional Synthesis of the Verb,Balthasar Bickel and Johanna Nichols,Morphology,145
-23A,Locus of Marking in the Clause,Johanna Nichols and Balthasar Bickel,Morphology,236
-24A,Locus of Marking in Possessive Noun Phrases,Johanna Nichols and Balthasar Bickel,Morphology,236
-25A,Locus of Marking: Whole-language Typology,Johanna Nichols and Balthasar Bickel,Morphology,236
-25B,Zero Marking of A and P Arguments,Johanna Nichols and Balthasar Bickel,Morphology,235
-26A,Prefixing vs. Suffixing in Inflectional Morphology,Matthew S. Dryer,Morphology,969
-27A,Reduplication,Carl Rubino,Morphology,368
-28A,Case Syncretism,Matthew Baerman and Dunstan Brown,Morphology,198
-29A,Syncretism in Verbal Person/Number Marking,Matthew Baerman and Dunstan Brown,Morphology,198
-30A,Number of Genders,Greville G. Corbett,Nominal Categories,257
-31A,Sex-based and Non-sex-based Gender Systems,Greville G. Corbett,Nominal Categories,257
-32A,Systems of Gender Assignment,Greville G. Corbett,Nominal Categories,257
-33A,Coding of Nominal Plurality,Matthew S. Dryer,Nominal Categories,1066
-34A,Occurrence of Nominal Plurality,Martin Haspelmath,Nominal Categories,291
-35A,Plurality in Independent Personal Pronouns,Michael Daniel,Nominal Categories,261
-36A,The Associative Plural,Michael Daniel and Edith Moravcsik,Nominal Categories,236
-37A,Definite Articles,Matthew S. Dryer,Nominal Categories,620
-38A,Indefinite Articles,Matthew S. Dryer,Nominal Categories,534
-39A,Inclusive/Exclusive Distinction in Independent Pronouns,Michael Cysouw,Nominal Categories,200
-39B,Inclusive/Exclusive Forms in Pama-Nyungan,Michael Cysouw,Nominal Categories,71
-40A,Inclusive/Exclusive Distinction in Verbal Inflection,Michael Cysouw,Nominal Categories,200
-41A,Distance Contrasts in Demonstratives,Holger Diessel,Nominal Categories,234
-42A,Pronominal and Adnominal Demonstratives,Holger Diessel,Nominal Categories,201
-43A,Third Person Pronouns and Demonstratives,D.N.S. Bhat,Nominal Categories,225
-44A,Gender Distinctions in Independent Personal Pronouns,Anna Siewierska,Nominal Categories,378
-45A,Politeness Distinctions in Pronouns,Johannes Helmbrecht,Nominal Categories,207
-46A,Indefinite Pronouns,Martin Haspelmath,Nominal Categories,326
-47A,Intensifiers and Reflexive Pronouns,Ekkehard König and Peter Siemund with Stephan Töpper,Nominal Categories,168
-48A,Person Marking on Adpositions,Dik Bakker,Nominal Categories,378
-49A,Number of Cases,Oliver A. Iggesen,Nominal Categories,261
-50A,Asymmetrical Case-Marking,Oliver A. Iggesen,Nominal Categories,261
-51A,Position of Case Affixes,Matthew S. Dryer,Nominal Categories,1031
-52A,Comitatives and Instrumentals,Thomas Stolz and Cornelia Stroh and Aina Urdze,Nominal Categories,322
-53A,Ordinal Numerals,Thomas Stolz and Ljuba N. Veselinova,Nominal Categories,321
-54A,Distributive Numerals,David Gil,Nominal Categories,251
-55A,Numeral Classifiers,David Gil,Nominal Categories,400
-56A,Conjunctions and Universal Quantifiers,David Gil,Nominal Categories,116
-57A,Position of Pronominal Possessive Affixes,Matthew S. Dryer,Nominal Categories,902
-58A,Obligatory Possessive Inflection,Balthasar Bickel and Johanna Nichols,Nominal Syntax,244
-58B,Number of Possessive Nouns,Balthasar Bickel and Johanna Nichols,Nominal Syntax,243
-59A,Possessive Classification,Johanna Nichols and Balthasar Bickel,Nominal Syntax,243
-60A,Genitives, Adjectives and Relative Clauses,David Gil,Nominal Syntax,138
-61A,Adjectives without Nouns,David Gil,Nominal Syntax,124
-62A,Action Nominal Constructions,Maria Koptjevskaja-Tamm,Nominal Syntax,168
-63A,Noun Phrase Conjunction,Leon Stassen,Nominal Syntax,234
-64A,Nominal and Verbal Conjunction,Martin Haspelmath,Nominal Syntax,301
-65A,Perfective/Imperfective Aspect,Östen Dahl and Viveka Velupillai,Verbal Categories,222
-66A,The Past Tense,Östen Dahl and Viveka Velupillai,Verbal Categories,222
-67A,The Future Tense,Östen Dahl and Viveka Velupillai,Verbal Categories,222
-68A,The Perfect,Östen Dahl and Viveka Velupillai,Verbal Categories,222
-69A,Position of Tense-Aspect Affixes,Matthew S. Dryer,Verbal Categories,1131
-70A,The Morphological Imperative,Johan van der Auwera and Ludo Lejeune with Umarani Pappuswamy and Valentin Goussev,Verbal Categories,547
-71A,The Prohibitive,Johan van der Auwera and Ludo Lejeune with Valentin Goussev,Verbal Categories,495
-72A,Imperative-Hortative Systems,Johan van der Auwera and Nina Dobrushina and Valentin Goussev,Verbal Categories,375
-73A,The Optative,Nina Dobrushina and Johan van der Auwera and Valentin Goussev,Verbal Categories,319
-74A,Situational Possibility,Johan van der Auwera and Andreas Ammann,Verbal Categories,234
-75A,Epistemic Possibility,Johan van der Auwera and Andreas Ammann,Verbal Categories,240
-76A,Overlap between Situational and Epistemic Modal Marking,Johan van der Auwera and Andreas Ammann,Verbal Categories,207
-77A,Semantic Distinctions of Evidentiality,Ferdinand de Haan,Verbal Categories,418
-78A,Coding of Evidentiality,Ferdinand de Haan,Verbal Categories,418
-79A,Suppletion According to Tense and Aspect,Ljuba N. Veselinova,Verbal Categories,193
-79B,Suppletion in Imperatives and Hortatives,Ljuba N. Veselinova,Verbal Categories,193
-80A,Verbal Number and Suppletion,Ljuba N. Veselinova,Verbal Categories,193
-81A,Order of Subject, Object and Verb,Matthew S. Dryer,Word Order,1377
-81B,Languages with two Dominant Orders of Subject, Object, and Verb,Matthew S. Dryer,Word Order,67
-82A,Order of Subject and Verb,Matthew S. Dryer,Word Order,1497
-83A,Order of Object and Verb,Matthew S. Dryer,Word Order,1519
-84A,Order of Object, Oblique, and Verb,Matthew S. Dryer with Orin D. Gensler,Word Order,500
-85A,Order of Adposition and Noun Phrase,Matthew S. Dryer,Word Order,1183
-86A,Order of Genitive and Noun,Matthew S. Dryer,Word Order,1249
-87A,Order of Adjective and Noun,Matthew S. Dryer,Word Order,1366
-88A,Order of Demonstrative and Noun,Matthew S. Dryer,Word Order,1224
-89A,Order of Numeral and Noun,Matthew S. Dryer,Word Order,1153
-90A,Order of Relative Clause and Noun,Matthew S. Dryer,Word Order,824
-90B,Prenominal relative clauses,Matthew S. Dryer,Word Order,191
-90C,Postnominal relative clauses,Matthew S. Dryer,Word Order,620
-90D,Internally-headed relative clauses,Matthew S. Dryer,Word Order,63
-90E,Correlative relative clauses,Matthew S. Dryer,Word Order,23
-90F,Adjoined relative clauses,Matthew S. Dryer,Word Order,10
-90G,Double-headed relative clauses,Matthew S. Dryer,Word Order,5
-91A,Order of Degree Word and Adjective,Matthew S. Dryer,Word Order,481
-92A,Position of Polar Question Particles,Matthew S. Dryer,Word Order,884
-93A,Position of Interrogative Phrases in Content Questions,Matthew S. Dryer,Word Order,902
-94A,Order of Adverbial Subordinator and Clause,Matthew S. Dryer,Word Order,659
-95A,Relationship between the Order of Object and Verb and the Order of Adposition and Noun Phrase,Matthew S. Dryer,Word Order,1142
-96A,Relationship between the Order of Object and Verb and the Order of Relative Clause and Noun,Matthew S. Dryer,Word Order,879
-97A,Relationship between the Order of Object and Verb and the Order of Adjective and Noun,Matthew S. Dryer,Word Order,1316
-98A,Alignment of Case Marking of Full Noun Phrases,Bernard Comrie,Simple Clauses,190
-99A,Alignment of Case Marking of Pronouns,Bernard Comrie,Simple Clauses,172
-100A,Alignment of Verbal Person Marking,Anna Siewierska,Simple Clauses,380
-101A,Expression of Pronominal Subjects,Matthew S. Dryer,Simple Clauses,711
-102A,Verbal Person Marking,Anna Siewierska,Simple Clauses,378
-103A,Third Person Zero of Verbal Person Marking,Anna Siewierska,Simple Clauses,380
-104A,Order of Person Markers on the Verb,Anna Siewierska,Simple Clauses,379
-105A,Ditransitive Constructions: The Verb 'Give',Martin Haspelmath,Simple Clauses,378
-106A,Reciprocal Constructions,Elena Maslova and Vladimir P. Nedjalkov,Simple Clauses,175
-107A,Passive Constructions,Anna Siewierska,Simple Clauses,373
-108A,Antipassive Constructions,Maria Polinsky,Simple Clauses,194
-108B,Productivity of the Antipassive Construction,Maria Polinsky,Simple Clauses,186
-109A,Applicative Constructions,Maria Polinsky,Simple Clauses,183
-109B,Other Roles of Applied Objects,Maria Polinsky,Simple Clauses,183
-110A,Periphrastic Causative Constructions,Jae Jung Song,Simple Clauses,118
-111A,Nonperiphrastic Causative Constructions,Jae Jung Song,Simple Clauses,310
-112A,Negative Morphemes,Matthew S. Dryer,Simple Clauses,1157
-113A,Symmetric and Asymmetric Standard Negation,Matti Miestamo,Simple Clauses,297
-114A,Subtypes of Asymmetric Standard Negation,Matti Miestamo,Simple Clauses,297
-115A,Negative Indefinite Pronouns and Predicate Negation,Martin Haspelmath,Simple Clauses,206
-116A,Polar Questions,Matthew S. Dryer,Simple Clauses,955
-117A,Predicative Possession,Leon Stassen,Simple Clauses,240
-118A,Predicative Adjectives,Leon Stassen,Simple Clauses,386
-119A,Nominal and Locational Predication,Leon Stassen,Simple Clauses,386
-120A,Zero Copula for Predicate Nominals,Leon Stassen,Simple Clauses,386
-121A,Comparative Constructions,Leon Stassen,Simple Clauses,167
-122A,Relativization on Subjects,Bernard Comrie and Tania Kuteva,Complex Sentences,166
-123A,Relativization on Obliques,Bernard Comrie and Tania Kuteva,Complex Sentences,112
-124A,'Want' Complement Subjects,Martin Haspelmath,Complex Sentences,283
-125A,Purpose Clauses,Sonia Cristofaro,Complex Sentences,170
-126A,'When' Clauses,Sonia Cristofaro,Complex Sentences,174
-127A,Reason Clauses,Sonia Cristofaro,Complex Sentences,169
-128A,Utterance Complement Clauses,Sonia Cristofaro,Complex Sentences,143
-129A,Hand and Arm,Cecil H. Brown,Lexicon,617
-130A,Finger and Hand,Cecil H. Brown,Lexicon,593
-130B,Cultural Categories of Languages with Identity of 'Finger' and 'Hand',Cecil H. Brown,Lexicon,72
-131A,Numeral Bases,Bernard Comrie,Lexicon,196
-132A,Number of Non-Derived Basic Colour Categories,Paul Kay and Luisa Maffi,Lexicon,119
-133A,Number of Basic Colour Categories,Paul Kay and Luisa Maffi,Lexicon,119
-134A,Green and Blue,Paul Kay and Luisa Maffi,Lexicon,120
-135A,Red and Yellow,Paul Kay and Luisa Maffi,Lexicon,120
-136A,M-T Pronouns,Johanna Nichols and David A. Peterson,Lexicon,230
-136B,M in First Person Singular,Johanna Nichols and David A. Peterson,Lexicon,230
-137A,N-M Pronouns,Johanna Nichols and David A. Peterson,Lexicon,230
-137B,M in Second Person Singular,Johanna Nichols and David A. Peterson,Lexicon,230
-138A,Tea,Östen Dahl,Lexicon,230
-139A,Irregular Negatives in Sign Languages,Ulrike Zeshan,Sign Languages,35
-140A,Question Particles in Sign Languages,Ulrike Zeshan,Sign Languages,38
-141A,Writing Systems,Bernard Comrie,Other,6
-142A,Para-Linguistic Usages of Clicks,David Gil,Other,143
-143A,Order of Negative Morpheme and Verb,Matthew S. Dryer,Word Order,1324
-143B,Obligatory Double Negation,Matthew S. Dryer,Word Order,119
-143C,Optional Double Negation,Matthew S. Dryer,Word Order,81
-143D,Optional Triple Negation,Matthew S. Dryer,Word Order,6
-143E,Preverbal Negative Morphemes,Matthew S. Dryer,Word Order,1324
-143F,Postverbal Negative Morphemes,Matthew S. Dryer,Word Order,1324
-143G,Minor morphological means of signaling negation,Matthew S. Dryer,Word Order,1324
-144A,Position of Negative Word With Respect to Subject, Object, and Verb,Matthew S. Dryer,Word Order,1189
-144B,Position of negative words relative to beginning and end of clause and with respect to adjacency to verb,Matthew S. Dryer,Word Order,609
-144C,Languages with different word order in negative clauses,Matthew S. Dryer,Word Order,28
-144D,The Position of Negative Morphemes in SVO Languages,Matthew S. Dryer,Word Order,463
-144E,Multiple Negative Constructions in SVO Languages,Matthew S. Dryer,Word Order,48
-144F,Obligatory Double Negation in SVO languages,Matthew S. Dryer,Word Order,56
-144G,Optional Double Negation in SVO languages,Matthew S. Dryer,Word Order,35
-144H,NegSVO Order,Matthew S. Dryer,Word Order,420
-144I,SNegVO Order,Matthew S. Dryer,Word Order,421
-144J,SVNegO Order,Matthew S. Dryer,Word Order,446
-144K,SVONeg Order,Matthew S. Dryer,Word Order,446
-144L,The Position of Negative Morphemes in SOV Languages,Matthew S. Dryer,Word Order,572
-144M,Multiple Negative Constructions in SOV Languages,Matthew S. Dryer,Word Order,54
-144N,Obligatory Double Negation in SOV languages,Matthew S. Dryer,Word Order,45
-144O,Optional Double Negation in SOV languages,Matthew S. Dryer,Word Order,31
-144P,NegSOV Order,Matthew S. Dryer,Word Order,408
-144Q,SNegOV Order,Matthew S. Dryer,Word Order,408
-144R,SONegV Order,Matthew S. Dryer,Word Order,411
-144S,SOVNeg Order,Matthew S. Dryer,Word Order,489
-144T,The Position of Negative Morphemes in Verb-Initial Languages,Matthew S. Dryer,Word Order,152
-144U,Double negation in verb-initial languages,Matthew S. Dryer,Word Order,17
-144V,Verb-Initial with Preverbal Negative,Matthew S. Dryer,Word Order,152
-144W,Verb-Initial with Negative that is Immediately Postverbal or between Subject and Object,Matthew S. Dryer,Word Order,151
-144X,Verb-Initial with Clause-Final Negative,Matthew S. Dryer,Word Order,151
-144Y,The Position of Negative Morphemes in Object-Initial Languages,Matthew S. Dryer,Word Order,16,
+"1A","Consonant Inventories","Ian Maddieson","Phonology","563"
+"2A","Vowel Quality Inventories","Ian Maddieson","Phonology","564"
+"3A","Consonant-Vowel Ratio","Ian Maddieson","Phonology","564"
+"4A","Voicing in Plosives and Fricatives","Ian Maddieson","Phonology","567"
+"5A","Voicing and Gaps in Plosive Systems","Ian Maddieson","Phonology","567"
+"6A","Uvular Consonants","Ian Maddieson","Phonology","567"
+"7A","Glottalized Consonants","Ian Maddieson","Phonology","567"
+"8A","Lateral Consonants","Ian Maddieson","Phonology","567"
+"9A","The Velar Nasal","Gregory D.S. Anderson","Phonology","469"
+"10A","Vowel Nasalization","John Hajek","Phonology","244"
+"10B","Nasal Vowels in West Africa","John Hajek","Phonology","40"
+"11A","Front Rounded Vowels","Ian Maddieson","Phonology","562"
+"12A","Syllable Structure","Ian Maddieson","Phonology","486"
+"13A","Tone","Ian Maddieson","Phonology","527"
+"14A","Fixed Stress Locations","Rob Goedemans and Harry van der Hulst","Phonology","502"
+"15A","Weight-Sensitive Stress","Rob Goedemans and Harry van der Hulst","Phonology","500"
+"16A","Weight Factors in Weight-Sensitive Stress Systems","Rob Goedemans and Harry van der Hulst","Phonology","500"
+"17A","Rhythm Types","Rob Goedemans and Harry van der Hulst","Phonology","323"
+"18A","Absence of Common Consonants","Ian Maddieson","Phonology","567"
+"19A","Presence of Uncommon Consonants","Ian Maddieson","Phonology","567"
+"20A","Fusion of Selected Inflectional Formatives","Balthasar Bickel and Johanna Nichols","Morphology","165"
+"21A","Exponence of Selected Inflectional Formatives","Balthasar Bickel and Johanna Nichols","Morphology","162"
+"21B","Exponence of Tense-Aspect-Mood Inflection","Balthasar Bickel and Johanna Nichols","Morphology","160"
+"22A","Inflectional Synthesis of the Verb","Balthasar Bickel and Johanna Nichols","Morphology","145"
+"23A","Locus of Marking in the Clause","Johanna Nichols and Balthasar Bickel","Morphology","236"
+"24A","Locus of Marking in Possessive Noun Phrases","Johanna Nichols and Balthasar Bickel","Morphology","236"
+"25A","Locus of Marking: Whole-language Typology","Johanna Nichols and Balthasar Bickel","Morphology","236"
+"25B","Zero Marking of A and P Arguments","Johanna Nichols and Balthasar Bickel","Morphology","235"
+"26A","Prefixing vs. Suffixing in Inflectional Morphology","Matthew S. Dryer","Morphology","969"
+"27A","Reduplication","Carl Rubino","Morphology","368"
+"28A","Case Syncretism","Matthew Baerman and Dunstan Brown","Morphology","198"
+"29A","Syncretism in Verbal Person/Number Marking","Matthew Baerman and Dunstan Brown","Morphology","198"
+"30A","Number of Genders","Greville G. Corbett","Nominal Categories","257"
+"31A","Sex-based and Non-sex-based Gender Systems","Greville G. Corbett","Nominal Categories","257"
+"32A","Systems of Gender Assignment","Greville G. Corbett","Nominal Categories","257"
+"33A","Coding of Nominal Plurality","Matthew S. Dryer","Nominal Categories","1066"
+"34A","Occurrence of Nominal Plurality","Martin Haspelmath","Nominal Categories","291"
+"35A","Plurality in Independent Personal Pronouns","Michael Daniel","Nominal Categories","261"
+"36A","The Associative Plural","Michael Daniel and Edith Moravcsik","Nominal Categories","236"
+"37A","Definite Articles","Matthew S. Dryer","Nominal Categories","620"
+"38A","Indefinite Articles","Matthew S. Dryer","Nominal Categories","534"
+"39A","Inclusive/Exclusive Distinction in Independent Pronouns","Michael Cysouw","Nominal Categories","200"
+"39B","Inclusive/Exclusive Forms in Pama-Nyungan","Michael Cysouw","Nominal Categories","71"
+"40A","Inclusive/Exclusive Distinction in Verbal Inflection","Michael Cysouw","Nominal Categories","200"
+"41A","Distance Contrasts in Demonstratives","Holger Diessel","Nominal Categories","234"
+"42A","Pronominal and Adnominal Demonstratives","Holger Diessel","Nominal Categories","201"
+"43A","Third Person Pronouns and Demonstratives","D.N.S. Bhat","Nominal Categories","225"
+"44A","Gender Distinctions in Independent Personal Pronouns","Anna Siewierska","Nominal Categories","378"
+"45A","Politeness Distinctions in Pronouns","Johannes Helmbrecht","Nominal Categories","207"
+"46A","Indefinite Pronouns","Martin Haspelmath","Nominal Categories","326"
+"47A","Intensifiers and Reflexive Pronouns","Ekkehard König and Peter Siemund with Stephan Töpper","Nominal Categories","168"
+"48A","Person Marking on Adpositions","Dik Bakker","Nominal Categories","378"
+"49A","Number of Cases","Oliver A. Iggesen","Nominal Categories","261"
+"50A","Asymmetrical Case-Marking","Oliver A. Iggesen","Nominal Categories","261"
+"51A","Position of Case Affixes","Matthew S. Dryer","Nominal Categories","1031"
+"52A","Comitatives and Instrumentals","Thomas Stolz and Cornelia Stroh and Aina Urdze","Nominal Categories","322"
+"53A","Ordinal Numerals","Thomas Stolz and Ljuba N. Veselinova","Nominal Categories","321"
+"54A","Distributive Numerals","David Gil","Nominal Categories","251"
+"55A","Numeral Classifiers","David Gil","Nominal Categories","400"
+"56A","Conjunctions and Universal Quantifiers","David Gil","Nominal Categories","116"
+"57A","Position of Pronominal Possessive Affixes","Matthew S. Dryer","Nominal Categories","902"
+"58A","Obligatory Possessive Inflection","Balthasar Bickel and Johanna Nichols","Nominal Syntax","244"
+"58B","Number of Possessive Nouns","Balthasar Bickel and Johanna Nichols","Nominal Syntax","243"
+"59A","Possessive Classification","Johanna Nichols and Balthasar Bickel","Nominal Syntax","243"
+"60A","Genitives, Adjectives and Relative Clauses","David Gil","Nominal Syntax","138"
+"61A","Adjectives without Nouns","David Gil","Nominal Syntax","124"
+"62A","Action Nominal Constructions","Maria Koptjevskaja-Tamm","Nominal Syntax","168"
+"63A","Noun Phrase Conjunction","Leon Stassen","Nominal Syntax","234"
+"64A","Nominal and Verbal Conjunction","Martin Haspelmath","Nominal Syntax","301"
+"65A","Perfective/Imperfective Aspect","Östen Dahl and Viveka Velupillai","Verbal Categories","222"
+"66A","The Past Tense","Östen Dahl and Viveka Velupillai","Verbal Categories","222"
+"67A","The Future Tense","Östen Dahl and Viveka Velupillai","Verbal Categories","222"
+"68A","The Perfect","Östen Dahl and Viveka Velupillai","Verbal Categories","222"
+"69A","Position of Tense-Aspect Affixes","Matthew S. Dryer","Verbal Categories","1131"
+"70A","The Morphological Imperative","Johan van der Auwera and Ludo Lejeune with Umarani Pappuswamy and Valentin Goussev","Verbal Categories","547"
+"71A","The Prohibitive","Johan van der Auwera and Ludo Lejeune with Valentin Goussev","Verbal Categories","495"
+"72A","Imperative-Hortative Systems","Johan van der Auwera and Nina Dobrushina and Valentin Goussev","Verbal Categories","375"
+"73A","The Optative","Nina Dobrushina and Johan van der Auwera and Valentin Goussev","Verbal Categories","319"
+"74A","Situational Possibility","Johan van der Auwera and Andreas Ammann","Verbal Categories","234"
+"75A","Epistemic Possibility","Johan van der Auwera and Andreas Ammann","Verbal Categories","240"
+"76A","Overlap between Situational and Epistemic Modal Marking","Johan van der Auwera and Andreas Ammann","Verbal Categories","207"
+"77A","Semantic Distinctions of Evidentiality","Ferdinand de Haan","Verbal Categories","418"
+"78A","Coding of Evidentiality","Ferdinand de Haan","Verbal Categories","418"
+"79A","Suppletion According to Tense and Aspect","Ljuba N. Veselinova","Verbal Categories","193"
+"79B","Suppletion in Imperatives and Hortatives","Ljuba N. Veselinova","Verbal Categories","193"
+"80A","Verbal Number and Suppletion","Ljuba N. Veselinova","Verbal Categories","193"
+"81A","Order of Subject, Object and Verb","Matthew S. Dryer","Word Order","1377"
+"81B","Languages with two Dominant Orders of Subject, Object"," and Verb","Matthew S. Dryer","Word Order","67"
+"82A","Order of Subject and Verb","Matthew S. Dryer","Word Order","1497"
+"83A","Order of Object and Verb","Matthew S. Dryer","Word Order","1519"
+"84A","Order of Object, Oblique, and Verb","Matthew S. Dryer with Orin D. Gensler","Word Order","500"
+"85A","Order of Adposition and Noun Phrase","Matthew S. Dryer","Word Order","1183"
+"86A","Order of Genitive and Noun","Matthew S. Dryer","Word Order","1249"
+"87A","Order of Adjective and Noun","Matthew S. Dryer","Word Order","1366"
+"88A","Order of Demonstrative and Noun","Matthew S. Dryer","Word Order","1224"
+"89A","Order of Numeral and Noun","Matthew S. Dryer","Word Order","1153"
+"90A","Order of Relative Clause and Noun","Matthew S. Dryer","Word Order","824"
+"90B","Prenominal relative clauses","Matthew S. Dryer","Word Order","191"
+"90C","Postnominal relative clauses","Matthew S. Dryer","Word Order","620"
+"90D","Internally-headed relative clauses","Matthew S. Dryer","Word Order","63"
+"90E","Correlative relative clauses","Matthew S. Dryer","Word Order","23"
+"90F","Adjoined relative clauses","Matthew S. Dryer","Word Order","10"
+"90G","Double-headed relative clauses","Matthew S. Dryer","Word Order","5"
+"91A","Order of Degree Word and Adjective","Matthew S. Dryer","Word Order","481"
+"92A","Position of Polar Question Particles","Matthew S. Dryer","Word Order","884"
+"93A","Position of Interrogative Phrases in Content Questions","Matthew S. Dryer","Word Order","902"
+"94A","Order of Adverbial Subordinator and Clause","Matthew S. Dryer","Word Order","659"
+"95A","Relationship between the Order of Object and Verb and the Order of Adposition and Noun Phrase","Matthew S. Dryer","Word Order","1142"
+"96A","Relationship between the Order of Object and Verb and the Order of Relative Clause and Noun","Matthew S. Dryer","Word Order","879"
+"97A","Relationship between the Order of Object and Verb and the Order of Adjective and Noun","Matthew S. Dryer","Word Order","1316"
+"98A","Alignment of Case Marking of Full Noun Phrases","Bernard Comrie","Simple Clauses","190"
+"99A","Alignment of Case Marking of Pronouns","Bernard Comrie","Simple Clauses","172"
+"100A","Alignment of Verbal Person Marking","Anna Siewierska","Simple Clauses","380"
+"101A","Expression of Pronominal Subjects","Matthew S. Dryer","Simple Clauses","711"
+"102A","Verbal Person Marking","Anna Siewierska","Simple Clauses","378"
+"103A","Third Person Zero of Verbal Person Marking","Anna Siewierska","Simple Clauses","380"
+"104A","Order of Person Markers on the Verb","Anna Siewierska","Simple Clauses","379"
+"105A","Ditransitive Constructions: The Verb 'Give'","Martin Haspelmath","Simple Clauses","378"
+"106A","Reciprocal Constructions","Elena Maslova and Vladimir P. Nedjalkov","Simple Clauses","175"
+"107A","Passive Constructions","Anna Siewierska","Simple Clauses","373"
+"108A","Antipassive Constructions","Maria Polinsky","Simple Clauses","194"
+"108B","Productivity of the Antipassive Construction","Maria Polinsky","Simple Clauses","186"
+"109A","Applicative Constructions","Maria Polinsky","Simple Clauses","183"
+"109B","Other Roles of Applied Objects","Maria Polinsky","Simple Clauses","183"
+"110A","Periphrastic Causative Constructions","Jae Jung Song","Simple Clauses","118"
+"111A","Nonperiphrastic Causative Constructions","Jae Jung Song","Simple Clauses","310"
+"112A","Negative Morphemes","Matthew S. Dryer","Simple Clauses","1157"
+"113A","Symmetric and Asymmetric Standard Negation","Matti Miestamo","Simple Clauses","297"
+"114A","Subtypes of Asymmetric Standard Negation","Matti Miestamo","Simple Clauses","297"
+"115A","Negative Indefinite Pronouns and Predicate Negation","Martin Haspelmath","Simple Clauses","206"
+"116A","Polar Questions","Matthew S. Dryer","Simple Clauses","955"
+"117A","Predicative Possession","Leon Stassen","Simple Clauses","240"
+"118A","Predicative Adjectives","Leon Stassen","Simple Clauses","386"
+"119A","Nominal and Locational Predication","Leon Stassen","Simple Clauses","386"
+"120A","Zero Copula for Predicate Nominals","Leon Stassen","Simple Clauses","386"
+"121A","Comparative Constructions","Leon Stassen","Simple Clauses","167"
+"122A","Relativization on Subjects","Bernard Comrie and Tania Kuteva","Complex Sentences","166"
+"123A","Relativization on Obliques","Bernard Comrie and Tania Kuteva","Complex Sentences","112"
+"124A","'Want' Complement Subjects","Martin Haspelmath","Complex Sentences","283"
+"125A","Purpose Clauses","Sonia Cristofaro","Complex Sentences","170"
+"126A","'When' Clauses","Sonia Cristofaro","Complex Sentences","174"
+"127A","Reason Clauses","Sonia Cristofaro","Complex Sentences","169"
+"128A","Utterance Complement Clauses","Sonia Cristofaro","Complex Sentences","143"
+"129A","Hand and Arm","Cecil H. Brown","Lexicon","617"
+"130A","Finger and Hand","Cecil H. Brown","Lexicon","593"
+"130B","Cultural Categories of Languages with Identity of 'Finger' and 'Hand'","Cecil H. Brown","Lexicon","72"
+"131A","Numeral Bases","Bernard Comrie","Lexicon","196"
+"132A","Number of Non-Derived Basic Colour Categories","Paul Kay and Luisa Maffi","Lexicon","119"
+"133A","Number of Basic Colour Categories","Paul Kay and Luisa Maffi","Lexicon","119"
+"134A","Green and Blue","Paul Kay and Luisa Maffi","Lexicon","120"
+"135A","Red and Yellow","Paul Kay and Luisa Maffi","Lexicon","120"
+"136A","M-T Pronouns","Johanna Nichols and David A. Peterson","Lexicon","230"
+"136B","M in First Person Singular","Johanna Nichols and David A. Peterson","Lexicon","230"
+"137A","N-M Pronouns","Johanna Nichols and David A. Peterson","Lexicon","230"
+"137B","M in Second Person Singular","Johanna Nichols and David A. Peterson","Lexicon","230"
+"138A","Tea","Östen Dahl","Lexicon","230"
+"139A","Irregular Negatives in Sign Languages","Ulrike Zeshan","Sign Languages","35"
+"140A","Question Particles in Sign Languages","Ulrike Zeshan","Sign Languages","38"
+"141A","Writing Systems","Bernard Comrie","Other","6"
+"142A","Para-Linguistic Usages of Clicks","David Gil","Other","143"
+"143A","Order of Negative Morpheme and Verb","Matthew S. Dryer","Word Order","1324"
+"143B","Obligatory Double Negation","Matthew S. Dryer","Word Order","119"
+"143C","Optional Double Negation","Matthew S. Dryer","Word Order","81"
+"143D","Optional Triple Negation","Matthew S. Dryer","Word Order","6"
+"143E","Preverbal Negative Morphemes","Matthew S. Dryer","Word Order","1324"
+"143F","Postverbal Negative Morphemes","Matthew S. Dryer","Word Order","1324"
+"143G","Minor morphological means of signaling negation","Matthew S. Dryer","Word Order","1324"
+"144A","Position of Negative Word With Respect to Subject, Object, and Verb","Matthew S. Dryer","Word Order","1189"
+"144B","Position of negative words relative to beginning and end of clause and with respect to adjacency to verb","Matthew S. Dryer","Word Order","609"
+"144C","Languages with different word order in negative clauses","Matthew S. Dryer","Word Order","28"
+"144D","The Position of Negative Morphemes in SVO Languages","Matthew S. Dryer","Word Order","463"
+"144E","Multiple Negative Constructions in SVO Languages","Matthew S. Dryer","Word Order","48"
+"144F","Obligatory Double Negation in SVO languages","Matthew S. Dryer","Word Order","56"
+"144G","Optional Double Negation in SVO languages","Matthew S. Dryer","Word Order","35"
+"144H","NegSVO Order","Matthew S. Dryer","Word Order","420"
+"144I","SNegVO Order","Matthew S. Dryer","Word Order","421"
+"144J","SVNegO Order","Matthew S. Dryer","Word Order","446"
+"144K","SVONeg Order","Matthew S. Dryer","Word Order","446"
+"144L","The Position of Negative Morphemes in SOV Languages","Matthew S. Dryer","Word Order","572"
+"144M","Multiple Negative Constructions in SOV Languages","Matthew S. Dryer","Word Order","54"
+"144N","Obligatory Double Negation in SOV languages","Matthew S. Dryer","Word Order","45"
+"144O","Optional Double Negation in SOV languages","Matthew S. Dryer","Word Order","31"
+"144P","NegSOV Order","Matthew S. Dryer","Word Order","408"
+"144Q","SNegOV Order","Matthew S. Dryer","Word Order","408"
+"144R","SONegV Order","Matthew S. Dryer","Word Order","411"
+"144S","SOVNeg Order","Matthew S. Dryer","Word Order","489"
+"144T","The Position of Negative Morphemes in Verb-Initial Languages","Matthew S. Dryer","Word Order","152"
+"144U","Double negation in verb-initial languages","Matthew S. Dryer","Word Order","17"
+"144V","Verb-Initial with Preverbal Negative","Matthew S. Dryer","Word Order","152"
+"144W","Verb-Initial with Negative that is Immediately Postverbal or between Subject and Object","Matthew S. Dryer","Word Order","151"
+"144X","Verb-Initial with Clause-Final Negative","Matthew S. Dryer","Word Order","151"
+"144Y","The Position of Negative Morphemes in Object-Initial Languages","Matthew S. Dryer","Word Order","16"
