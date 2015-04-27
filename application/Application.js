@@ -527,7 +527,7 @@ var Application = (function(){
 	}
 
 	/**
-	 * if the link is selected unselect it, if it isn't select it select it
+	 * if the link is selected unselect it, if it isn't select it
 	 */
 	function toggleLinkSelection(link){
 		if(linkIsSelected(link)){
@@ -539,7 +539,7 @@ var Application = (function(){
 	}
 
 	/**
-	 * if the node is selected unselect it, if it isn't select it select it
+	 * if the node is selected unselect it, if it isn't select it
 	 */
 	function toggleNodeSelection(node){
 		if(nodeIsSelected(node)){
@@ -547,6 +547,18 @@ var Application = (function(){
 		}
 		else{
 			selectNode(node);
+		}
+	}
+
+	/**
+	 * if the language is selected unselect it, if it isn't select it
+	 */
+	function toggleLanguageSelection(language){
+		if(languageIsSelected(language)){
+			unselectLanguage(language);
+		}
+		else{
+			selectLanguage(language);
 		}
 	}
 
@@ -785,6 +797,7 @@ var Application = (function(){
 		invertSelection:invertSelection,
 		toggleNodeSelection:toggleNodeSelection,
 		toggleLinkSelection:toggleLinkSelection,
+		toggleLanguageSelection:toggleLanguageSelection,
 		nodeIsSelected:nodeIsSelected,
 		linkIsSelected:linkIsSelected,
 		languageIsSelected:languageIsSelected,
