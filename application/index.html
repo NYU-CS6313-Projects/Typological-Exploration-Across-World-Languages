@@ -203,7 +203,77 @@
 				</form>
 				<div id="link_search_results" class="search_results"></div>
 			</div>
-			<div class="UI_tab_content" style="display:none;" id="UI_languages_search">Languages</div>
+			<div class="UI_tab_content" style="display:none;" id="UI_languages_search">
+				<form id="language_search_form">
+					<fieldset>
+						<legend>Languages</legend>
+						<table>
+							<tr>
+								<th colspan="2">
+									<label for="language_search_family">Family:</label>
+								</th><td>
+									<input type="text" id="language_search_family"></input>
+								</td>
+							</tr>
+							<tr>
+								<th colspan="2">
+									<label for="language_search_subfamily">Sub-Family:</label>
+								</th><td>
+									<input type="text" id="language_search_subfamily"></input>
+								</td>
+							</tr>
+							<tr>
+								<th colspan="2">
+									<label for="language_search_genus">Genus:</label>
+								</th><td>
+									<input type="text" id="language_search_genus"></input>
+								</td>
+							</tr>
+							<tr>
+								<th colspan="2">
+									<label for="language_search_name">Name:</label>
+								</th><td>
+									<input type="text" id="language_search_name"></input>
+								</td>
+							</tr>
+							<tr>
+								<th rowspan="3">
+									<label">Location:</label>
+								</th>
+								<th>
+									<label for="language_search_latitude">Latitude:</label>
+								</th>
+								<td>
+									<input type="text" id="language_search_latitude"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="language_search_longitude">Longitude:</label>
+								</th>
+								<td>
+									<input type="text" id="language_search_longitude"></input>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<label for="language_search_distance">Distance:</label>
+								</th>
+								<td>
+									<input type="text" id="language_search_distance"></input>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<input type="submit" value="Search"></input>
+								</td>
+							</tr>
+							
+						</table>
+					</fieldset>
+				</form>
+				<div id="language_search_results" class="search_results"></div>
+			</div>
 		</div>
 	</div>
 	<div class="ForceGraph"></div>

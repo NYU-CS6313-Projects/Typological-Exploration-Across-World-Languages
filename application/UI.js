@@ -4,6 +4,7 @@ var UI = (function(){
 			setUpPanels();
 			setUpTabs();
 			setupFormHandlers();
+			makeTheDamnedSearchResultsScroll();
 		}
 	);
 
@@ -70,6 +71,31 @@ var UI = (function(){
 	}
 
 	/**
+	 * read the function name >:(
+	 */
+	function makeTheDamnedSearchResultsScroll(){
+		setInterval(
+			function fixBrokenStuff(){
+				$('.search_results').each(function(i,element){
+					var element_bottom = $(element).offset().top + $(element).height();
+					var screen_bottom = $(window).height();
+					var difference = element_bottom - screen_bottom;
+					$(element).height($(element).height() - difference);
+					//fuck you css, was that so fucking hard?
+					//how many hours css? how many hours of my life did you waist?
+					//was it worth it? was it? was it worth breaking my spirit and forcing me to script simple fucking layout?
+					//I hope it was. and I hope you can live with yourself at night, but I know you can.
+					//I know CSS. I've worked with you long enough to know what a depraved sadistic standard you are
+					//but just remember this, I can abandon you any time you get in my way, your exsistence is mearly
+					//an extention of my desire to do the right thing, but I can break out tables or scripting any time you hurt me
+					//you owe me those hours back
+				});
+			},
+			500
+		);
+	}
+
+	/**
 	 *utility function that gets a regular expression to test against for a given form string identified by it's form element's id
 	 */
 	function getSearchStringRegex(id){
@@ -130,6 +156,7 @@ var UI = (function(){
 	function setupFormHandlers(){
 		setupFeatureSearchForm();
 		setupLinkSearchForm();
+		setupLanguageSearchForm();
 	}
 
 	function setupFeatureSearchForm(){
@@ -224,6 +251,43 @@ var UI = (function(){
 						var link_ids = $(this).data('link_id').split(',');
 						var link = Application.getLink(link_ids[0], link_ids[1]);
 						Application.highlightLink(is_in?link:null);
+					}
+				);
+			}
+			catch(err){
+				//please just don't submit the form, even if there is an error
+			}
+			return false;
+		});
+	}
+
+	function setupLanguageSearchForm(){
+		$("#language_search_form").bind('submit', function(event){
+			try{
+				var family = getSearchStringRegex('language_search_family');
+				var subfamily = getSearchStringRegex('language_search_subfamily');
+				var genus = getSearchStringRegex('language_search_genus');
+				var name = getSearchStringRegex('language_search_name');
+
+				var latitude = parseFloat($('#language_search_latitude').val());
+				var longitude = parseFloat($('#language_search_longitude').val());
+				var distance = parseFloat($('#language_search_distance').val());
+			
+				var results = Application.searchLanguage(family, subfamily, genus, name, latitude, longitude, distance);
+
+				displaySearchResults(
+					'#language_search_results', 
+					results, 
+					function template(language){
+						var is_selected = Application.languageIsSelected(language);
+						return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'+language.name+'</div>';
+					},
+					function onclick(){
+						var language = Application.getLanguage($(this).data('language_name'));
+						Application.toggleLanguageSelection(language);
+					},
+					function onhover(is_in){
+						//don't do anything
 					}
 				);
 			}

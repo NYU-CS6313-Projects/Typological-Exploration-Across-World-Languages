@@ -16,7 +16,8 @@ var Application = (function(){
 	 */
 	var selected_data = {
 		links: [],
-		nodes: []
+		nodes: [],
+		languages: []
 	}; 
 
 	/**
@@ -394,6 +395,14 @@ var Application = (function(){
 	}
 
 	/**
+	 * adds a node to the set of selected
+	 */
+	function selectLanguage(language){
+		selected_data.languages.push(language);
+		selectionChanged();
+	}
+
+	/**
 	 * removes a link from the set of selected
 	 */
 	function unselectLink(link){
@@ -414,6 +423,19 @@ var Application = (function(){
 			var cur_node = selected_data.nodes[i]
 			if(cur_node.id === node.id){
 				selected_data.nodes.splice(i, 1);
+			}
+		}
+		selectionChanged();
+	}
+
+	/**
+	 * removes a language from the set of selected
+	 */
+	function unselectLanguage(node){
+		for(var i = selected_data.languages.length-1; i>-1; i--){
+			var cur_language = selected_data.languages[i]
+			if(cur_language.name === node.name){
+				selected_data.languages.splice(i, 1);
 			}
 		}
 		selectionChanged();
@@ -446,33 +468,61 @@ var Application = (function(){
 	}
 
 	/**
+	 *returns true if the passed language is selected
+	 */
+	function languageIsSelected(language){
+		var is_selected = false;
+		selected_data.languages.forEach(function(cur_language){
+			if(cur_language.name === language.name){
+				is_selected = true;
+			}
+		});
+		return is_selected;
+	}
+
+	/**
 	 * unselects everything
 	 */
 	function clearSelection(){
 		selected_data.nodes = [];
 		selected_data.links = [];
+		selected_data.languages = [];
 		selectionChanged();
 	}
 
 	/**
 	 * selects everything unselected and unselects everything selected
+	 * @param type optional string, link, node, language, if ont given inverts everything
 	 */
-	function invertSelection(){
+	function invertSelection(type){
 		var new_nodes = [];
 		var new_links = [];
+		var new_languages = [];
 		//yeah, this is _horribly_ inefficent, does it really matter? is this function a performance nottleneck?
-		selected_data.links.forEach(function(cur_link){
-			if(!linkIsSelected(cur_link)){
-				new_links.push(cur_link);
-			}
-		});
-		selected_data.nodes.forEach(function(cur_node){
-			if(!nodeIsSelected(cur_node)){
-				new_node.push(cur_node);
-			}
-		});
-		selected_data.links = new_links;
-		selected_data.nodes = new_nodes;
+		if(typeof(type) === 'undefined' || type === 'link'){
+			selected_data.links.forEach(function(cur_link){
+				if(!linkIsSelected(cur_link)){
+					new_links.push(cur_link);
+				}
+			});			
+			selected_data.links = new_links;
+		}
+		if(typeof(type) === 'undefined' || type === 'node'){
+			selected_data.nodes.forEach(function(cur_node){
+				if(!nodeIsSelected(cur_node)){
+					new_node.push(cur_node);
+				}
+			});
+			selected_data.nodes = new_nodes;
+		}
+		if(typeof(type) === 'undefined' || type === 'language'){
+			selected_data.languages.forEach(function(cur_language){
+				if(!languageIsSelected(cur_language)){
+					new_language.push(cur_language);
+				}
+			});
+			selected_data.languages = new_languages;
+		}
 		selectionChanged();
 	}
 
@@ -529,6 +579,18 @@ var Application = (function(){
 				application_data.links[i].source.id === id_b && application_data.links[i].target.id === id_a
 			){
 				return application_data.links[i];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * gets a language by it's name (we can probably make some sort of id)
+	 */
+	function getLanguage(name){
+		for(var i = 0; i<application_data.languages.length; i++){
+			if(application_data.languages[i].name === name){
+				return application_data.languages[i];
 			}
 		}
 		return null;
@@ -634,6 +696,76 @@ var Application = (function(){
 	}
 
 
+
+	/**
+	 * searches on languages
+	 * for lat/lon search if distance is nan, then exact values are expected for lat/lon
+	 * if lat or lon is nan only non-nan values will be tested, 
+	 * @param family regex
+	 * @param subfamily regex
+	 * @param genus regex
+	 * @param name regex
+	 * @param latitude number
+	 * @param longitude number
+	 * @param distance number
+	 * @return [features] -- references to features in application_data
+	 */
+	function searchLanguage(family, subfamily, genus, name, latitude, longitude, distance){
+
+		function toRad(d){
+			return d*Math.PI/180;
+		}
+
+		function distLatLon(lat1, lon1, lat2, lon2){
+			var R = 6371; //earth radius, Km
+			var d_lat = toRad(lat2-lat1);
+			var d_lon = toRad(lon2-lon1);
+			var angle = 0.5 - Math.cos(d_lat)/2 + Math.cos(toRad(lat_1))*Math.cos(toRad(lat_2))*(1-Math.cos(d_lon))/2;
+
+			return math.asin(Math.sqrt(angle))*2*R;
+		}
+
+		var results = [];
+		
+		application_data.languages.forEach(function(d){
+
+			var dist_check_clear = true;
+
+			//if either lat or lon is set to a search on position
+			if(!Number.isNaN(latitude) || !Number.isNaN(longitude)){
+				var lat = latitude;
+				var lon = longitude;
+				if(Number.isNaN(lat)){
+					lat = d.latitude;
+				}
+				if(Number.isNaN(lon)){
+					lon = d.longitude;
+				}
+			
+				//do a full distance check
+				var language_distance = distLatLon(lat, lon, d.latitude, d.longitude);
+				if(language_distance > distance){
+					dist_check_clear = false;
+				}
+			}
+
+			if(
+					dist_check_clear
+				&&
+					family.test(d.family)
+				&&
+					subfamily.test(d.subfamily)
+				&&
+					genus.test(d.genus)
+				&&
+					name.test(d.name)
+			){
+				results.push(d);
+			}
+		});
+		return results;
+	}
+
 	return {
 		main:main,
 		setMinimumCorrelation:setFlooredData,
@@ -655,12 +787,17 @@ var Application = (function(){
 		toggleLinkSelection:toggleLinkSelection,
 		nodeIsSelected:nodeIsSelected,
 		linkIsSelected:linkIsSelected,
+		languageIsSelected:languageIsSelected,
+		selectLanguage:selectLanguage,
+		unselectLanguage:unselectLanguage,
+		getLanguage:getLanguage,
 		/*data access functions*/
 		getNode:getNode,
 		getLink:getLink,
 		/*search related functions*/
 		searchFeature:searchFeature,
-		searchLink:searchLink
+		searchLink:searchLink,
+		searchLanguage:searchLanguage
 	};
 }());
 
