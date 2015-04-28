@@ -39,12 +39,17 @@ var Application = (function(){
 
 		//this should be done in an ajax call if we end up with non-static data
 
-		//ForceGraph.setData(JSON.parse(JSON.stringify(test_data)));
-		setFlooredData(0);
-		ForceGraph.setGroupRingSize(5000);
-
 		//reset the highlighted links
 		Application.highlightNode(null);
+
+		$('.UI_control_pallet').children().each(function(i,element){
+			if(element.onchange){
+				element.onchange();
+			}
+			if(element.onclick){
+				element.onclick();
+			}
+		});
 	}
 
 	/**
@@ -138,6 +143,7 @@ var Application = (function(){
 								nodes[feature2]["values"][value2]
 								);
 						//strength = # of intersecting languages
+						//this should be equal to interlanguage_strength by the end of everything, so it might not be needed anymore
 						if(intersecting_languages.length > 1) {
 							total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
 						}
@@ -147,13 +153,14 @@ var Application = (function(){
 							{
 								if(languages[intersecting_languages[i]].family != languages[intersecting_languages[j]].family) {
 									interfamily_strength++;
-								} else if(languages[intersecting_languages[i]].subfamily != languages[intersecting_languages[j]].subfamily) {
-									intersubfamily_strength++;
-								} else if(languages[intersecting_languages[i]].genus != languages[intersecting_languages[j]].genus) {
-									intergenus_strength++;
-								} else {
-									interlanguage_strength++;
 								}
+								if(languages[intersecting_languages[i]].subfamily != languages[intersecting_languages[j]].subfamily) {
+									intersubfamily_strength++;
+								}
+								if(languages[intersecting_languages[i]].genus != languages[intersecting_languages[j]].genus) {
+									intergenus_strength++;
+								}
+								interlanguage_strength++;
 							}
 						}
 						//do some magic here if you want to create links from value-to-value
@@ -214,6 +221,9 @@ var Application = (function(){
 	 *UI callable function for collapsing features and setting it into the visualization
 	 */
 	function callCollapseFeatures() {
+		if(selected_data.nodes.length < 1){
+			return;
+		}
 		console.time("callCollapseFeatures");
 		var features = [];
 		for(selected_node in selected_data.nodes) {
@@ -783,7 +793,9 @@ var Application = (function(){
 		setMinimumCorrelation:setFlooredData,
 		setSubgraphSeparation:function(d){ForceGraph.setGroupRingSize(d);},
 		setDrawLinks:function(d){ForceGraph.setDrawLinks(d);},
-		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d)},
+		setMinimumDrawStrength:function(d){ForceGraph.setMinimumDrawStrength(d);},
+		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d);},
+		setCorrelationType:function(d){MatrixView.setCorrelationType(d);},
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,
 		loadData:loadData,

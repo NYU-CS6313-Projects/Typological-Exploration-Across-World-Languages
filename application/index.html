@@ -22,8 +22,11 @@
 		<span class="UI_label">Subgraph Separation:</span>
 		<input id="UI_subgraph_seperation" type="text" onchange="UI.onSeparationChange();" value="0"></input>
 
+		<span class="UI_label">Minimum link draw strength:</span>
+		<input id="UI_minimum_draw_strength" type="text" onchange="UI.onMinimumDrawStrengthChange();" value="0.05" title="Only draw links with correlation strength greater than this on a 0.0-1.0 scale"></input>
+
 		<span class="UI_label">Draw Links:</span>
-		<input id="UI_draw_links" type="checkbox" onclick="UI.onDrawLinkChange();" value="0"></input>
+		<input id="UI_draw_links" type="checkbox" onclick="UI.onDrawLinkChange();" value="1"></input>
 
 		<input id="UI_draw_links" type="button" onclick="UI.onCollapseSelectedFeatures();" value="Collapse Selected Features" />
 	</div>
@@ -282,6 +285,13 @@
 			<h2>Matrix</h2>
 			<span class="UI_label">Labels:</span>
 			<input id="UI_draw_matrix_labels" type="checkbox" onclick="UI.onDrawMatrixLabelsChange();" value="0"></input>
+			<span class="UI_label">Correlation Type:</span>
+			<select id="UI_correlation_type" onchange="UI.onCorrelationTypeChange();">
+				<option value="interfamily">Family Crossing</option>
+				<option value="intersubfamily">Subfamily Crossing</option>
+				<option value="intergenus">Genus Crossing</option>
+				<option value="interlanguage">Language Crossing</option>
+			</select>
 		</div>
 		<div class="MatrixView">
 			<table></table>

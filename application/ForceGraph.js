@@ -8,6 +8,11 @@
 \************************/
 var ForceGraph = (function(){
 
+	/**
+	 * constant list of the types of strength to display, and the order in which to draw them
+	 */
+	var STRENGTH_TYPES = ['interlanguage', 'intergenus', 'intersubfamily', 'interfamily']
+
 	//P is for private
 	var P = {
 		/**
@@ -26,14 +31,9 @@ var ForceGraph = (function(){
 		node_group:null,
 
 		/**
-		 * selection of svg group that all links are supposed to be in
+		 * selections of svg groups that all links are supposed to be in
 		 */
-		link_group:null,
-
-		/**
-		 * selection of svg group that all highlighted links are supposed to be in
-		 */
-		link_group:null,
+		link_groups:[],
 
 		/**
 		 * the d3 selection of highlighted links (mouse over node effect)
@@ -69,9 +69,9 @@ var ForceGraph = (function(){
 		highlighted_links:[],
 
 		/**
-		 * the d3 selection of links
+		 * d3 selection of links
 		 */
-		link_selection:null,
+		link_selections:[],
 
 		/**
 		 * the d3 selection of highlighted links
@@ -132,13 +132,34 @@ var ForceGraph = (function(){
 		/**
 		 * boolean flag telling us if we should draw links or not
 		 */
-		draw_links: false
+		draw_links: false,
+
+		/**
+		 * config option for skipping the drawing of weak links
+		 * 0-1 range
+		 */
+		minimum_draw_strength: 0.05
 	}
 
 
 	/*******************\
 	|* PRIVATE METHODS *|
 	\*******************/
+
+	/**
+	 *map link strength values to width
+	 */
+	function strengthToWidth(strength){
+		return 200*(strength/P.max_link_strength);
+	}
+
+	/**
+	 *map link strength values to graphical length
+	 */
+	function calculateLength(link){
+		var weighted_strength = link.interlanguage_strength/8 + link.intergenus_strength/4 + link.intersubfamily_strength/2 + link.interfamily_strength;
+		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 5);
+	}
 
 	/**
 	 *get a gravity ring point for the given group
@@ -254,20 +275,20 @@ var ForceGraph = (function(){
 				Application.highlightLink(null);
 			});
 
-		updateLink(link_selection);
+		updateLink(link_selection, 'total');
 	}
 
 	/**
 	 *all of the stuff that needs to happen for a selection of links
 	 */
-	function updateLink(link_selection){
+	function updateLink(link_selection, type){
 		//update properties
 		link_selection
 			.attr("x1", function(d) { return d.source.x; })
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
-			.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
+			.attr("stroke-width", function(d) { return strengthToWidth(d[type+'_strength']); });
 	}
 
 	/**
@@ -288,7 +309,7 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.enter()
 			.append("line")
 			.attr("class", "highlighted-link")
-			.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
+			.attr("stroke-width", function(d) { return strengthToWidth(d.total_strength); });
 
 		P.highlighted_link_selection.exit()
 			.remove();
@@ -313,7 +334,15 @@ var ForceGraph = (function(){
 			P.svg = svg;
 
 			P.main_group = svg.append("svg:g");
-			P.link_group = P.main_group.append("svg:g");
+
+			P.link_groups = [];
+			P.link_selections = [];
+			STRENGTH_TYPES.forEach(function(type){
+				var link_group = P.main_group.append("svg:g");
+				link_group.classed(type+'_link_group');
+				P.link_groups.push(link_group);
+				P.link_selections.push(link_group.selectAll('.'+type+'_link'));//this will be an empty selection, but this is for consistency sake
+			});
 			P.selected_link_group = P.main_group.append("svg:g");
 			P.highlighted_link_group = P.main_group.append("svg:g");
 			P.node_group = P.main_group.append("svg:g");
@@ -321,11 +350,12 @@ var ForceGraph = (function(){
 
 			//setup the force directed layout 
 			P.layout = d3.layout.force()
-				.friction(0.1)
-				.linkStrength(0.5)
+				.friction(0.5)
+				.linkStrength(0.125)
 				.gravity(0)
+				.charge(-1)
 				.linkDistance(function(d){
-					return (P.max_link_strength/Math.max(d.total_strength,0.0001))*100;
+					return calculateLength(d);
 				});
 
 			//do the initial link up with empty data
@@ -360,11 +390,12 @@ var ForceGraph = (function(){
 				//update the selections
 				updateNode(P.node_selection);
 
-				//I love how d3 has no apparent mechanism for unioning selections
-				updateLink(P.highlighted_link_selection);
-				updateLink(P.link_selection);
+				STRENGTH_TYPES.forEach(function(type, i){
+					updateLink(P.link_selections[i], type);
+				});
+				updateLink(P.highlighted_link_selection, 'total');
 
-				updateLink(P.selected_link_selection);
+				updateLink(P.selected_link_selection, 'total');
 				P.selected_node_selection
 					.attr('cx',function(d){return d.x;})
 					.attr('cy',function(d){return d.y;});
@@ -443,8 +474,6 @@ var ForceGraph = (function(){
 			});
 			P.group_count++;
 
-			P.layout.charge(-P.max_link_strength*2)
-
 			//update the layout with the new data
 			P.layout
 				.nodes(P.data.nodes)
@@ -453,32 +482,38 @@ var ForceGraph = (function(){
 				)
 				.start();
 			
-			//regrab the links
-			P.link_selection = P.link_group.selectAll(".link")
-				.data(
-					P.data.links,
-					function(d){
-						return d.source.id+','+d.target.id;
-					}
-				);
+			STRENGTH_TYPES.forEach(function(type, i){
+				//regrab the links
+				P.link_selections[i] = P.link_groups[i].selectAll('.'+type+'_link')
+					.data(
+						P.data.links.filter(function(d){
+							return (d.total_strength/P.max_link_strength) > P.minimum_draw_strength;
+						}),
+						function(d){
+							return d.source.id+','+d.target.id;
+						}
+					);
 
-			if(P.draw_links){
-				P.link_selection.enter()
-					.append("line")
-					.attr("class", "link")
-					.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); })
-					.on("click", function(d) {
-						Application.toggleLinkSelection(d)
-					})
-					.on("mouseover", function(d){
-						Application.highlightLink(d);
-					})
-					.on("mouseout", function(d){
-						Application.highlightLink(null);
-					});
-			}
-			P.link_selection.exit()
-				.remove();
+				if(P.draw_links){
+					P.link_selections[i]
+						
+						.enter()
+						.append("line")
+						.attr("class", type+"_link")
+						.attr("stroke-width", function(d) { return strengthToWidth(d[type+'_strength']); })
+						.on("click", function(d) {
+							Application.toggleLinkSelection(d)
+						})
+						.on("mouseover", function(d){
+							Application.highlightLink(d);
+						})
+						.on("mouseout", function(d){
+							Application.highlightLink(null);
+						});
+				}
+				P.link_selections[i].exit()
+					.remove();
+			});
 
 			//regrab the nodes
 			P.node_selection = P.node_group.selectAll("g.node")
@@ -517,8 +552,18 @@ var ForceGraph = (function(){
 		setDrawLinks: function(draw_links){
 			P.draw_links = draw_links;
 			if(!draw_links){
-				P.link_selection.remove();
+				STRENGTH_TYPES.forEach(function(type, i){
+					P.link_selections[i].remove();
+				});
 			}
+			this.setData(P.data);
+		},
+
+		/**
+		 *set the lower threshold for drawing links
+		 */
+		setMinimumDrawStrength: function(minimum){
+			P.minimum_draw_strength = minimum;
 			this.setData(P.data);
 		},
 
@@ -538,7 +583,7 @@ var ForceGraph = (function(){
 			P.selected_link_selection.enter()
 				.append("line")
 				.attr("class", "selected-link")
-				.attr("stroke-width", function(d) { return 5*Math.log(d.total_strength); });
+				.attr("stroke-width", function(d) { return strengthToWidth(d.total_strength); });
 
 			P.selected_link_selection.exit()
 				.remove();

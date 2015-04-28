@@ -57,7 +57,12 @@ var MatrixView = (function(){
 		/**
 		 *reference to the selection data, used when we rebuild the matrix;
 		 */
-		selection_data: null
+		selection_data: null,
+		
+		/**
+		 * the type of strength we use for coloring cells
+		 */
+		correlation_type: 'interfamily'
 	}
 
 
@@ -86,8 +91,8 @@ var MatrixView = (function(){
 		//sort by feature value
 		return function(a,b){
 
-			a = (a in lookup)?lookup[a].total_strength:-1;
-			b = (b in lookup)?lookup[b].total_strength:-1;
+			a = (a in lookup)?lookup[a][P.correlation_type+'_strength']:-1;
+			b = (b in lookup)?lookup[b][P.correlation_type+'_strength']:-1;
 
 			if(a>b){
 				return -1;
@@ -211,7 +216,7 @@ var MatrixView = (function(){
 				var bg_color = 'rgb(0,0,128)';
 				var strength = '';
 				if(link){
-					strength = link.total_strength;
+					strength = link[P.correlation_type+'_strength'];
 					bg_color = 'rgb('+Math.round((strength/P.max_link_strength)*255)+',0,0)';
 				}
 
@@ -306,8 +311,8 @@ var MatrixView = (function(){
 		P.raw_data.links.forEach(function(l){
 			P.processed_data.links[l.source.id][l.target.id] = l;
 			P.processed_data.links[l.target.id][l.source.id] = l;
-			if(P.max_link_strength < l.total_strength){
-				P.max_link_strength = l.total_strength;
+			if(P.max_link_strength < l[P.correlation_type+'_strength']){
+				P.max_link_strength = l[P.correlation_type+'_strength'];
 			}
 		});
 	}
@@ -404,6 +409,14 @@ var MatrixView = (function(){
 				$(selector).addClass('selected');
 			}
 			
+		},
+
+		/**
+		 * what sort of strenth type do we want to show
+		 */
+		setCorrelationType: function(type){
+			P.correlation_type = type;			
+			redrawData();
 		}
 	}
 

@@ -245,9 +245,9 @@ var UI = (function(){
 							+'Correlation Confidence'
 							+'<table>'
 								+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
+								+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
 								+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
 								+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
-								+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
 								+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
 							+'</table>'
 						+'</div>';
@@ -419,6 +419,22 @@ var UI = (function(){
 	}
 
 	/**
+	 * the user has decided to change the weakest links to draw
+	 */
+	function onMinimumDrawStrengthChange(){
+		var minimum = parseFloat($('#UI_minimum_draw_strength').val());
+		Application.setMinimumDrawStrength(minimum);
+	}
+
+	/**
+	 * the user has decided to change what type of strength to show in the matrix
+	 */
+	function onCorrelationTypeChange(){
+		var type = $('#UI_correlation_type').val();
+		Application.setCorrelationType(type);
+	}
+
+	/**
 	 *the user has changed the minimum corelation
 	 */
 	function onCollapseSelectedFeatures(){
@@ -501,6 +517,8 @@ var UI = (function(){
 		onDrawLinkChange:onDrawLinkChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
 		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
+		onMinimumDrawStrengthChange:onMinimumDrawStrengthChange,
+		onCorrelationTypeChange:onCorrelationTypeChange,
 		highlightNodeSearchResults:highlightNodeSearchResults,
 		highlightLinkSearchResults:highlightLinkSearchResults,
 		selectionChanged:selectionChanged,
