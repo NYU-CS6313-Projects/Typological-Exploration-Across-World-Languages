@@ -71,12 +71,64 @@ var UI = (function(){
 	}
 
 	/**
+	 * templates for drawing nodes, links and languages
+	 */
+	TEMPLATES = {
+		node: function(feature){
+			var is_selected = Application.nodeIsSelected(feature);
+			return '<div class="feature_search_result search_result feature feature_'+feature.id+(is_selected?' selected':'')+'" data-feature_id="'+feature.id+'">'
+				+'<h2>'+feature.name+' ('+feature.id+')</h2>'
+				+'<table>'
+					+'<tr><th>Id</th><td>'+feature.id+'</td></tr>'
+					+'<tr><th>Name</th><td>'+feature.name+'</td></tr>'
+					+'<tr><th>Language Count</th><td>'+feature.language_count+'</td></tr>'
+					+'<tr><th>Area</th><td>'+feature.area+'</td></tr>'
+					+'<tr><th>Author</th><td>'+feature.author+'</td></tr>'
+				+'</table>'
+			+'</div>';
+		},
+
+		link: function(link){
+			var is_selected = Application.nodeIsSelected(link);
+			return '<div class="link_search_result search_result link feature_'+link.source.id+' feature_'+link.target.id+(is_selected?' selected':'')+'" data-link_id="'+link.source.id+','+link.target.id+'">'
+				+'<h2>'+link.source.id+' - '+link.target.id+'</h2>'
+				+'Correlation Confidence'
+				+'<table>'
+					+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
+					+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
+					+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
+					+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
+					+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
+				+'</table>'
+			+'</div>';
+		},
+
+		language: function(language){
+			var is_selected = Application.languageIsSelected(language);
+			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
+				+'<h2>'+language.name+'</h2>'
+				+'<table>'
+					+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
+					+'<tr><th>Subfamily</th><td>'+language.subfamily+'</td></tr>'
+					+'<tr><th>Genus</th><td>'+language.genus+'</td></tr>'
+					+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
+					+'<tr><th>Name</th><td>'+language.name+'</td></tr>'
+					+'<tr><th>Latitude</th><td>'+language.latitude+'</td></tr>'
+					+'<tr><th>Longitude</th><td>'+language.longitude+'</td></tr>'
+				+'</table>'
+			+'</div>';
+		}
+	};
+
+	
+
+	/**
 	 * read the function name >:(
 	 */
 	function makeTheDamnedSearchResultsScroll(){
 		setInterval(
 			function fixBrokenStuff(){
-				$('.search_results').each(function(i,element){
+				$('.search_results, .UI_resize_right').each(function(i,element){
 					var element_bottom = $(element).offset().top + $(element).height();
 					var screen_bottom = $(window).height();
 					var difference = element_bottom - screen_bottom;
@@ -174,20 +226,8 @@ var UI = (function(){
 
 				displaySearchResults(
 					'#feature_search_results', 
-					results, 
-					function template(feature){
-						var is_selected = Application.nodeIsSelected(feature);
-						return '<div class="feature_search_result search_result feature feature_'+feature.id+(is_selected?' selected':'')+'" data-feature_id="'+feature.id+'">'
-							+'<h2>'+feature.name+' ('+feature.id+')</h2>'
-							+'<table>'
-								+'<tr><th>Id</th><td>'+feature.id+'</td></tr>'
-								+'<tr><th>Name</th><td>'+feature.name+'</td></tr>'
-								+'<tr><th>Language Count</th><td>'+feature.language_count+'</td></tr>'
-								+'<tr><th>Area</th><td>'+feature.area+'</td></tr>'
-								+'<tr><th>Author</th><td>'+feature.author+'</td></tr>'
-							+'</table>'
-						+'</div>';
-					},
+					results,
+					TEMPLATES.node,
 					function onclick(){
 						var feature = Application.getNode($(this).data('feature_id'));
 						Application.toggleNodeSelection(feature);
@@ -237,21 +277,8 @@ var UI = (function(){
 
 				displaySearchResults(
 					'#link_search_results', 
-					results, 
-					function template(link){
-						var is_selected = Application.nodeIsSelected(link);
-						return '<div class="link_search_result search_result link feature_'+link.source.id+' feature_'+link.target.id+(is_selected?' selected':'')+'" data-link_id="'+link.source.id+','+link.target.id+'">'
-							+'<h2>'+link.source.id+' - '+link.target.id+'</h2>'
-							+'Correlation Confidence'
-							+'<table>'
-								+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
-								+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
-								+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
-								+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
-								+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
-							+'</table>'
-						+'</div>';
-					},
+					results,
+					TEMPLATES.link,
 					function onclick(){
 						var link_ids = $(this).data('link_id').split(',');
 						var link = Application.getLink(link_ids[0], link_ids[1]);
@@ -287,22 +314,8 @@ var UI = (function(){
 
 				displaySearchResults(
 					'#language_search_results', 
-					results, 
-					function template(language){
-						var is_selected = Application.languageIsSelected(language);
-						return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
-							+'<h2>'+language.name+'</h2>'
-							+'<table>'
-								+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-								+'<tr><th>Subfamily</th><td>'+language.subfamily+'</td></tr>'
-								+'<tr><th>Genus</th><td>'+language.genus+'</td></tr>'
-								+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-								+'<tr><th>Name</th><td>'+language.name+'</td></tr>'
-								+'<tr><th>Latitude</th><td>'+language.latitude+'</td></tr>'
-								+'<tr><th>Longitude</th><td>'+language.longitude+'</td></tr>'
-							+'</table>'
-						+'</div>';
-					},
+					results,
+					TEMPLATES.language,
 					function onclick(){
 						var language = Application.getLanguage($(this).data('language_name'));
 						Application.toggleLanguageSelection(language);
@@ -365,24 +378,30 @@ var UI = (function(){
 	 * the user has changed their UI selection
 	 */
 	function selectionChanged(selected_data){
-		var output = "";
-		for(s in selected_data.nodes) {
-			output += "Node<br/>";
-			output += selected_data.nodes[s].id+"<br/>";
-			output += selected_data.nodes[s].name+"<br/>";
-			output += selected_data.nodes[s].author+"<br/>";
-			output += selected_data.nodes[s].area+"<br/>";
-			output += selected_data.nodes[s].group+"<br/>";
-			output += "<br/>";
+		var anything_selected = false;
+		['node','link','language'].forEach(function(type){
+			var output = "";
+			if(selected_data[type+'s'].length < 1){
+				$('.data_panel .selected_'+type+'s .null_selection').show();
+			}
+			else{
+				anything_selected = true
+				$('.data_panel .selected_'+type+'s .null_selection').hide();
+				selected_data[type+'s'].forEach(function(selected){
+					output += TEMPLATES[type](selected);
+				});
+			}
+			$('.data_panel .selected_'+type+'s .selection_list').html(output);
+		});
+
+		if(anything_selected){
+			$('.data_panel>.null_selection').hide();
 		}
-		for(s in selected_data.links) {
-			output += "Link<br/>";
-			output += selected_data.links[s].source.id+"<br/>";
-			output += selected_data.links[s].target.id+"<br/>";
-			output += selected_data.links[s].total_strength+"<br/>";
-			output += "<br/>";
+		else
+		{
+			$('.data_panel>.null_selection').show();
 		}
-		$(".data_panel").html(output);
+
 		selectSearchResults(selected_data);
 	}
 

@@ -215,6 +215,24 @@ div.ForceGraph{
 	right:0;
 }
 
+.UI_resize_right .scrollable_content
+{
+	min-width:630px;
+}
+
+.UI_resize_right .data_panel
+{
+	margin-left:1.5em;
+	min-width:600px;
+	overflow-y: auto;
+	height: 100%;
+}
+
+.UI_resize_right legend
+{
+	font-weight: bold;
+}
+
 .UI_resize_right .UI_tab
 {
 	float:left;
