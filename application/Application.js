@@ -23,7 +23,7 @@ var Application = (function(){
 	/**
 	 * Number of custom features created by collapsing features
 	 */
-	var custom_feature_count = 0;
+	var custom_node_count = 0;
 
 	/**
 	 * main function, entry point for the application,
@@ -69,9 +69,8 @@ var Application = (function(){
 	 * Build data feature nodes from given json data
 	 */
 	function buildFeatureNodes(data) {
-		console.time("buildFeatureNodes");
 		var nodes = [];
-		var features = JSON.parse(JSON.stringify(data.features));
+		var features = JSON.parse(JSON.stringify(data.nodes));
 
 		//populate nodes with feature data
 		for(feature in features) {
@@ -86,7 +85,6 @@ var Application = (function(){
 			});
 		}
 
-		console.timeEnd("buildFeatureNodes");
 		return nodes;
 	}
 
@@ -94,7 +92,6 @@ var Application = (function(){
 	 * Build data links from existing language data and node data
 	 */
 	function buildLinks(nodes, languages) {
-		console.time("buildLinks");
 		//need an efficient intersection function for sorted arrays
 		function intersection(a, b) {
 			var x=0,y=0,ret=[];
@@ -181,7 +178,6 @@ var Application = (function(){
 				}
 			}
 		}
-		console.timeEnd("buildLinks");
 		return links;
 	}
 
@@ -224,7 +220,6 @@ var Application = (function(){
 		if(selected_data.nodes.length < 1){
 			return;
 		}
-		console.time("callCollapseFeatures");
 		var features = [];
 		for(selected_node in selected_data.nodes) {
 			for(application_node in application_data.nodes) {
@@ -237,7 +232,6 @@ var Application = (function(){
 		clearSelection();
 		ForceGraph.setData(application_data);
 		MatrixView.setData(application_data);
-		console.timeEnd("callCollapseFeatures");
 	}
 
 	/**
@@ -265,12 +259,10 @@ var Application = (function(){
 	 *UI callable function for flooring the data and setting it into the visualization
 	 */
 	function setFlooredData(threshold){
-		console.time("setFlooredData");
 		application_data = floorData(source_data, threshold);
 		clearSelection();
 		ForceGraph.setData(application_data);
 		MatrixView.setData(application_data);
-		console.timeEnd("setFlooredData");
 	}
 
 	/**
@@ -279,7 +271,6 @@ var Application = (function(){
 	 * operates directly on the reference passed to it!
 	 */
 	function makeSubgraphs(data){
-		console.time("makeSubgraphs");
 		var data = JSON.parse(JSON.stringify(data));
 		var group_counter = 0;
 		function findNodeIndexById(node_id) {
@@ -354,7 +345,6 @@ var Application = (function(){
 		//rebuild the links
 		data.links = buildLinks(data.nodes, data.languages);
 
-		console.timeEnd("makeSubgraphs");
 		return data;
 	}
 
