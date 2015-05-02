@@ -23,7 +23,7 @@ var Application = (function(){
 	/**
 	 * Number of custom features created by collapsing features
 	 */
-	var custom_feature_count = 0;
+	var custom_node_count = 0;
 
 	/**
 	 * main function, entry point for the application,
@@ -76,9 +76,8 @@ var Application = (function(){
 	 * Build data feature nodes from given json data
 	 */
 	function buildFeatureNodes(data) {
-		console.time("buildFeatureNodes");
 		var nodes = [];
-		var features = JSON.parse(JSON.stringify(data.features));
+		var features = JSON.parse(JSON.stringify(data.nodes));
 
 		//populate nodes with feature data
 		for(feature in features) {
@@ -93,7 +92,6 @@ var Application = (function(){
 			});
 		}
 
-		console.timeEnd("buildFeatureNodes");
 		return nodes;
 	}
 
@@ -122,6 +120,15 @@ var Application = (function(){
 	}
 
 	/**
+	 * Given some feature's values object, flattens to a single array of languages
+	 */
+	function flattenValues(valuesObj) {
+		return Object.keys(valuesObj) //get keys for the values
+			.map(function(key){return valuesObj[key]}) //get the arrays matched to those keys
+			.reduce(function(a,b){return a.concat(b)}); //flatten the arrays down to a single arrray
+	}
+
+	/**
 	 * Given two features, calculate the strength values
 	 */
 	function calculateStrength(feature1, feature2, data){
@@ -132,20 +139,34 @@ var Application = (function(){
 		var intersubfamily_strength = 0;
 		var intergenus_strength = 0;
 		var interlanguage_strength = 0;
-		var intersecting_languages;
+		var intersecting_languages = [];
+		var f1_v1_langs = [];
+		var f2_v2_langs = [];
+		var expected_language_count = 0;
+		var expected_value = 0;
+		var chi_value = 0;
+		//flatten values
+		var feature1_langs = flattenValues(data.nodes[feature1]["values"]);
+		var feature2_langs = flattenValues(data.nodes[feature2]["values"]);
+		var shared_langs = intersection(feature1_langs, feature2_langs);
+		if(shared_langs.length == 0) {
+			return null;
+		}
+
 		//every value for first feature
 		for(value1 in data.nodes[feature1]["values"]) {
+			f1_v1_langs = intersection(shared_langs, data.nodes[feature1]["values"][value1]);
 			//every value for second fature
 			for(value2 in data.nodes[feature2]["values"]) {
-				intersecting_languages = intersection(
-						data.nodes[feature1]["values"][value1],
-						data.nodes[feature2]["values"][value2]
-						);
-				//strength = # of intersecting languages
-				//this should be equal to interlanguage_strength by the end of everything, so it might not be needed anymore
-				if(intersecting_languages.length > 1) {
-					total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
-				}
+				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][value2]);
+				//expected language PAIRS
+				expected_language_count = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length));
+				//this extra math ensures that fractional language counts fall along a smooth curve
+				//this slightly changes chi values, but they should be consistent relationally
+				expected_value = (expected_language_count+0.5)*(expected_language_count-0.5)/2 + 1/8;
+				intersecting_languages = f1_v1_langs.length<f2_v2_langs.length ? f1_v1_langs : f2_v2_langs;
+				total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
+
 				for(var i = 0; i < intersecting_languages.length; i++)
 				{
 					for(var j = i+1; j < intersecting_languages.length; j++)
@@ -162,25 +183,37 @@ var Application = (function(){
 						interlanguage_strength++;
 					}
 				}
-				//do some magic here if you want to create links from value-to-value
-				//instead of feature-to-feature
+				if(intersecting_languages.length <= 1 && expected_value == 0) {
+					//do nothing
+				} else {
+					if(expected_value <= 0) {
+						alert("Expected value cannot be zero!.");
+					}
+					chi_value +=
+						Math.pow(
+							intersecting_languages.length*(intersecting_languages.length-1)/2 - expected_value,
+							2
+						)/expected_value;
+					if(isNaN(chi_value)) {
+						alert("chi_value is NaN!");
+					}
+				}
 			}
 		}
 		return {
 			total_strength:total_strength,
+			chi_value:chi_value,
 			interfamily_strength:interfamily_strength,
 			intersubfamily_strength:intersubfamily_strength,
 			intergenus_strength:intergenus_strength,
 			interlanguage_strength:interlanguage_strength
 		}
-
 	}
 
 	/**
 	 * Build data links from existing language data and node data
 	 */
 	function buildLinks(data) {
-		console.time("buildLinks");
 		//need an efficient intersection function for sorted arrays
 		var links = [];
 		var feature1;
@@ -190,11 +223,12 @@ var Application = (function(){
 			//compare to every OTHER feature
 			for(var feature2 = feature1+1; feature2 < data.nodes.length; feature2++) {
 				var strength = calculateStrength(feature1, feature2, data);
-				if(strength.total_strength){
+				if(strength != null && strength.total_strength > 0){
 					links.push({
 						"source":data.nodes[feature1],
 						"target":data.nodes[feature2],
 						"total_strength":strength.total_strength,
+						"chi_value":strength.chi_value,
 						"interfamily_strength":strength.interfamily_strength,
 						"intersubfamily_strength":strength.intersubfamily_strength,
 						"intergenus_strength":strength.intergenus_strength,
@@ -203,7 +237,6 @@ var Application = (function(){
 				}
 			}
 		}
-		console.timeEnd("buildLinks");
 		return links;
 	}
 
@@ -246,7 +279,6 @@ var Application = (function(){
 		if(selected_data.nodes.length < 1){
 			return;
 		}
-		console.time("callCollapseFeatures");
 		var features = [];
 		for(selected_node in selected_data.nodes) {
 			for(application_node in application_data.nodes) {
@@ -257,7 +289,6 @@ var Application = (function(){
 		}
 		application_data = collapseFeatures(application_data, features);
 		setData(application_data);
-		console.timeEnd("callCollapseFeatures");
 	}
 
 	/**
@@ -285,10 +316,8 @@ var Application = (function(){
 	 *UI callable function for flooring the data and setting it into the visualization
 	 */
 	function setFlooredData(threshold){
-		console.time("setFlooredData");
 		application_data = floorData(source_data, threshold);
 		setData(application_data);
-		console.timeEnd("setFlooredData");
 	}
 
 	/**
@@ -297,7 +326,6 @@ var Application = (function(){
 	 * operates directly on the reference passed to it!
 	 */
 	function makeSubgraphs(data){
-		console.time("makeSubgraphs");
 		var data = JSON.parse(JSON.stringify(data));
 		var group_counter = 0;
 		function findNodeIndexById(node_id) {
@@ -372,7 +400,6 @@ var Application = (function(){
 		//rebuild the links
 		data.links = buildLinks(data);
 
-		console.timeEnd("makeSubgraphs");
 		return data;
 	}
 

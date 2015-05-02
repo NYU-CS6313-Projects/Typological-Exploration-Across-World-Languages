@@ -36,7 +36,7 @@ foreach($languages as $language_id => $language) {
 }
 
 //build json object from feature_data and feature_structures
-$output = "\"features\":[";
+$output = "\"nodes\":[";
 foreach($feature_data as $feature => $values) {
 	$output .= "\n\t{";
 	$output .= "\n\t\t\"name\":\"".$feature_structures[$feature]["Name"]."\",";
