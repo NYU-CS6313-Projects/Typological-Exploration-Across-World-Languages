@@ -158,7 +158,7 @@ var ForceGraph = (function(){
 	 */
 	function calculateLength(link){
 		var weighted_strength = link.interlanguage_strength/8 + link.intergenus_strength/4 + link.intersubfamily_strength/2 + link.interfamily_strength;
-		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 5);
+		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 5)+100;
 	}
 
 	/**
@@ -200,16 +200,18 @@ var ForceGraph = (function(){
 		//add the group
 		var new_node_group = node_selection.enter()
 			.append('g')
-			.attr("class", "node");
+			.attr("class", "node")
+			.call(P.layout.drag);
 
 		//add the circle for the group
 		new_node_group
 			.append("circle")
 			.attr("r", 100)
 			.attr("class", "node")
-			.call(P.layout.drag)
 			.on("click", function(d) {
-				Application.toggleNodeSelection(d)
+				if(!d3.event.defaultPrevented){
+					Application.toggleNodeSelection(d);
+				}
 			})
 			.on("mouseover.force", null)
 			.on("mouseover", function(d){
@@ -369,8 +371,8 @@ var ForceGraph = (function(){
 				var com = Array.apply(null, new Array(P.group_count)).map(function(){return {x:0,y:0,count:0};});
 				P.data.nodes.forEach(function(d){
 					if('group' in d){
-						com[d.group].x += d.x;
-						com[d.group].y += d.y;
+						com[d.group].x += d.px;
+						com[d.group].y += d.py;
 						com[d.group].count++;
 					}
 				});
@@ -383,8 +385,10 @@ var ForceGraph = (function(){
 					impulse[i] = getGravityImpulse(d);
 				});
 				P.data.nodes.forEach(function(d){
-					d.x += event.alpha*impulse[d.group].x;
-					d.y += event.alpha*impulse[d.group].y;
+					if(typeof(d.fixed) !== 'undefined'){
+						d.x += event.alpha*impulse[d.group].x;
+						d.y += event.alpha*impulse[d.group].y;
+					}
 				});
 
 				//update the selections

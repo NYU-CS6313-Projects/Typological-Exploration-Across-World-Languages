@@ -217,7 +217,10 @@ var MatrixView = (function(){
 				var strength = '';
 				if(link){
 					strength = link[P.correlation_type+'_strength'];
-					bg_color = 'rgb('+Math.round((strength/P.max_link_strength)*255)+',0,0)';
+					var r = Math.round((strength/P.max_link_strength*0.75+0.25)*255);
+					var g = Math.round((strength/P.max_link_strength/2)*255);
+					var b = Math.round((strength/P.max_link_strength/2)*255);
+					bg_color = 'rgb('+r+','+g+','+b+')';
 				}
 
 				var data_cell = element('td');
