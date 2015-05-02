@@ -217,6 +217,7 @@ div.ForceGraph{
 
 .UI_resize_right .scrollable_content
 {
+	height:100%;
 	min-width:630px;
 }
 
