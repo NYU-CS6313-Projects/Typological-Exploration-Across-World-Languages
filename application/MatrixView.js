@@ -232,13 +232,14 @@ var MatrixView = (function(){
 				data_row.append(data_cell);
 			});
 		});
-		if(P.selection_data){
-			self.selectionChanged(P.selection_data);
-		}
 
 		$(P.table).empty();
 		var code = table.getCode();
 		$(P.table).html(code);
+
+		if(P.selection_data){
+			self.selectionChanged(P.selection_data);
+		}
 
 		//event handlers
 		//column/row header handlers

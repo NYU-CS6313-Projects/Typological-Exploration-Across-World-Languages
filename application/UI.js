@@ -203,6 +203,13 @@ var UI = (function(){
 	}
 
 	/**
+	 * for some reason we've just been informed that our search results are now invalid
+	 */
+	function clearSearchResults(){
+		$('.search_results').empty();
+	}
+
+	/**
 	 * sets up the form handlers
 	 */
 	function setupFormHandlers(){
@@ -542,6 +549,7 @@ var UI = (function(){
 		highlightLinkSearchResults:highlightLinkSearchResults,
 		selectionChanged:selectionChanged,
 		selectAllSearchResults:selectAllSearchResults,
-		unselectAllSearchResults:unselectAllSearchResults
+		unselectAllSearchResults:unselectAllSearchResults,
+		clearSearchResults:clearSearchResults
 	};
 }());

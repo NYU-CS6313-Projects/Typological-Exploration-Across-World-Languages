@@ -677,6 +677,7 @@ var Application = (function(){
 				}
 			};
 		}
+		UI.clearSearchResults();
 		clearSelection();
 		setData(application_data);
 	}
