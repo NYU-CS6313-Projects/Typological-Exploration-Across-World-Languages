@@ -44,14 +44,14 @@ svg
 .highlighted-link
 {
   stroke: #ff0;
-  opacity:0.3;
+  opacity:0.5;
   pointer-events:none;
 }
 
 .selected-link
 {
   stroke: #0f0;
-  opacity:0.3;
+  opacity:0.5;
   pointer-events:none;
 }
 
@@ -213,6 +213,25 @@ div.ForceGraph{
 .UI_resize_right
 {
 	right:0;
+}
+
+.UI_resize_right .scrollable_content
+{
+	height:100%;
+	min-width:630px;
+}
+
+.UI_resize_right .data_panel
+{
+	margin-left:1.5em;
+	min-width:600px;
+	overflow-y: auto;
+	height: 100%;
+}
+
+.UI_resize_right legend
+{
+	font-weight: bold;
 }
 
 .UI_resize_right .UI_tab

@@ -52,6 +52,13 @@ var Application = (function(){
 		});
 	}
 
+	function setData(data){
+		application_data = data;
+		clearSelection();
+		ForceGraph.setData(application_data);
+		MatrixView.setData(application_data);		
+	}
+
 	/**
 	 * load json data into appropriate node/link format
 	 */
@@ -60,7 +67,7 @@ var Application = (function(){
 
 		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
 		built_data.nodes = buildFeatureNodes(input_data);
-		built_data.links = buildLinks(built_data.nodes,built_data.languages);
+		built_data.links = buildLinks(built_data);
 
 		return built_data;
 	}
@@ -89,40 +96,42 @@ var Application = (function(){
 	}
 
 	/**
-	 * Build data links from existing language data and node data
+	 * given two sorted lists of primitives calculate a list that is their intersection
 	 */
-	function buildLinks(nodes, languages) {
-		//need an efficient intersection function for sorted arrays
-		function intersection(a, b) {
-			var x=0,y=0,ret=[];
-			while (x<a.length && y<b.length) {
-				if (a[x] === b[y]){
-					ret.push(a[x]);
-					x++;
-					y++;
-		 
-				//if current element of `a` is smaller than current element of `b`
-				//then loop through `a` until we found an element that is equal or greater
-				//than the current element of `b`.
-				} else if (a[x]<b[y]){
-					x++;
-				//same but for `b`
-				} else {
-					y++;
-				}
+	function intersection(a, b){
+		var x=0,y=0,ret=[];
+		while (x<a.length && y<b.length){
+			if (a[x] === b[y]){
+				ret.push(a[x]);
+				x++;
+				y++;
+	 
+			//if current element of `a` is smaller than current element of `b`
+			//then loop through `a` until we found an element that is equal or greater
+			//than the current element of `b`.
+			}else if (a[x]<b[y]){
+				x++;
+			//same but for `b`
+			}else{
+				y++;
 			}
-			return ret;
 		}
-		//wrapper for quickly flattening values->langs to langauge array
-		function flattenValues(valuesObj) {
-			return Object.keys(nodes[feature1]["values"]) //get keys for the values
-				.map(function(key){return nodes[feature1]["values"][key]}) //get the arrays matched to those keys
-				.reduce(function(a,b){return a.concat(b)}); //flatten the arrays down to a single arrray
-		}
+		return ret;
+	}
 
-		var links = [];
-		var feature1;
-		var feature2;
+	/**
+	 * Given some feature's values object, flattens to a single array of languages
+	 */
+	function flattenValues(valuesObj) {
+		return Object.keys(valuesObj) //get keys for the values
+			.map(function(key){return valuesObj[key]}) //get the arrays matched to those keys
+			.reduce(function(a,b){return a.concat(b)}); //flatten the arrays down to a single arrray
+	}
+
+	/**
+	 * Given two features, calculate the strength values
+	 */
+	function calculateStrength(feature1, feature2, data){
 		var value1;
 		var value2;
 		var total_strength = 0;
@@ -131,81 +140,99 @@ var Application = (function(){
 		var intergenus_strength = 0;
 		var interlanguage_strength = 0;
 		var intersecting_languages = [];
+		var f1_v1_langs = [];
+		var f2_v2_langs = [];
+		var expected_language_count = 0;
+		var expected_value = 0;
+		var chi_value = 0;
+		//flatten values
+		var feature1_langs = flattenValues(data.nodes[feature1]["values"]);
+		var feature2_langs = flattenValues(data.nodes[feature2]["values"]);
+		var shared_langs = intersection(feature1_langs, feature2_langs);
+		if(shared_langs.length == 0) {
+			return null;
+		}
 
-		//loop through every feature
-		for(var feature1 = 0; feature1 < nodes.length; feature1++) {
-			//compare to every OTHER feature
-			for(var feature2 = feature1+1; feature2 < nodes.length; feature2++) {
-				//reset
-				total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
-				var f1_v1_langs = [];
-				var f2_v2_langs = [];
-				var expected_language_count = 0;
-				var expected_value = 0;
-				var chi_value = 0;
-				//flatten values
-				var feature1_langs = flattenValues(nodes[feature1]["values"]);
-				var feature2_langs = flattenValues(nodes[feature2]["values"]);
-				var shared_langs = intersection(feature1_langs, feature2_langs);
+		//every value for first feature
+		for(value1 in data.nodes[feature1]["values"]) {
+			f1_v1_langs = intersection(shared_langs, data.nodes[feature1]["values"][value1]);
+			//every value for second fature
+			for(value2 in data.nodes[feature2]["values"]) {
+				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][value2]);
+				//expected language PAIRS
+				expected_language_count = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length));
+				//this extra math ensures that fractional language counts fall along a smooth curve
+				//this slightly changes chi values, but they should be consistent relationally
+				expected_value = (expected_language_count+0.5)*(expected_language_count-0.5)/2 + 1/8;
+				intersecting_languages = f1_v1_langs.length<f2_v2_langs.length ? f1_v1_langs : f2_v2_langs;
+				total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
 
-				//every value for first feature
-				for(value1 in nodes[feature1]["values"]) {
-					f1_v1_langs = intersection(shared_langs, nodes[feature1]["values"][value1]);
-					//every value for second fature
-					for(value2 in nodes[feature2]["values"]) {
-						f2_v2_langs = intersection(shared_langs, nodes[feature2]["values"][value2]);
-						//expected language PAIRS
-						expected_language_count = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length));
-						//this extra math ensures that fractional language counts fall along a smooth curve
-						//this slightly changes chi values, but they should be consistent relationally
-						expected_value = (expected_language_count+0.5)*(expected_language_count-0.5)/2 + 1/8;
-						intersecting_languages = f1_v1_langs.length<f2_v2_langs.length ? f1_v1_langs : f2_v2_langs;
-						total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
-
-						for(var i = 0; i < intersecting_languages.length; i++)
-						{
-							for(var j = i+1; j < intersecting_languages.length; j++)
-							{
-								if(languages[intersecting_languages[i]].family != languages[intersecting_languages[j]].family) {
-									interfamily_strength++;
-								}
-								if(languages[intersecting_languages[i]].subfamily != languages[intersecting_languages[j]].subfamily) {
-									intersubfamily_strength++;
-								}
-								if(languages[intersecting_languages[i]].genus != languages[intersecting_languages[j]].genus) {
-									intergenus_strength++;
-								}
-								interlanguage_strength++;
-							}
+				for(var i = 0; i < intersecting_languages.length; i++)
+				{
+					for(var j = i+1; j < intersecting_languages.length; j++)
+					{
+						if(data.languages[intersecting_languages[i]].family != data.languages[intersecting_languages[j]].family) {
+							interfamily_strength++;
 						}
-						if(intersecting_languages.length <= 1 && expected_value == 0) {
-							//do nothing
-						} else {
-							if(expected_value <= 0) {
-								alert("Expected value cannot be zero!.");
-							}
-							chi_value +=
-								Math.pow(
-									intersecting_languages.length*(intersecting_languages.length-1)/2 - expected_value,
-									2
-								)/expected_value;
-							if(isNaN(chi_value)) {
-								alert("chi_value is NaN!");
-							}
+						if(data.languages[intersecting_languages[i]].subfamily != data.languages[intersecting_languages[j]].subfamily) {
+							intersubfamily_strength++;
 						}
+						if(data.languages[intersecting_languages[i]].genus != data.languages[intersecting_languages[j]].genus) {
+							intergenus_strength++;
+						}
+						interlanguage_strength++;
 					}
 				}
-				if(total_strength > 0) {
-					//populate links with intersection data
+				if(intersecting_languages.length <= 1 && expected_value == 0) {
+					//do nothing
+				} else {
+					if(expected_value <= 0) {
+						alert("Expected value cannot be zero!.");
+					}
+					chi_value +=
+						Math.pow(
+							intersecting_languages.length*(intersecting_languages.length-1)/2 - expected_value,
+							2
+						)/expected_value;
+					if(isNaN(chi_value)) {
+						alert("chi_value is NaN!");
+					}
+				}
+			}
+		}
+		return {
+			total_strength:total_strength,
+			chi_value:chi_value,
+			interfamily_strength:interfamily_strength,
+			intersubfamily_strength:intersubfamily_strength,
+			intergenus_strength:intergenus_strength,
+			interlanguage_strength:interlanguage_strength
+		}
+	}
+
+	/**
+	 * Build data links from existing language data and node data
+	 */
+	function buildLinks(data) {
+		//need an efficient intersection function for sorted arrays
+		var links = [];
+		var feature1;
+		var feature2;
+		//loop through every feature
+		for(var feature1 = 0; feature1 < data.nodes.length; feature1++) {
+			//compare to every OTHER feature
+			for(var feature2 = feature1+1; feature2 < data.nodes.length; feature2++) {
+				var strength = calculateStrength(feature1, feature2, data);
+				if(strength != null && strength.total_strength > 0){
 					links.push({
-						"source":nodes[feature1],
-						"target":nodes[feature2],
-						"total_strength":total_strength,
-						"chi_value":chi_value,
-						"interfamily_strength":interfamily_strength,
-						"intersubfamily_strength":intersubfamily_strength,
-						"intergenus_strength":intergenus_strength,
-						"interlanguage_strength":interlanguage_strength
+						"source":data.nodes[feature1],
+						"target":data.nodes[feature2],
+						"total_strength":strength.total_strength,
+						"chi_value":strength.chi_value,
+						"interfamily_strength":strength.interfamily_strength,
+						"intersubfamily_strength":strength.intersubfamily_strength,
+						"intergenus_strength":strength.intergenus_strength,
+						"interlanguage_strength":strength.interlanguage_strength
 					});
 				}
 			}
@@ -240,7 +267,7 @@ var Application = (function(){
 			"values":new_values
 		});
 
-		data.links = buildLinks(data.nodes, data.languages);
+		data.links = buildLinks(data);
 		data = makeSubgraphs(data);
 		return data;
 	}
@@ -261,9 +288,7 @@ var Application = (function(){
 			}
 		}
 		application_data = collapseFeatures(application_data, features);
-		clearSelection();
-		ForceGraph.setData(application_data);
-		MatrixView.setData(application_data);
+		setData(application_data);
 	}
 
 	/**
@@ -292,9 +317,7 @@ var Application = (function(){
 	 */
 	function setFlooredData(threshold){
 		application_data = floorData(source_data, threshold);
-		clearSelection();
-		ForceGraph.setData(application_data);
-		MatrixView.setData(application_data);
+		setData(application_data);
 	}
 
 	/**
@@ -375,7 +398,7 @@ var Application = (function(){
 			}
 		}
 		//rebuild the links
-		data.links = buildLinks(data.nodes, data.languages);
+		data.links = buildLinks(data);
 
 		return data;
 	}
@@ -516,9 +539,40 @@ var Application = (function(){
 	 * unselects everything
 	 */
 	function clearSelection(){
-		selected_data.nodes = [];
-		selected_data.links = [];
-		selected_data.languages = [];
+		if(typeof(type) === 'undefined' || type === 'node'){
+			selected_data.nodes = [];
+		}
+		if(typeof(type) === 'undefined' || type === 'link'){
+			selected_data.links = [];
+		}
+		if(typeof(type) === 'undefined' || type === 'language'){
+			selected_data.languages = [];
+		}
+		selectionChanged();
+	}
+
+	/**
+	 * selects everything
+	 */
+	function selectAll(type){
+		if(typeof(type) === 'undefined' || type === 'node'){
+			selected_data.nodes = [];
+			application_data.nodes.forEach(function(node){
+				selected_data.nodes.push(node);
+			});
+		}
+		if(typeof(type) === 'undefined' || type === 'link'){
+			selected_data.links = [];
+			application_data.links.forEach(function(link){
+				selected_data.links.push(link);
+			});
+		}
+		if(typeof(type) === 'undefined' || type === 'language'){
+			selected_data.languages = [];
+			application_data.languages.forEach(function(language){
+				selected_data.languages.push(language);
+			});
+		}
 		selectionChanged();
 	}
 
@@ -532,7 +586,7 @@ var Application = (function(){
 		var new_languages = [];
 		//yeah, this is _horribly_ inefficent, does it really matter? is this function a performance nottleneck?
 		if(typeof(type) === 'undefined' || type === 'link'){
-			selected_data.links.forEach(function(cur_link){
+			application_data.links.forEach(function(cur_link){
 				if(!linkIsSelected(cur_link)){
 					new_links.push(cur_link);
 				}
@@ -540,17 +594,17 @@ var Application = (function(){
 			selected_data.links = new_links;
 		}
 		if(typeof(type) === 'undefined' || type === 'node'){
-			selected_data.nodes.forEach(function(cur_node){
+			application_data.nodes.forEach(function(cur_node){
 				if(!nodeIsSelected(cur_node)){
-					new_node.push(cur_node);
+					new_nodes.push(cur_node);
 				}
 			});
 			selected_data.nodes = new_nodes;
 		}
 		if(typeof(type) === 'undefined' || type === 'language'){
-			selected_data.languages.forEach(function(cur_language){
+			application_data.languages.forEach(function(cur_language){
 				if(!languageIsSelected(cur_language)){
-					new_language.push(cur_language);
+					new_languages.push(cur_language);
 				}
 			});
 			selected_data.languages = new_languages;
@@ -592,6 +646,75 @@ var Application = (function(){
 		else{
 			selectLanguage(language);
 		}
+	}
+
+	/**
+	 *removes selected things from the graph
+	 */
+	function removeSelected(type){
+		//remove selected links
+		if(typeof(type) === 'undefined' || type === 'link'){
+			for(var i = application_data.links.length-1; i>=0; i--){
+				var cur_link = application_data.links[i];
+				if(linkIsSelected(cur_link)){
+					application_data.links.splice(i,1);
+				}
+			};
+		}
+		//remove selected nodes, and remove associated links
+		if((typeof(type) === 'undefined' || type === 'node') && selected_data.nodes.length > 0){
+			var removed_nodes = [];
+			for(var i = application_data.nodes.length-1; i>=0; i--){
+				var cur_node = application_data.nodes[i];
+				if(nodeIsSelected(cur_node)){
+					removed_nodes.push(cur_node.id);
+					application_data.nodes.splice(i,1);
+				}
+			};
+			for(var i = application_data.links.length-1; i>=0; i--){
+				var cur_link = application_data.links[i];
+				if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
+					application_data.links.splice(i,1);
+				}
+			};		
+		}
+		//remove selected languages, and update/remove links
+		if((typeof(type) === 'undefined' || type === 'language') && selected_data.languages.length > 0){
+			//remove selected languages
+			for(var i = application_data.languages.length-1; i>=0; i--){
+				var cur_language = application_data.languages[i];
+				if(languageIsSelected(cur_language)){
+					application_data.languages.splice(i,1);
+				}
+			};
+			//recalculate link strength
+			//remove 0 strength links
+			for(var i = application_data.links.length-1; i>=0; i--){
+				var cur_link = application_data.links[i];
+				var strength = calculateStrength(cur_link.source, cur_link.target);
+				if(strength.total_strength){
+					application_data.links.splice(i,1);
+				}
+				else{
+					cur_link.total_strength = total_strength;
+					cur_link.interfamily_strength = interfamily_strength;
+					cur_link.intersubfamily_strength = intersubfamily_strength;
+					cur_link.intergenus_strength = intergenus_strength;
+					cur_link.interlanguage_strength = interlanguage_strength;
+				}
+			};
+		}
+		UI.clearSearchResults();
+		clearSelection();
+		setData(application_data);
+	}
+
+	/**
+	 *removes unselected things from the graph
+	 */
+	function removeUnselected(type){
+		invertSelection(type);
+		removeSelected(type);
 	}
 
 	/*************************\
@@ -828,6 +951,7 @@ var Application = (function(){
 		unselectLink:unselectLink,
 		unselectNode:unselectNode,
 		clearSelection:clearSelection,
+		selectAll:selectAll,
 		invertSelection:invertSelection,
 		toggleNodeSelection:toggleNodeSelection,
 		toggleLinkSelection:toggleLinkSelection,
@@ -838,6 +962,8 @@ var Application = (function(){
 		selectLanguage:selectLanguage,
 		unselectLanguage:unselectLanguage,
 		getLanguage:getLanguage,
+		removeSelected:removeSelected,
+		removeUnselected:removeUnselected,
 		/*data access functions*/
 		getNode:getNode,
 		getLink:getLink,
