@@ -158,7 +158,7 @@ var ForceGraph = (function(){
 	 */
 	function calculateLength(link){
 		var weighted_strength = link.interlanguage_strength/8 + link.intergenus_strength/4 + link.intersubfamily_strength/2 + link.interfamily_strength;
-		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 5)+100;
+		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 5)+200;
 	}
 
 	/**
