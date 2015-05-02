@@ -113,6 +113,12 @@ var Application = (function(){
 			}
 			return ret;
 		}
+		//wrapper for quickly flattening values->langs to langauge array
+		function flattenValues(valuesObj) {
+			return Object.keys(nodes[feature1]["values"]) //get keys for the values
+				.map(function(key){return nodes[feature1]["values"][key]}) //get the arrays matched to those keys
+				.reduce(function(a,b){return a.concat(b)}); //flatten the arrays down to a single arrray
+		}
 
 		var links = [];
 		var feature1;
@@ -124,26 +130,38 @@ var Application = (function(){
 		var intersubfamily_strength = 0;
 		var intergenus_strength = 0;
 		var interlanguage_strength = 0;
-		var intersecting_languages;
+		var intersecting_languages = [];
+
 		//loop through every feature
 		for(var feature1 = 0; feature1 < nodes.length; feature1++) {
 			//compare to every OTHER feature
 			for(var feature2 = feature1+1; feature2 < nodes.length; feature2++) {
 				//reset
 				total_strength = interfamily_strength = intersubfamily_strength = intergenus_strength = interlanguage_strength = 0;
+				var f1_v1_langs = [];
+				var f2_v2_langs = [];
+				var expected_language_count = 0;
+				var expected_value = 0;
+				var chi_value = 0;
+				//flatten values
+				var feature1_langs = flattenValues(nodes[feature1]["values"]);
+				var feature2_langs = flattenValues(nodes[feature2]["values"]);
+				var shared_langs = intersection(feature1_langs, feature2_langs);
+
 				//every value for first feature
 				for(value1 in nodes[feature1]["values"]) {
+					f1_v1_langs = intersection(shared_langs, nodes[feature1]["values"][value1]);
 					//every value for second fature
 					for(value2 in nodes[feature2]["values"]) {
-						intersecting_languages = intersection(
-								nodes[feature1]["values"][value1],
-								nodes[feature2]["values"][value2]
-								);
-						//strength = # of intersecting languages
-						//this should be equal to interlanguage_strength by the end of everything, so it might not be needed anymore
-						if(intersecting_languages.length > 1) {
-							total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
-						}
+						f2_v2_langs = intersection(shared_langs, nodes[feature2]["values"][value2]);
+						//expected language PAIRS
+						expected_language_count = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length));
+						//this extra math ensures that fractional language counts fall along a smooth curve
+						//this slightly changes chi values, but they should be consistent relationally
+						expected_value = (expected_language_count+0.5)*(expected_language_count-0.5)/2 + 1/8;
+						intersecting_languages = f1_v1_langs.length<f2_v2_langs.length ? f1_v1_langs : f2_v2_langs;
+						total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
+
 						for(var i = 0; i < intersecting_languages.length; i++)
 						{
 							for(var j = i+1; j < intersecting_languages.length; j++)
@@ -160,8 +178,21 @@ var Application = (function(){
 								interlanguage_strength++;
 							}
 						}
-						//do some magic here if you want to create links from value-to-value
-						//instead of feature-to-feature
+						if(intersecting_languages.length <= 1 && expected_value == 0) {
+							//do nothing
+						} else {
+							if(expected_value <= 0) {
+								alert("Expected value cannot be zero!.");
+							}
+							chi_value +=
+								Math.pow(
+									intersecting_languages.length*(intersecting_languages.length-1)/2 - expected_value,
+									2
+								)/expected_value;
+							if(isNaN(chi_value)) {
+								alert("chi_value is NaN!");
+							}
+						}
 					}
 				}
 				if(total_strength > 0) {
@@ -170,6 +201,7 @@ var Application = (function(){
 						"source":nodes[feature1],
 						"target":nodes[feature2],
 						"total_strength":total_strength,
+						"chi_value":chi_value,
 						"interfamily_strength":interfamily_strength,
 						"intersubfamily_strength":intersubfamily_strength,
 						"intergenus_strength":intergenus_strength,
