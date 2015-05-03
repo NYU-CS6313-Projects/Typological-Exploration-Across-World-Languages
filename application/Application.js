@@ -32,24 +32,28 @@ var Application = (function(){
 	 */
 	function main(){
 		//load the default data
-		source_data = loadData(PreprocessedData);
+		UI.startLightBox('Loading Data...');
+		setTimeout(function(){
+			source_data = loadData(PreprocessedData);
 
-		ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
-		MatrixView.setTable($(".MatrixView table"));
+			ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
+			MatrixView.setTable($(".MatrixView table"));
 
-		//this should be done in an ajax call if we end up with non-static data
+			//this should be done in an ajax call if we end up with non-static data
 
-		//reset the highlighted links
-		Application.highlightNode(null);
+			//reset the highlighted links
+			Application.highlightNode(null);
 
-		$('.UI_control_pallet').children().each(function(i,element){
-			if(element.onchange){
-				element.onchange();
-			}
-			if(element.onclick){
-				element.onclick();
-			}
-		});
+			$('.UI_control_pallet').children().each(function(i,element){
+				if(element.onchange){
+					element.onchange();
+				}
+				if(element.onclick){
+					element.onclick();
+				}
+			});
+			UI.stopLightBox();
+		},100);
 	}
 
 	function setData(data){
@@ -76,6 +80,7 @@ var Application = (function(){
 	 * Build data feature nodes from given json data
 	 */
 	function buildFeatureNodes(data) {
+
 		var nodes = [];
 		var features = JSON.parse(JSON.stringify(data.nodes));
 
@@ -91,7 +96,6 @@ var Application = (function(){
 				"values":features[feature].values
 			});
 		}
-
 		return nodes;
 	}
 
@@ -214,7 +218,6 @@ var Application = (function(){
 	 * Build data links from existing language data and node data
 	 */
 	function buildLinks(data) {
-		//need an efficient intersection function for sorted arrays
 		var links = [];
 		var feature1;
 		var feature2;
@@ -237,6 +240,7 @@ var Application = (function(){
 				}
 			}
 		}
+
 		return links;
 	}
 

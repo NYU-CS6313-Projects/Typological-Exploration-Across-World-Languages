@@ -5,6 +5,7 @@
 	<title>Typological Exploration Across World Languages</title>
 	<!-- Load the D3 Library -->
 	<script type="text/javascript" src="jquery.js"> </script>
+	<script type="text/javascript" src="jquery.simplemodal.js"></script>
 	<script type="text/javascript" src="d3.min.js"> </script>
 	<script type="text/javascript" src="UI.js"> </script>
 	<script type="text/javascript" src="ForceGraph.js"> </script>
@@ -41,8 +42,8 @@
 				<div class="selection_header">
 					<input type="button" value="Select All" onclick="Application.selectAll();"></input>
 					<input type="button" value="Clear Selection" onclick="Application.clearSelection();"></input>
-					<input type="button" value="Remove Selected" onclick="Application.removeSelected();"></input>
-					<input type="button" value="Remove Unselected" onclick="Application.removeUnselected();"></input>
+					<input type="button" value="Remove Selected" onclick="UI.removeSelected();"></input>
+					<input type="button" value="Remove Unselected" onclick="UI.removeUnselected();"></input>
 					<input type="button" value="Invert Selection" onclick="Application.invertSelection();"></input>
 				</div>
 				<fieldset class="selected_nodes">
@@ -50,8 +51,8 @@
 					<div class="selection_header">
 						<input type="button" value="Select All" onclick="Application.selectAll('node');"></input>
 						<input type="button" value="Clear Selection" onclick="Application.clearSelection('node');"></input>
-					<input type="button" value="Remove Selected" onclick="Application.removeSelected('node');"></input>
-					<input type="button" value="Remove Unselected" onclick="Application.removeUnselected('node');"></input>
+					<input type="button" value="Remove Selected" onclick="UI.removeSelected('node');"></input>
+					<input type="button" value="Remove Unselected" onclick="UI.removeUnselected('node');"></input>
 						<input type="button" value="Invert Selection" onclick="Application.invertSelection('node');"></input>
 					</div>
 					<div class="null_selection">
@@ -64,8 +65,8 @@
 					<div class="selection_header">
 						<input type="button" value="Select All" onclick="Application.selectAll('link');"></input>
 						<input type="button" value="Clear Selection" onclick="Application.clearSelection('link');"></input>
-					<input type="button" value="Remove Selected" onclick="Application.removeSelected('link');"></input>
-					<input type="button" value="Remove Unselected" onclick="Application.removeUnselected('link');"></input>
+					<input type="button" value="Remove Selected" onclick="UI.removeSelected('link');"></input>
+					<input type="button" value="Remove Unselected" onclick="UI.removeUnselected('link');"></input>
 						<input type="button" value="Invert Selection" onclick="Application.invertSelection('link');"></input>
 					</div>
 					<div class="null_selection">
@@ -78,8 +79,8 @@
 					<div class="selection_header">
 						<input type="button" value="Select All" onclick="Application.selectAll('language');"></input>
 						<input type="button" value="Clear Selection" onclick="Application.clearSelection('language');"></input>
-					<input type="button" value="Remove Selected" onclick="Application.removeSelected('language');"></input>
-					<input type="button" value="Remove Unselected" onclick="Application.removeUnselected('language');"></input>
+					<input type="button" value="Remove Selected" onclick="UI.removeSelected('language');"></input>
+					<input type="button" value="Remove Unselected" onclick="UI.removeUnselected('language');"></input>
 						<input type="button" value="Invert Selection" onclick="Application.invertSelection('language');"></input>
 					</div>
 					<div class="null_selection">
@@ -374,6 +375,19 @@
 				<div class="MatrixView">
 					<table></table>
 				</div>
+		</div>
+	</div>
+
+
+			
+	<div style="display:none">
+		<!-- hidden resources -->
+
+		<!-- modal message dialog for light box -->
+
+		<!-- this is the thing that blocks the UI and says "Saving..." (etc...) -->
+		<div id="UI_DLG_light_box_dialog" class="UI_DLG">
+			<b class="template_light_box_message">*message describing the why the user is not allowed to do anything*</b>
 		</div>
 	</div>
 </body>

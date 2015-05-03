@@ -416,8 +416,12 @@ var UI = (function(){
 	 *the user has changed the minimum corelation
 	 */
 	function onCorrelationChange(){
-		var new_corelation = parseInt($('#UI_minimum_corelation').val(),10);
-		Application.setMinimumCorrelation(new_corelation);
+		//UI.startLightBox('Flooring Data...');
+		//setTimeout(function(){
+			var new_corelation = parseInt($('#UI_minimum_corelation').val(),10);
+			Application.setMinimumCorrelation(new_corelation);
+		//	UI.stopLightBox();
+		//},100);
 	}
 
 	/**
@@ -449,10 +453,14 @@ var UI = (function(){
 	 * the user wants to resort something on the matrix somehow
 	 */
 	function onSortMatrix(){
-		var sort_dimention = $("#matrix_sort_dimention").val();
-		var sort_direction = $("#matrix_sort_direction").val();
-		var sort_mode = $("#matrix_sort_mode").val();
-		Application.sortMatrix(sort_dimention, sort_mode, sort_direction);
+		UI.startLightBox('Flooring Data...');
+		setTimeout(function(){
+			var sort_dimention = $("#matrix_sort_dimention").val();
+			var sort_direction = $("#matrix_sort_direction").val();
+			var sort_mode = $("#matrix_sort_mode").val();
+			Application.sortMatrix(sort_dimention, sort_mode, sort_direction);
+			UI.stopLightBox();
+		},100);
 	}
 
 
@@ -549,6 +557,68 @@ var UI = (function(){
 		});
 	}
 
+	/**
+	 * user wants to remove the things they have selected
+	 */
+	function removeSelected(){
+		UI.startLightBox('Removing Selectied Items...');
+		setTimeout(function(){
+			Application.removeSelected();
+			UI.stopLightBox();
+		},100);
+	}
+
+	/**
+	 * user wants to remove the things they have not selected
+	 */
+	function removeUnselected(){
+		UI.startLightBox('Removing Unselected Items...');
+		setTimeout(function(){
+			Application.removeUnselected();
+			UI.stopLightBox();
+		},100);
+	}
+	
+	/*
+	  /----------\
+	  | lightbox |
+	  \----------/
+	*/
+
+	/**
+	 * method that brings up a lightbox with an appropriate message in it
+	 */
+	function lightBox(message) {
+		return {
+			appendTo:"html>body",
+			containerCss:{
+				width: 'auto',
+				height: 'auto'
+			},
+			onShow:function() {
+				$('#simplemodal-container').css('height', 'auto');
+				$('#simplemodal-container').css('width', 'auto');
+				$('#UI_DLG_light_box_dialog .template_light_box_message').text(message);
+				$(document).resize();//this is so the dialog centers it's self properly
+			}
+		};
+	};
+
+	/**
+	 * shows a message to the user and prevents them from doing anything on the page
+	 * @param string message -- what to tell them to explain why they are not allowed to mess with the page
+	 */
+	function startLightBox(message){
+		$('#UI_DLG_light_box_dialog').modal(lightBox(message));
+	}
+	
+	/**
+	 * give the user their UI back
+	 */
+	function stopLightBox(){
+		$.modal.close();
+	}
+
 	return {
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
@@ -563,7 +633,11 @@ var UI = (function(){
 		selectAllSearchResults:selectAllSearchResults,
 		unselectAllSearchResults:unselectAllSearchResults,
 		clearSearchResults:clearSearchResults,
-		onSortMatrix:onSortMatrix
+		onSortMatrix:onSortMatrix,
+		startLightBox:startLightBox,
+		stopLightBox:stopLightBox,
+		removeUnselected:removeUnselected,
+		removeUnselected:removeUnselected
 	};
 }());
 

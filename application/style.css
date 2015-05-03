@@ -420,3 +420,22 @@ div{
 {
 	border-color:#0F0;
 }
+
+#simplemodal-container.UI_DLG_auto
+{
+	max-width:100%;
+}
+
+.simplemodal-overlay{
+	background-color: #000;
+}
+
+.UI_DLG
+{
+	background-color: #F2F2F2;
+	border-radius:15px;
+	border-style: solid;
+    border-width: 3px;
+    padding:2ex;
+}
+
