@@ -153,7 +153,7 @@ var Application = (function(){
 		var feature1_langs = flattenValues(data.nodes[feature1]["values"]);
 		var feature2_langs = flattenValues(data.nodes[feature2]["values"]);
 		var shared_langs = intersection(feature1_langs, feature2_langs);
-		if(shared_langs.length == 0) {
+		if(shared_langs.length <= 1) {
 			return null;
 		}
 
@@ -202,13 +202,18 @@ var Application = (function(){
 				}
 			}
 		}
-		return {
-			total_strength:total_strength,
-			chi_value:chi_value,
-			interfamily_strength:interfamily_strength,
-			intersubfamily_strength:intersubfamily_strength,
-			intergenus_strength:intergenus_strength,
-			interlanguage_strength:interlanguage_strength
+		if(total_strength == 0 || chi_value == 0) {
+			return null;
+		}
+		else {
+			return {
+				total_strength:Math.log(total_strength)*chi_value,
+				chi_value:chi_value,
+				interfamily_strength:(interfamily_strength ? Math.log(interfamily_strength)*chi_value : 0),
+				intersubfamily_strength:(intersubfamily_strength ? Math.log(intersubfamily_strength)*chi_value : 0),
+				intergenus_strength:(intergenus_strength ? Math.log(intergenus_strength)*chi_value : 0),
+				interlanguage_strength:Math.log(interlanguage_strength)*chi_value
+			};
 		}
 	}
 
