@@ -706,6 +706,7 @@ var Application = (function(){
 		}
 		UI.clearSearchResults();
 		clearSelection();
+		application_data = makeSubgraphs(application_data);
 		setData(application_data);
 	}
 

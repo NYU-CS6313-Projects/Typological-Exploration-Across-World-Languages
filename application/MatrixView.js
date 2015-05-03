@@ -162,10 +162,10 @@ var MatrixView = (function(){
 			b = (b in lookup)?lookup[b]:-1;
 
 			if(a>b){
-				return -1;
+				return 1;
 			}
 			else if(a<b){
-				return 1;
+				return -1;
 			}
 			return 0;
 		}
@@ -197,10 +197,10 @@ var MatrixView = (function(){
 			b = (b in lookup)?lookup[b]:-1;
 
 			if(a>b){
-				return -1;
+				return 1;
 			}
 			else if(a<b){
-				return 1;
+				return -1;
 			}
 			return 0;
 		}
@@ -232,10 +232,10 @@ var MatrixView = (function(){
 			b = (b in lookup)?lookup[b]:-1;
 
 			if(a>b){
-				return -1;
+				return 1;
 			}
 			else if(a<b){
-				return 1;
+				return -1;
 			}
 			return 0;
 		}
@@ -306,6 +306,7 @@ var MatrixView = (function(){
 	 *the data has been changed in some way, redraw the table
 	 */
 	function redrawData(){
+		console.time('redraw matrix');
 		var table = element('table');
 
 		var output = '';
@@ -420,6 +421,7 @@ var MatrixView = (function(){
 		data_cells.on( "mouseout", function(){
 			Application.highlightLink(null);
 		} );
+		console.timeEnd('redraw matrix');
 	}
 
 	/**
