@@ -453,7 +453,7 @@ var UI = (function(){
 	 * the user wants to resort something on the matrix somehow
 	 */
 	function onSortMatrix(){
-		UI.startLightBox('Flooring Data...');
+		UI.startLightBox('Sorting...');
 		setTimeout(function(){
 			var sort_dimention = $("#matrix_sort_dimention").val();
 			var sort_direction = $("#matrix_sort_direction").val();
