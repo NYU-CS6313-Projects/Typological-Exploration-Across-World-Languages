@@ -163,12 +163,10 @@ var Application = (function(){
 			//every value for second fature
 			for(value2 in data.nodes[feature2]["values"]) {
 				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][value2]);
-				//expected language PAIRS
-				expected_language_count = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length));
-				//this extra math ensures that fractional language counts fall along a smooth curve
-				//this slightly changes chi values, but they should be consistent relationally
-				expected_value = (expected_language_count+0.5)*(expected_language_count-0.5)/2 + 1/8;
-				intersecting_languages = f1_v1_langs.length<f2_v2_langs.length ? f1_v1_langs : f2_v2_langs;
+
+				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
+
+				intersecting_languages = intersection(f1_v1_langs, f2_v2_langs);
 				total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
 
 				for(var i = 0; i < intersecting_languages.length; i++)
@@ -187,19 +185,19 @@ var Application = (function(){
 						interlanguage_strength++;
 					}
 				}
-				if(intersecting_languages.length <= 1 && expected_value == 0) {
+				if(intersecting_languages.length <= 0 && expected_probability == 0) {
 					//do nothing
 				} else {
-					if(expected_value <= 0) {
-						alert("Expected value cannot be zero!.");
+					if(expected_probability <= 0) {
+						console.log("Expected value cannot be zero!.");
 					}
 					chi_value +=
 						Math.pow(
-							intersecting_languages.length*(intersecting_languages.length-1)/2 - expected_value,
+							intersecting_languages.length/shared_langs.length - expected_probability,
 							2
-						)/expected_value;
+						)/expected_probability;
 					if(isNaN(chi_value)) {
-						alert("chi_value is NaN!");
+						console.log("chi_value is NaN!");
 					}
 				}
 			}
