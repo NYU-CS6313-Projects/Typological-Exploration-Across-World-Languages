@@ -348,9 +348,32 @@
 				<option value="intergenus">Genus Crossing</option>
 				<option value="interlanguage">Language Crossing</option>
 			</select>
+			<span class="UI_label">Sort</span>
+			<select id="matrix_sort_dimention">
+				<option value="both">Both</option>
+				<option value="rows">Rows</option>
+				<option value="columns">Columns</option>
+			</select>
+			by:
+			<select id="matrix_sort_mode">
+				<option value="id">Id</option>
+				<option value="random">Random</option>
+				<option value="sum">Sum</option>
+				<option value="max">Max</option>
+				<option value="product">Product</option>
+			</select>
+			<select id="matrix_sort_direction">
+				<option value="asc">Ascending</option>
+				<option value="desc">Decending</option>
+			</select>
+			<input type="button" id="UI_sort_button" onclick="UI.onSortMatrix()" value="Sort"></input>
+			<span class="note">(double click on column or row header to sort along that column or row)</span>
+
 		</div>
-		<div class="MatrixView">
-			<table></table>
+		<div class="scrollable_content">
+				<div class="MatrixView">
+					<table></table>
+				</div>
 		</div>
 	</div>
 </body>

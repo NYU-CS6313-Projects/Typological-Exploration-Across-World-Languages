@@ -77,6 +77,11 @@ svg
 	width:50px;
 }
 
+.note
+{
+	font-size: 8px;
+}
+
 .MatrixView th{
 	text-align:right;
 	border-width:1px;
@@ -123,11 +128,16 @@ svg
 	border-color:rgb(0,128,0);
 }
 
-.MatrixView{
+.UI_resize_bottom .scrollable_content
+{
 	height:100%;
 	width:100%;
-	font-size: 8px;
 	overflow:auto;
+}
+
+.MatrixView
+{
+	font-size: 8px;
 }
 
 .MatrixView table{
@@ -306,7 +316,7 @@ div{
 .UI_resize_bottom .UI_tab h2
 {
 	position:absolute;
-	left:25%;
+	left:75%;
 }
 
 .UI_content

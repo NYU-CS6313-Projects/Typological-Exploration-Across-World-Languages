@@ -444,6 +444,18 @@ var UI = (function(){
 		Application.setDrawMatrixLabels(is_checked);
 	}
 
+
+	/**
+	 * the user wants to resort something on the matrix somehow
+	 */
+	function onSortMatrix(){
+		var sort_dimention = $("#matrix_sort_dimention").val();
+		var sort_direction = $("#matrix_sort_direction").val();
+		var sort_mode = $("#matrix_sort_mode").val();
+		Application.sortMatrix(sort_dimention, sort_mode, sort_direction);
+	}
+
+
 	/**
 	 * the user has decided to change the weakest links to draw
 	 */
@@ -550,6 +562,9 @@ var UI = (function(){
 		selectionChanged:selectionChanged,
 		selectAllSearchResults:selectAllSearchResults,
 		unselectAllSearchResults:unselectAllSearchResults,
-		clearSearchResults:clearSearchResults
+		clearSearchResults:clearSearchResults,
+		onSortMatrix:onSortMatrix
 	};
 }());
+
+

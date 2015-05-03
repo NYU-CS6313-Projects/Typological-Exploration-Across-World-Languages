@@ -941,6 +941,7 @@ var Application = (function(){
 		setMinimumDrawStrength:function(d){ForceGraph.setMinimumDrawStrength(d);},
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d);},
 		setCorrelationType:function(d){MatrixView.setCorrelationType(d);},
+		sortMatrix:MatrixView.sortMatrix,
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,
 		loadData:loadData,

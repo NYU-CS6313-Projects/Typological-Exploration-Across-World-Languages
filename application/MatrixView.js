@@ -104,6 +104,146 @@ var MatrixView = (function(){
 		}
 	};
 
+	/**
+	 * returns a comparator function that sorts things randomly
+	 */
+	function comparatorRandom(){
+		return function(a,b){
+			return Math.round(Math.random()*2-1);
+		}
+	}
+
+	/**
+	 * returns a comparator function that sorts on feature id value
+	 */
+	function comparatorId(){
+		return function(a,b){
+
+			var id_a = a;
+			var id_b = b;
+
+			//make it so that 9a<199z
+			while(id_a.length < id_b.length)id_a = '0'+id_a;
+			while(id_b.length < id_a.length)id_b = '0'+id_b;
+
+			if(id_a>id_b){
+				return 1;
+			}
+			else if(id_a<id_b){
+				return -1;
+			}
+			return 0;
+		}
+	}
+
+	/**
+	 * returns a comparator function that sorts by the sum of all links on a feature
+	 */
+	function comparatorSum(){
+		var lookup = {};
+
+		for(var i = 0; i<P.raw_data.links.length; i++){
+			var source = P.raw_data.links[i].source;
+			var target = P.raw_data.links[i].target;
+			if(!(source.id in lookup)){
+				lookup[source.id] = 0;
+			}
+			if(!(target.id in lookup)){
+				lookup[target.id] = 0;
+			}
+			lookup[source.id] += P.raw_data.links[i][P.correlation_type+'_strength'];
+			lookup[target.id] += P.raw_data.links[i][P.correlation_type+'_strength'];
+		}
+
+		//sort by feature value
+		return function(a,b){
+
+			a = (a in lookup)?lookup[a]:-1;
+			b = (b in lookup)?lookup[b]:-1;
+
+			if(a>b){
+				return -1;
+			}
+			else if(a<b){
+				return 1;
+			}
+			return 0;
+		}
+	}
+
+	/**
+	 * returns a comparator function that sorts by the sum of all links on a feature
+	 */
+	function comparatorProduct(){
+		var lookup = {};
+
+		for(var i = 0; i<P.raw_data.links.length; i++){
+			var source = P.raw_data.links[i].source;
+			var target = P.raw_data.links[i].target;
+			if(!(source.id in lookup)){
+				lookup[source.id] = 0;
+			}
+			if(!(target.id in lookup)){
+				lookup[target.id] = 0;
+			}
+			lookup[source.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];
+			lookup[target.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];
+		}
+
+		//sort by feature value
+		return function(a,b){
+
+			a = (a in lookup)?lookup[a]:-1;
+			b = (b in lookup)?lookup[b]:-1;
+
+			if(a>b){
+				return -1;
+			}
+			else if(a<b){
+				return 1;
+			}
+			return 0;
+		}
+	}
+
+	/**
+	 * returns a comparator function that sorts by the largest link on a node
+	 */
+	function comparatorMax(){
+		var lookup = {};
+
+		for(var i = 0; i<P.raw_data.links.length; i++){
+			var source = P.raw_data.links[i].source;
+			var target = P.raw_data.links[i].target;
+			if(!(source.id in lookup)){
+				lookup[source.id] = 0;
+			}
+			if(!(target.id in lookup)){
+				lookup[target.id] = 0;
+			}
+			lookup[source.id] = Math.max(lookup[source.id], P.raw_data.links[i][P.correlation_type+'_strength']);
+			lookup[target.id] = Math.max(lookup[target.id], P.raw_data.links[i][P.correlation_type+'_strength']);
+		}
+
+		//sort by feature value
+		return function(a,b){
+
+			a = (a in lookup)?lookup[a]:-1;
+			b = (b in lookup)?lookup[b]:-1;
+
+			if(a>b){
+				return -1;
+			}
+			else if(a<b){
+				return 1;
+			}
+			return 0;
+		}
+	}
+
+	/**
+	 * small lightweight class that represents an HTML element
+	 */
 	function element(tag){
 		return {
 			getCode:function(){
@@ -249,10 +389,10 @@ var MatrixView = (function(){
 		var header_cells = $('.MatrixView th.header');
 		header_cells.on( "dblclick", function(){
 			if($(this).data('row_or_column') === 'column'){
-				MatrixView.sortRows($(this).data('feature_id'));
+				MatrixView.sortRows(featureSort($(this).data('feature_id')));
 			}
 			else{
-				MatrixView.sortColumns($(this).data('feature_id'));
+				MatrixView.sortColumns(featureSort($(this).data('feature_id')));
 			}
 		} );
 		header_cells.on( "click", function(){
@@ -385,16 +525,16 @@ var MatrixView = (function(){
 		/**
 		 * sort columns by the specified feature
 		 */
-		sortColumns: function(feature){
-			P.column_order.sort(featureSort(feature));
+		sortColumns: function(comparator){
+			P.column_order.sort(comparator);
 			redrawData();
 		},
 
 		/**
 		 * sort columns by the specified feature
 		 */
-		sortRows: function(feature){
-			P.row_order.sort(featureSort(feature));
+		sortRows: function(comparator){
+			P.row_order.sort(comparator);
 			redrawData();
 		},
 
@@ -420,6 +560,38 @@ var MatrixView = (function(){
 		 */
 		setCorrelationType: function(type){
 			P.correlation_type = type;			
+			redrawData();
+		},
+
+		sortMatrix: function(dimention,mode,direction){
+			var comparator = null;
+			switch(mode){
+				case 'random':
+					comparator = comparatorRandom();
+				break;
+				case 'id':
+					comparator = comparatorId();
+				break;
+				case 'sum':
+					comparator = comparatorSum();
+				break;
+				case 'max':
+					comparator = comparatorMax();
+				break;
+				case 'product':
+					comparator = comparatorProduct();
+				break;
+			}
+			if(direction === 'desc'){
+				var old_comparator = comparator;
+				comparator = function(a,b){return -old_comparator(a,b);}
+			}
+			if(dimention === 'rows' || dimention === 'both'){
+				P.row_order.sort(comparator);
+			}
+			if(dimention === 'columns' || dimention === 'both'){
+				P.column_order.sort(comparator);
+			}
 			redrawData();
 		}
 	}
