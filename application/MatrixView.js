@@ -368,7 +368,7 @@ var MatrixView = (function(){
 				data_cell.addClass('data');
 				data_cell.css('background-color', bg_color);
 				if(P.draw_labels){
-					data_cell.text(strength);
+					data_cell.text(Math.round(100*strength)/100);
 				}
 				data_cell.addClass('feature_'+row_id+' feature_'+column_id);			
 				data_cell.setData('row_id', row_id);			
