@@ -654,12 +654,13 @@ var Application = (function(){
 	/**
 	 *removes selected things from the graph
 	 */
-	function removeSelected(type){
+	function removeSelected(type, do_unselected){
+		do_unselected = !!do_unselected;//booleanify this
 		//remove selected links
 		if(typeof(type) === 'undefined' || type === 'link'){
 			for(var i = application_data.links.length-1; i>=0; i--){
 				var cur_link = application_data.links[i];
-				if(linkIsSelected(cur_link)){
+				if(do_unselected != linkIsSelected(cur_link)){
 					application_data.links.splice(i,1);
 				}
 			};
@@ -669,7 +670,7 @@ var Application = (function(){
 			var removed_nodes = [];
 			for(var i = application_data.nodes.length-1; i>=0; i--){
 				var cur_node = application_data.nodes[i];
-				if(nodeIsSelected(cur_node)){
+				if(do_unselected != nodeIsSelected(cur_node)){
 					removed_nodes.push(cur_node.id);
 					application_data.nodes.splice(i,1);
 				}
@@ -686,7 +687,7 @@ var Application = (function(){
 			//remove selected languages
 			for(var i = application_data.languages.length-1; i>=0; i--){
 				var cur_language = application_data.languages[i];
-				if(languageIsSelected(cur_language)){
+				if(do_unselected != languageIsSelected(cur_language)){
 					application_data.languages.splice(i,1);
 				}
 			};
@@ -717,8 +718,7 @@ var Application = (function(){
 	 *removes unselected things from the graph
 	 */
 	function removeUnselected(type){
-		invertSelection(type);
-		removeSelected(type);
+		removeSelected(type, true);
 	}
 
 	/*************************\

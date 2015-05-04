@@ -560,10 +560,10 @@ var UI = (function(){
 	/**
 	 * user wants to remove the things they have selected
 	 */
-	function removeSelected(){
+	function removeSelected(type){
 		UI.startLightBox('Removing Selectied Items...');
 		setTimeout(function(){
-			Application.removeSelected();
+			Application.removeSelected(type);
 			UI.stopLightBox();
 		},100);
 	}
@@ -571,10 +571,10 @@ var UI = (function(){
 	/**
 	 * user wants to remove the things they have not selected
 	 */
-	function removeUnselected(){
+	function removeUnselected(type){
 		UI.startLightBox('Removing Unselected Items...');
 		setTimeout(function(){
-			Application.removeUnselected();
+			Application.removeUnselected(type);
 			UI.stopLightBox();
 		},100);
 	}

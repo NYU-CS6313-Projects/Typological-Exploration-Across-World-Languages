@@ -181,10 +181,10 @@ var MatrixView = (function(){
 			var source = P.raw_data.links[i].source;
 			var target = P.raw_data.links[i].target;
 			if(!(source.id in lookup)){
-				lookup[source.id] = 0;
+				lookup[source.id] = 1;
 			}
 			if(!(target.id in lookup)){
-				lookup[target.id] = 0;
+				lookup[target.id] = 1;
 			}
 			lookup[source.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];
 			lookup[target.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];

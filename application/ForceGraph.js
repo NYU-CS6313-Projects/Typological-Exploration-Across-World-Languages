@@ -157,8 +157,11 @@ var ForceGraph = (function(){
 	 *map link strength values to graphical length
 	 */
 	function calculateLength(link){
-		var weighted_strength = link.interlanguage_strength/8 + link.intergenus_strength/4 + link.intersubfamily_strength/2 + link.interfamily_strength;
-		return 10000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 4)+200;
+		var interlanguage = link.interlanguage_strength - link.intergenus_strength;
+		var intergenus = link.intergenus_strength - link.intersubfamily_strength;
+		var intersubfamily = link.intersubfamily_strength - link.interfamily_strength;
+		var weighted_strength = link.interfamily_strength + intersubfamily/2 + intergenus/4 + interlanguage/8;
+		return 5000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 4)+100;
 	}
 
 	/**
