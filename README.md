@@ -6,7 +6,7 @@ This visualization and associated tools allow the exploration of features resear
 
 To run this application locally, simply pull the entire /application directory and run index.html. The data is preloaded into preprocessed_data.js, but the visualization will absolutely work with any other data loaded into that file if kept in the appropriate format!
 
-A live demo can be found [here](http://nyu-cs6313-projects.github.io/sp2015-group15/application/index.html).
+A live demo can be found [here](http://nyu-cs6313-projects.github.io/Typological-Exploration-Across-World-Languages/application/index.html).
 
 Our final proposal will be posted here when complete.
 
