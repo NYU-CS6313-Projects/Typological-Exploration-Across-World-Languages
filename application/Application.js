@@ -202,19 +202,15 @@ var Application = (function(){
 				}
 			}
 		}
-		if(total_strength == 0 || chi_value == 0) {
-			return null;
-		}
-		else {
-			return {
-				total_strength:Math.log(total_strength)*chi_value,
-				chi_value:chi_value,
-				interfamily_strength:(interfamily_strength ? Math.log(interfamily_strength)*chi_value : 0),
-				intersubfamily_strength:(intersubfamily_strength ? Math.log(intersubfamily_strength)*chi_value : 0),
-				intergenus_strength:(intergenus_strength ? Math.log(intergenus_strength)*chi_value : 0),
-				interlanguage_strength:Math.log(interlanguage_strength)*chi_value
-			};
-		}
+		return {
+			total_strength:(total_strength&&chi_value?total_strength*chi_value:0),
+			chi_value:chi_value,
+			interfamily_strength:(interfamily_strength&&chi_value ? interfamily_strength*chi_value : 0),
+			intersubfamily_strength:(intersubfamily_strength&&chi_value ? intersubfamily_strength*chi_value : 0),
+			intergenus_strength:(intergenus_strength&&chi_value ? intergenus_strength*chi_value : 0),
+			interlanguage_strength:(interlanguage_strength&&chi_value?interlanguage_strength*chi_value:0)
+		};
+
 	}
 
 	/**
@@ -713,7 +709,7 @@ var Application = (function(){
 		}
 		UI.clearSearchResults();
 		clearSelection();
-		application_data = makeSubgraphs(application_data);
+		//application_data = makeSubgraphs(application_data);
 		setData(application_data);
 	}
 

@@ -637,7 +637,7 @@ var UI = (function(){
 		startLightBox:startLightBox,
 		stopLightBox:stopLightBox,
 		removeUnselected:removeUnselected,
-		removeUnselected:removeUnselected
+		removeSelected:removeSelected
 	};
 }());
 

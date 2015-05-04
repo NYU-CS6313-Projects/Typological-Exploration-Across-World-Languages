@@ -150,7 +150,7 @@ var ForceGraph = (function(){
 	 *map link strength values to width
 	 */
 	function strengthToWidth(strength){
-		return 200*(strength/P.max_link_strength);
+		return 200*Math.pow(strength/P.max_link_strength,2);
 	}
 
 	/**
