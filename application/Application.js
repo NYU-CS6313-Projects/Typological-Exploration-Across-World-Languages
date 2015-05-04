@@ -210,7 +210,6 @@ var Application = (function(){
 			intergenus_strength:(intergenus_strength&&chi_value ? intergenus_strength*chi_value : 0),
 			interlanguage_strength:(interlanguage_strength&&chi_value?interlanguage_strength*chi_value:0)
 		};
-
 	}
 
 	/**
@@ -248,13 +247,13 @@ var Application = (function(){
 	 */
 	function collapseFeatures(data, features){
 		//sorting in reverse makes for easier removal
-		features.sort();
+		features.sort(); //TODO: This is a STRING sort, should be numeric!
 		features.reverse();
-		custom_feature_count++;
+		custom_node_count++;
 		var data = JSON.parse(JSON.stringify(data));
-		var new_id = "custom_feature_"+custom_feature_count;
+		var new_id = "custom_feature_"+custom_node_count;
 		var new_name = "Custom Feature: ";
-		var new_type = "custom_feature_"+custom_feature_count;
+		var new_type = "custom_feature_"+custom_node_count;
 		var new_values = new Object();
 		for(i in features) {
 			new_name += data.nodes[features[i]].name + " / ";
