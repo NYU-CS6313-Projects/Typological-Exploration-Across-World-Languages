@@ -70,6 +70,22 @@ var UI = (function(){
 		);
 	}
 
+	/**
+	 * generates a random color from a string
+	 */
+	function colorHash(str){
+		//hash stolen from stack overflow
+		var hash = 0, i, chr, len;
+		if (str.length != 0){
+			for (i = 0, len = str.length; i < len; i++) {
+				chr   = str.charCodeAt(i);
+				hash  = ((hash << 5) - hash) + chr;
+				hash |= 0; // Convert to 32bit integer
+			}
+		}
+
+		return '#'+("000000"+(hash&0xffffff).toString(16)).substr(-6,6);
+	}
 
 	/**
 	 * the heat color used in the mini-matrix
@@ -210,6 +226,9 @@ var UI = (function(){
 		language: function(language){
 			var is_selected = Application.languageIsSelected(language);
 			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
+				+'<span class="language_badge" style="background-color:'+colorHash(language.family)+';">&nbsp;</span>'
+				+'<span class="language_badge" style="background-color:'+colorHash(language.subfamily)+';">&nbsp;</span>'
+				+'<span class="language_badge" style="background-color:'+colorHash(language.genus)+';">&nbsp;</span>'
 				+'<h2>'+language.name+'</h2>'
 				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
