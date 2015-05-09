@@ -80,7 +80,11 @@ var MatrixView = (function(){
 		for(var i = 0; i<P.raw_data.links.length; i++){
 			var source = P.raw_data.links[i].source;
 			var target = P.raw_data.links[i].target;
-			if(target.id == feature){
+			
+			if(target.id == feature && source.id == feature){
+				lookup[source.id] = lookup[target.id] = Number.MAX_VALUE;
+			}
+			else if(target.id == feature){
 				lookup[source.id] = P.raw_data.links[i];
 			}
 			else if(source.id == feature){
@@ -91,8 +95,8 @@ var MatrixView = (function(){
 		//sort by feature value
 		return function(a,b){
 
-			a = (a in lookup)?lookup[a][P.correlation_type+'_strength']:-1;
-			b = (b in lookup)?lookup[b][P.correlation_type+'_strength']:-1;
+			a = (a in lookup)?lookup[a].scaled_strengths[P.correlation_type+'_strength']:-1;
+			b = (b in lookup)?lookup[b].scaled_strengths[P.correlation_type+'_strength']:-1;
 
 			if(a>b){
 				return -1;
@@ -151,8 +155,8 @@ var MatrixView = (function(){
 			if(!(target.id in lookup)){
 				lookup[target.id] = 0;
 			}
-			lookup[source.id] += P.raw_data.links[i][P.correlation_type+'_strength'];
-			lookup[target.id] += P.raw_data.links[i][P.correlation_type+'_strength'];
+			lookup[source.id] += P.raw_data.links[i][P.scaled_strengths.correlation_type+'_strength'];
+			lookup[target.id] += P.raw_data.links[i][P.scaled_strengths.correlation_type+'_strength'];
 		}
 
 		//sort by feature value
@@ -186,8 +190,8 @@ var MatrixView = (function(){
 			if(!(target.id in lookup)){
 				lookup[target.id] = 1;
 			}
-			lookup[source.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];
-			lookup[target.id] *= P.raw_data.links[i][P.correlation_type+'_strength'];
+			lookup[source.id] *= P.raw_data.links[i][scaled_strenths][P.correlation_type+'_strength'];
+			lookup[target.id] *= P.raw_data.links[i][scaled_strenths][P.correlation_type+'_strength'];
 		}
 
 		//sort by feature value
@@ -221,8 +225,8 @@ var MatrixView = (function(){
 			if(!(target.id in lookup)){
 				lookup[target.id] = 0;
 			}
-			lookup[source.id] = Math.max(lookup[source.id], P.raw_data.links[i][P.correlation_type+'_strength']);
-			lookup[target.id] = Math.max(lookup[target.id], P.raw_data.links[i][P.correlation_type+'_strength']);
+			lookup[source.id] = Math.max(lookup[source.id], P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength']);
+			lookup[target.id] = Math.max(lookup[target.id], P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength']);
 		}
 
 		//sort by feature value
@@ -357,7 +361,7 @@ var MatrixView = (function(){
 				var bg_color = 'rgb(0,0,128)';
 				var strength = '';
 				if(link){
-					strength = link[P.correlation_type+'_strength'];
+					strength = link.scaled_strengths[P.correlation_type+'_strength'];
 					var r = Math.round((strength/P.max_link_strength*0.75+0.25)*255);
 					var g = Math.round((strength/P.max_link_strength/2)*255);
 					var b = Math.round((strength/P.max_link_strength/2)*255);
@@ -459,8 +463,8 @@ var MatrixView = (function(){
 		P.raw_data.links.forEach(function(l){
 			P.processed_data.links[l.source.id][l.target.id] = l;
 			P.processed_data.links[l.target.id][l.source.id] = l;
-			if(P.max_link_strength < l[P.correlation_type+'_strength']){
-				P.max_link_strength = l[P.correlation_type+'_strength'];
+			if(P.max_link_strength < l.scaled_strengths[P.correlation_type+'_strength']){
+				P.max_link_strength = l.scaled_strengths[P.correlation_type+'_strength'];
 			}
 		});
 	}

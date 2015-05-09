@@ -157,10 +157,10 @@ var ForceGraph = (function(){
 	 *map link strength values to graphical length
 	 */
 	function calculateLength(link){
-		var interlanguage = link.interlanguage_strength - link.intergenus_strength;
-		var intergenus = link.intergenus_strength - link.intersubfamily_strength;
-		var intersubfamily = link.intersubfamily_strength - link.interfamily_strength;
-		var weighted_strength = link.interfamily_strength + intersubfamily/2 + intergenus/4 + interlanguage/8;
+		var interlanguage = link.scaled_strengths.interlanguage_strength - link.scaled_strengths.intergenus_strength;
+		var intergenus = link.scaled_strengths.intergenus_strength - link.scaled_strengths.intersubfamily_strength;
+		var intersubfamily = link.scaled_strengths.intersubfamily_strength - link.scaled_strengths.interfamily_strength;
+		var weighted_strength = link.scaled_strengths.interfamily_strength + intersubfamily/2 + intergenus/4 + interlanguage/8;
 		return 5000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 4)+100;
 	}
 
@@ -280,7 +280,7 @@ var ForceGraph = (function(){
 				Application.highlightLink(null);
 			});
 
-		updateLink(link_selection, 'total');
+		updateLink(link_selection, 'interlanguage');
 	}
 
 	/**
@@ -293,7 +293,7 @@ var ForceGraph = (function(){
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
-			.attr("stroke-width", function(d) { return strengthToWidth(d[type+'_strength']); });
+			.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths[type+'_strength']); });
 	}
 
 	/**
@@ -314,7 +314,7 @@ var ForceGraph = (function(){
 		P.highlighted_link_selection.enter()
 			.append("line")
 			.attr("class", "highlighted-link")
-			.attr("stroke-width", function(d) { return strengthToWidth(d.total_strength); });
+			.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths.interlanguage_strength); });
 
 		P.highlighted_link_selection.exit()
 			.remove();
@@ -400,9 +400,9 @@ var ForceGraph = (function(){
 				STRENGTH_TYPES.forEach(function(type, i){
 					updateLink(P.link_selections[i], type);
 				});
-				updateLink(P.highlighted_link_selection, 'total');
+				updateLink(P.highlighted_link_selection, 'interlanguage');
 
-				updateLink(P.selected_link_selection, 'total');
+				updateLink(P.selected_link_selection, 'interlanguage');
 				P.selected_node_selection
 					.attr('cx',function(d){return d.x;})
 					.attr('cy',function(d){return d.y;});
@@ -471,7 +471,7 @@ var ForceGraph = (function(){
 
 			P.max_link_strength = 0;
 			P.data.links.forEach(function(d){
-				P.max_link_strength = Math.max(P.max_link_strength, d.total_strength);
+				P.max_link_strength = Math.max(P.max_link_strength, d.scaled_strengths.interlanguage_strength);
 			});
 			P.group_count = 0;
 			P.data.nodes.forEach(function(d){
@@ -494,7 +494,7 @@ var ForceGraph = (function(){
 				P.link_selections[i] = P.link_groups[i].selectAll('.'+type+'_link')
 					.data(
 						P.data.links.filter(function(d){
-							return (d.total_strength/P.max_link_strength) > P.minimum_draw_strength;
+							return (d.scaled_strengths.interlanguage_strength/P.max_link_strength) > P.minimum_draw_strength;
 						}),
 						function(d){
 							return d.source.id+','+d.target.id;
@@ -507,7 +507,7 @@ var ForceGraph = (function(){
 						.enter()
 						.append("line")
 						.attr("class", type+"_link")
-						.attr("stroke-width", function(d) { return strengthToWidth(d[type+'_strength']); })
+						.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths[type+'_strength']); })
 						.on("click", function(d) {
 							Application.toggleLinkSelection(d)
 						})
@@ -590,7 +590,7 @@ var ForceGraph = (function(){
 			P.selected_link_selection.enter()
 				.append("line")
 				.attr("class", "selected-link")
-				.attr("stroke-width", function(d) { return strengthToWidth(d.total_strength); });
+				.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths.interlanguage_strength); });
 
 			P.selected_link_selection.exit()
 				.remove();
