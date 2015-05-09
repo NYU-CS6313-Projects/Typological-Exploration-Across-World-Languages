@@ -168,8 +168,7 @@ var Application = (function(){
 		var f2_v2_langs = [];
 		var expected_probability = 0;
 		var actual_probability = 0;
-		var positive_correlation = 0;
-		var negative_correlation = 0;
+		var correlation = 0;
 		var distance = 1.0; //dot product
 		var distance_threshold = 0.9;
 		//flatten values
@@ -192,11 +191,10 @@ var Application = (function(){
 				intersecting_languages = intersection(f1_v1_langs, f2_v2_langs);
 				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
 				actual_probability = intersecting_languages.length/shared_langs.length;
-				var correlation = actual_probability - expected_probability;
-				if(correlation > 0) {
-					positive_correlation += correlation;
-				} else if(correlation < 0) {
-					negative_correlation += correlation;
+				var current_correlation = actual_probability - expected_probability;
+				//only account for positive correlations
+				if(current_correlation > 0) {
+					correlation += current_correlation;
 				}
 
 				for(var i = 0; i < intersecting_languages.length; i++)
@@ -232,15 +230,7 @@ var Application = (function(){
 			}
 		}
 		return {
-			chi_value:positive_correlation,
-			interfamily_strength:interfamily_strength,
-			intersubfamily_strength:intersubfamily_strength,
-			intergenus_strength:intergenus_strength,
-			interlanguage_strength:interlanguage_strength,
-			"correlations":{
-				positive_correlation:positive_correlation,
-				negative_correlation:negative_correlation
-			},
+			correlation:correlation,
 			"original_strengths":{
 				interfamily_strength:interfamily_strength,
 				intersubfamily_strength:intersubfamily_strength,
@@ -290,25 +280,29 @@ var Application = (function(){
 	 */
 	function collapseFeatures(data, features){
 		//sorting in reverse makes for easier removal
-		features.sort(); //TODO: This is a STRING sort, should be numeric!
-		features.reverse();
+		features.sort(function(a,b){return b-a;});
 		custom_node_count++;
 		var data = JSON.parse(JSON.stringify(data));
 		var new_id = "custom_feature_"+custom_node_count;
 		var new_name = "Custom Feature: ";
 		var new_type = "custom_feature_"+custom_node_count;
 		var new_values = new Object();
+		var new_language_count = 0;
 		for(i in features) {
 			new_name += data.nodes[features[i]].name + " / ";
 			for(value in data.nodes[features[i]]["values"]) {
 				new_values[data.nodes[features[i]].id+"-"+value] = data.nodes[features[i]]["values"][value];
 			}
 			data.nodes.splice(features[i],1);
+			for(var j = features[i]; j < data.nodes.length; j++) {
+				data.nodes[j].index--;
+			}
 		}
 		data.nodes.push({
 			"id":new_id,
 			"name":new_name.slice(0,-3),
 			"type":new_type,
+			"index":data.nodes.length-1, //required for d3
 			"values":new_values
 		});
 
