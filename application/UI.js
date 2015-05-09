@@ -163,7 +163,7 @@ var UI = (function(){
 			var is_selected = Application.nodeIsSelected(feature);
 			return '<div class="feature_search_result search_result feature feature_'+feature.id+(is_selected?' selected':'')+'" data-feature_id="'+feature.id+'">'
 				+'<h2>'+feature.name+' ('+feature.id+')</h2>'
-				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
 					+'<table>'
 						+'<tr><th>Id</th><td>'+feature.id+'</td></tr>'
@@ -180,7 +180,7 @@ var UI = (function(){
 			var is_selected = Application.nodeIsSelected(link);
 			return '<div class="link_search_result search_result link feature_'+link.source.id+' feature_'+link.target.id+(is_selected?' selected':'')+'" data-link_id="'+link.source.id+','+link.target.id+'">'
 				+'<h2>'+link.source.id+' - '+link.target.id+'</input></h2>'
-				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
 					+'<table>'
 						+'<tr>'
@@ -212,7 +212,7 @@ var UI = (function(){
 			var is_selected = Application.languageIsSelected(language);
 			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
 				+'<h2>'+language.name+'</h2>'
-				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
 					+'<table>'
 						+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
@@ -631,7 +631,7 @@ var UI = (function(){
 		}
 		var output = '';
 		if(language_list.length > 0){
-			output += '<input type="button" value="Hide Languages" onclick="$(this).parent().html(\'\');"></input>';
+			output += '<input type="button" value="Hide Languages" onclick="$(this).parent().html(\'\');event.stopPropagation();"></input>';
 			var languages = $(clicked_element).data('languages');
 			languages.forEach(function(language_idx){
 				var language = Application.getLanguageByIndex(language_idx);

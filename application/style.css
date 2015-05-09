@@ -488,3 +488,8 @@ div{
 	margin: 10px;
 	display: inline;
 }
+
+.search_results .detail table
+{
+	width:initial;
+}
