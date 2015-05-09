@@ -86,14 +86,21 @@ var UI = (function(){
 	 */
 	function generateLinkFeatureValueTable(link){
 		var output = '<table class="link_feature_value_matrix">'
-			+'<tr>'
-				+'<td></td>';
-				for(value in link.target.values){
-					//headers for the different target values
-					output += '<th class="target_value_header"><div>'+value.replace(/\s+/g,'&nbsp;')+'</div></th>';
-				}
-				output += '<th class="total target_value_header"><div>Any</div></th>';
-			output += '</tr>';
+			output += '<tr>'
+				+'<td></td>'
+				+'<td></td>'
+				+'<th class="target_label" colspan="'+(Object.keys(link.target.values).length+1)+'">'+link.target.name+'</th>'
+			+'</tr>';
+			var col_idx = Object.keys(link.target.values).length+1;
+			for(value in link.target.values){
+				output += '<tr>'
+					+'<td></td>'
+					+'<td rowspan="'+col_idx+'"></td>'
+					+'<th colspan="'+(col_idx+1)+'" class="target_value_header">'+value.replace(/\s+/g,'&nbsp;')+'</th>';
+				output += '</tr>'
+				col_idx--;
+			}
+			output += '<tr><td></td><td></td><th colspan="2" class="total target_value_header">Any</th></tr>';
 			var first = false;
 			var all_source = Application.flattenValues(link.source.values);
 			all_source.sort(function(a,b){return a-b});
@@ -102,6 +109,10 @@ var UI = (function(){
 			var shared_languages = Application.intersection(all_source,all_target);
 			for(source_value in link.source.values){
 				output += '<tr>';					//row for source value
+					if(!first){
+						first = true;
+						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div style="width:'+(Object.keys(link.source.values).length*2)+'em">'+link.source.name+'</div></th>';
+					}
 					output += '<th class="source_value_header">'+source_value.replace(/\s+/g,'&nbsp;')+'</th>';		//header for source value
 					for(target_value in link.target.values){
 						//number of languages with the intersection of both
@@ -119,11 +130,7 @@ var UI = (function(){
 						+'style="background-color:'+getHeatColor(total.length, shared_languages.length)+'" '
 						+'onclick="UI.linkMiniMatrixClicked(this);" '
 						+'>'+total.length+'</td>';
-					if(!first){
-						first = true;
-						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div style="width:'+(Object.keys(link.source.values).length*2)+'em">'+link.source.name+'</div></th>';
-					}
-				output += '</tr>';
+				output += '<td></td></tr>';
 			}
 
 			output += '<tr><th class="total source_value_header">Any</th>';
@@ -142,10 +149,6 @@ var UI = (function(){
 					+'data-languages="['+total_total.join(',')+']" '
 					+'style="background-color:'+getHeatColor(total_total.length, shared_languages.length)+'"'
 					+'>'+total_total.length+'</td></tr>';
-			output += '<tr>'
-				+'<td></td>'
-				+'<th class="target_label" colspan="'+(Object.keys(link.target.values).length+1)+'">'+link.target.name+'</th>'
-			+'</tr>';
 
 		output += '</table>';
 		return output;
@@ -509,6 +512,27 @@ var UI = (function(){
 				});
 			}
 			$('.data_panel .selected_'+type+'s .selection_list').html(output);
+		});
+
+		//highlighting
+		$('.data_panel .selected_links .selection_list .search_result').on('mouseover', function(){
+			var link_ids = $(this).data('link_id').split(',');
+			var link = Application.getLink(link_ids[0], link_ids[1]);
+			Application.highlightLink(link);
+		});
+		$('.data_panel .selected_links .selection_list .search_result').on('mouseout', function(){
+			var link_ids = $(this).data('link_id').split(',');
+			var link = Application.getLink(link_ids[0], link_ids[1]);
+			Application.highlightLink(null);
+		});
+
+		$('.data_panel .selected_nodes .selection_list .search_result').on('mouseover', function(){
+			var feature = Application.getNode($(this).data('feature_id'));
+			Application.highlightNode(feature);
+		});
+		$('.data_panel .selected_nodes .selection_list .search_result').on('mouseout', function(){
+			var feature = Application.getNode($(this).data('feature_id'));
+			Application.highlightNode(null);
 		});
 
 		if(anything_selected){

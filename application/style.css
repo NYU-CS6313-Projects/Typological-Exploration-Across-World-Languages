@@ -100,20 +100,6 @@ svg
 	cursor: pointer;
 }
 
-.MatrixView td.highlighted,
-.MatrixView highlighted td{
-	border-width:1px;
-	border-style:solid;
-	border-color:yellow;
-}
-
-.MatrixView th.highlighted,
-.MatrixView highlighted th{
-	border-width:1px;
-	border-style:solid;
-	border-color:orange;
-}
-
 .MatrixView td.selected,
 .MatrixView selected td{
 	border-width:1px;
@@ -126,6 +112,20 @@ svg
 	border-width:1px;
 	border-style:solid;
 	border-color:rgb(0,128,0);
+}
+
+.MatrixView td.highlighted,
+.MatrixView highlighted td{
+	border-width:1px;
+	border-style:solid;
+	border-color:yellow;
+}
+
+.MatrixView th.highlighted,
+.MatrixView highlighted th{
+	border-width:1px;
+	border-style:solid;
+	border-color:orange;
 }
 
 .UI_resize_bottom .scrollable_content
@@ -411,14 +411,14 @@ div{
 	background-color: #FFFFFF;
 }
 
-.search_result.highlighted
-{
-	border-color:yellow;
-}
-
 .search_result.selected
 {
 	border-color:#0F0;
+}
+
+.search_result.highlighted
+{
+	border-color:yellow;
 }
 
 #simplemodal-container.UI_DLG_auto
@@ -446,24 +446,19 @@ div{
 
 .link_feature_value_matrix .source_label{
 	vertical-align: bottom;
-	text-align: left;
 }
 
 .link_feature_value_matrix .source_label{
-	-webkit-transform: rotate(90deg); 
-	-moz-transform: rotate(90deg);
+	-webkit-transform: rotate(-90deg); 
+	-moz-transform: rotate(-90deg);
 	width:1em;
 }
 
 .link_feature_value_matrix .target_value_header {
-	height: 1em;
 	white-space: nowrap;
-}
-
-.link_feature_value_matrix .target_value_header div {
-	-webkit-transform: rotate(315deg);
-	-moz-transform: rotate(-315deg);
-	width: 1em;
+	text-align: left;
+	border-top: black solid;
+	border-left: black solid;
 }
 
 .link_feature_value_matrix .source_value_header {
@@ -479,6 +474,8 @@ div{
 .link_feature_value_matrix .data {
 	color: white;
 	cursor: pointer;
+	min-width: 1.5em;
+	width: 1.5em;
 }
 
 .link_feature_value_matrix .target_label {
