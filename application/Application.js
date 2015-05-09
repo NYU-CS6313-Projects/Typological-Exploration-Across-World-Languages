@@ -160,8 +160,7 @@ var Application = (function(){
 		var f2_v2_langs = [];
 		var expected_probability = 0;
 		var actual_probability = 0;
-		var positive_correlation = 0;
-		var negative_correlation = 0;
+		var correlation = 0;
 		var distance = 1.0; //dot product
 		var distance_threshold = 0.9;
 		//flatten values
@@ -184,11 +183,10 @@ var Application = (function(){
 				intersecting_languages = intersection(f1_v1_langs, f2_v2_langs);
 				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
 				actual_probability = intersecting_languages.length/shared_langs.length;
-				var correlation = actual_probability - expected_probability;
-				if(correlation > 0) {
-					positive_correlation += correlation;
-				} else if(correlation < 0) {
-					negative_correlation += correlation;
+				var current_correlation = actual_probability - expected_probability;
+				//only account for positive correlations
+				if(current_correlation > 0) {
+					correlation += current_correlation;
 				}
 
 				for(var i = 0; i < intersecting_languages.length; i++)
@@ -224,15 +222,7 @@ var Application = (function(){
 			}
 		}
 		return {
-			chi_value:positive_correlation,
-			interfamily_strength:interfamily_strength,
-			intersubfamily_strength:intersubfamily_strength,
-			intergenus_strength:intergenus_strength,
-			interlanguage_strength:interlanguage_strength,
-			"correlations":{
-				positive_correlation:positive_correlation,
-				negative_correlation:negative_correlation
-			},
+			correlation:correlation,
 			"original_strengths":{
 				interfamily_strength:interfamily_strength,
 				intersubfamily_strength:intersubfamily_strength,
