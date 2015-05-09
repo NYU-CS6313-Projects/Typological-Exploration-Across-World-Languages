@@ -1,6 +1,7 @@
 body
 {
 	margin: 0;
+	background-color: #f9f9f9;
 }
 
 svg
@@ -45,22 +46,20 @@ svg
 
 .highlighted-link
 {
-	stroke: #ff0;
-	opacity:0.5;
+	stroke: #880;
 	pointer-events:none;
 }
 
 .selected-link
 {
-  stroke: #0f0;
-  opacity:0.5;
+  stroke: #0ee;
   pointer-events:none;
 }
 
 .selected-node
 {
-	stroke: #0f0;
-	stroke-width: 20;
+	stroke: #000;
+	stroke-width: 30;
 	fill: none;
 	pointer-events:none;
 	cursor: -webkit-grabbing;
