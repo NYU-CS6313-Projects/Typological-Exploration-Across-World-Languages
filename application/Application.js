@@ -133,6 +133,14 @@ var Application = (function(){
 	}
 
 	/**
+	 * fast approximation of lat/lon distance
+	 * using dot product
+	 */
+	function fastDistLatLon(x1, y1, z1, x2, y2, z2) {
+		return x1*x2 + y1*y2 + z1*z2;
+	}
+
+	/**
 	 * Given two features, calculate the strength values
 	 */
 	function calculateStrength(feature1, feature2, data){
@@ -150,20 +158,25 @@ var Application = (function(){
 		var actual_probability = 0;
 		var positive_correlation = 0;
 		var negative_correlation = 0;
+		var distance = 1.0; //dot product
+		var distance_threshold = 0.9;
 		//flatten values
-		var feature1_langs = flattenValues(data.nodes[feature1]["values"]);
-		var feature2_langs = flattenValues(data.nodes[feature2]["values"]);
+		var feature1_langs = flattenValues(data.nodes[feature1]["values"]).sort(function(a,b){return a-b});
+		var feature2_langs = flattenValues(data.nodes[feature2]["values"]).sort(function(a,b){return a-b});
 		var shared_langs = intersection(feature1_langs, feature2_langs);
 		if(shared_langs.length <= 1) {
 			return null;
 		}
 
+		//using object keys provides a little performance boost
+		var keys1 = Object.keys(data.nodes[feature1]["values"]);
+		var keys2 = Object.keys(data.nodes[feature2]["values"]);
 		//every value for first feature
-		for(value1 in data.nodes[feature1]["values"]) {
-			f1_v1_langs = intersection(shared_langs, data.nodes[feature1]["values"][value1]);
+		for(var a = 0; a < keys1.length; a++) {
+			f1_v1_langs = intersection(shared_langs, data.nodes[feature1]["values"][keys1[a]]);
 			//every value for second fature
-			for(value2 in data.nodes[feature2]["values"]) {
-				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][value2]);
+			for(var b = 0; b < keys2.length; b++) {
+				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][keys2[b]]);
 				intersecting_languages = intersection(f1_v1_langs, f2_v2_langs);
 				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
 				actual_probability = intersecting_languages.length/shared_langs.length;
@@ -173,26 +186,39 @@ var Application = (function(){
 				} else if(correlation < 0) {
 					negative_correlation += correlation;
 				}
-				total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
 
 				for(var i = 0; i < intersecting_languages.length; i++)
 				{
 					for(var j = i+1; j < intersecting_languages.length; j++)
 					{
+//						distance = fastDistLatLon(
+//							data.languages[intersecting_languages[i]].x,
+//							data.languages[intersecting_languages[i]].y,
+//							data.languages[intersecting_languages[i]].z,
+//							data.languages[intersecting_languages[j]].x,
+//							data.languages[intersecting_languages[j]].y,
+//							data.languages[intersecting_languages[j]].z
+//						);
+//						if(distance > distance_threshold) {
+//							interlanguage_strength += 1;
+//							continue;
+//						}
 						if(data.languages[intersecting_languages[i]].family != data.languages[intersecting_languages[j]].family) {
-							interfamily_strength++;
+							interfamily_strength += 1;
 						}
 						if(data.languages[intersecting_languages[i]].subfamily != data.languages[intersecting_languages[j]].subfamily) {
-							intersubfamily_strength++;
+							intersubfamily_strength += 1;
 						}
 						if(data.languages[intersecting_languages[i]].genus != data.languages[intersecting_languages[j]].genus) {
-							intergenus_strength++;
+							intergenus_strength += 1;
 						}
-						interlanguage_strength++;
+						interlanguage_strength += 1;
 					}
 				}
 			}
 		}
+		//get rid of this soon, it's no longer relevant
+		total_strength = interlanguage_strength;
 		return {
 			chi_value:positive_correlation,
 			total_strength:total_strength,
@@ -202,7 +228,7 @@ var Application = (function(){
 			interlanguage_strength:interlanguage_strength,
 			"correlations":{
 				positive_correlation:positive_correlation,
-				negative_correlation:positive_correlation
+				negative_correlation:negative_correlation
 			},
 			"original_strengths":{
 				total_strength:total_strength,
@@ -225,6 +251,7 @@ var Application = (function(){
 	 * Build data links from existing language data and node data
 	 */
 	function buildLinks(data) {
+		console.time('calc str');
 		var links = [];
 		var feature1;
 		var feature2;
@@ -248,6 +275,7 @@ var Application = (function(){
 			}
 		}
 
+		console.timeEnd('calc str');
 		return links;
 	}
 
@@ -339,6 +367,7 @@ var Application = (function(){
 	function makeSubgraphs(data){
 		var data = JSON.parse(JSON.stringify(data));
 		var group_counter = 0;
+		var nodes_removed = false;
 		function findNodeIndexById(node_id) {
 			for(i in data.nodes) {
 				if(data.nodes[i].id == node_id) {
@@ -404,12 +433,15 @@ var Application = (function(){
 		//now actually delete things
 		for(var i = 0; i<data.nodes.length; i++){
 			if(data.nodes[i].group == null || data.nodes[i].group == undefined) {
+				nodes_removed = true;
 				data.nodes.splice(i, 1);
 				i--;
 			}
 		}
 		//rebuild the links
-		data.links = buildLinks(data);
+		if(nodes_removed)  {
+			data.links = buildLinks(data);
+		}
 
 		return data;
 	}
@@ -876,6 +908,7 @@ var Application = (function(){
 
 
 
+
 	/**
 	 * searches on languages
 	 * for lat/lon search if distance is nan, then exact values are expected for lat/lon
@@ -891,17 +924,13 @@ var Application = (function(){
 	 */
 	function searchLanguage(family, subfamily, genus, name, latitude, longitude, distance){
 
-		function toRad(d){
-			return d*Math.PI/180;
-		}
-
 		function distLatLon(lat1, lon1, lat2, lon2){
 			var R = 6371; //earth radius, Km
-			var d_lat = toRad(lat2-lat1);
-			var d_lon = toRad(lon2-lon1);
-			var angle = 0.5 - Math.cos(d_lat)/2 + Math.cos(toRad(lat_1))*Math.cos(toRad(lat_2))*(1-Math.cos(d_lon))/2;
+			var d_lat = lat2-lat1;
+			var d_lon = lon2-lon1;
+			var angle = 0.5 - Math.cos(d_lat)/2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*(1-Math.cos(d_lon))/2;
 
-			return math.asin(Math.sqrt(angle))*2*R;
+			return Math.asin(Math.sqrt(angle))*2*R;
 		}
 
 		var results = [];

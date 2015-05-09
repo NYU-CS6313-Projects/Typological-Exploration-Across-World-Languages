@@ -12,7 +12,7 @@ $language_data = array_map(
 //get rid of the header
 array_shift($language_data);
 
-
+$R = 1; //radius of the unit circle
 $output = "\"languages\":[";
 foreach($language_data as $language) {
 	$output .= "\n\t{ ";
@@ -22,8 +22,11 @@ foreach($language_data as $language) {
 	if($language[3] == "__") $output .= "\"subfamily\": \"$language[2]\", ";
 	else $output .= "\"subfamily\": \"$language[3]\", ";
 	$output .= "\"genus\": \"$language[1]\", ";
-	$output .= "\"latitude\": \"$language[4]\", ";
-	$output .= "\"longitude\": \"$language[5]\"";
+	$output .= "\"latitude\": \"".deg2rad($language[4])."\", ";
+	$output .= "\"longitude\": \"".deg2rad($language[5])."\", ";
+	$output .= "\"x\": \"".$R * cos(deg2rad($language[4])) * cos(deg2rad($language[5]))."\", ";
+	$output .= "\"y\": \"".$R * cos(deg2rad($language[4])) * sin(deg2rad($language[5]))."\", ";
+	$output .= "\"z\": \"".$R * sin(deg2rad($language[4]))."\"";
 	$output .= " },";
 }
 $output = rtrim($output,",");
