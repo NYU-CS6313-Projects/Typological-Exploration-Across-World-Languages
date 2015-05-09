@@ -508,7 +508,8 @@ div{
 
 .language_badge
 {
-	width: 1em;
+	min-width: 1em;
 	display: inline-block;
-	margin-right: 3px;	
+	margin-right: 3px;
+	white-space: nowrap;
 }

@@ -88,6 +88,23 @@ var UI = (function(){
 	}
 
 	/**
+	 * gets a color that is safe to use in contrast with the given color
+	 */
+	function getSafeInverseColor(in_col){
+		in_col = parseInt(in_col.replace(/#0*(.*)/, '$1'), 16);
+		var r = ((in_col&0xff0000)>>16)>128?1:0;
+		var g = ((in_col&0xff00)>>8)>128?1:0;
+		var b = (in_col&0xff)>128?1:0;
+
+		if(r+g+b > 1){
+			return '#000';
+		}
+		else{
+			return '#fff';
+		}
+	}
+
+	/**
 	 * the heat color used in the mini-matrix
 	 */
 	function getHeatColor(count, total){
@@ -225,21 +242,27 @@ var UI = (function(){
 
 		language: function(language){
 			var is_selected = Application.languageIsSelected(language);
+			var f_col = colorHash(language.family);
+			var s_col = colorHash(language.subfamily);
+			var g_col = colorHash(language.genus);
+			var f_text_col = getSafeInverseColor(f_col);
+			var s_text_col = getSafeInverseColor(s_col);
+			var g_text_col = getSafeInverseColor(g_col);
+
 			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
-				+'<span class="language_badge" style="background-color:'+colorHash(language.family)+';">&nbsp;</span>'
-				+'<span class="language_badge" style="background-color:'+colorHash(language.subfamily)+';">&nbsp;</span>'
-				+'<span class="language_badge" style="background-color:'+colorHash(language.genus)+';">&nbsp;</span>'
+				+'<span class="language_badge" style="background-color:'+f_col+'; color:'+f_text_col+';">F</span>'
+				+'<span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">S</span>'
+				+'<span class="language_badge" style="background-color:'+g_col+'; color:'+g_text_col+';">G</span>'
 				+'<h2>'+language.name+'</h2>'
 				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
 					+'<table>'
-						+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-						+'<tr><th>Subfamily</th><td>'+language.subfamily+'</td></tr>'
-						+'<tr><th>Genus</th><td>'+language.genus+'</td></tr>'
-						+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-						+'<tr><th>Name</th><td>'+language.name+'</td></tr>'
-						+'<tr><th>Latitude</th><td>'+language.latitude+'</td></tr>'
-						+'<tr><th>Longitude</th><td>'+language.longitude+'</td></tr>'
+						+'<tr><th>Family:</th><td><span class="language_badge" style="background-color:'+f_col+'; color:'+f_text_col+';">'+language.family+'</span></td></tr>'
+						+'<tr><th>Subfamily:</th><td><span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">'+language.subfamily+'</span></td></tr>'
+						+'<tr><th>Genus:</th><td><span class="language_badge" style="background-color:'+g_col+'; color:'+g_text_col+';">'+language.genus+'</span></td></tr>'
+						+'<tr><th>Name:</th><td>'+language.name+'</td></tr>'
+						+'<tr><th>Latitude:</th><td>'+language.latitude+'</td></tr>'
+						+'<tr><th>Longitude:</th><td>'+language.longitude+'</td></tr>'
 					+'</table>'
 				+'</div>'
 			+'</div>';
@@ -667,6 +690,35 @@ var UI = (function(){
 		if(language_list.length > 0){
 			output += '<input type="button" value="Hide Languages" onclick="$(this).parent().html(\'\');event.stopPropagation();"></input>';
 			var languages = $(clicked_element).data('languages');
+			languages.sort(function(l1, l2){
+				var language1 = Application.getLanguageByIndex(l1);
+				var language2 = Application.getLanguageByIndex(l2);
+				if(language1.family > language2.family){
+					return 1;
+				}
+				if(language1.family < language2.family){
+					return -1;
+				}
+				if(language1.subfamily > language2.subfamily){
+					return 1;
+				}
+				if(language1.subfamily < language2.subfamily){
+					return -1;
+				}
+				if(language1.genus > language2.genus){
+					return 1;
+				}
+				if(language1.genus < language2.genus){
+					return -1;
+				}
+				if(language1.name > language2.name){
+					return 1;
+				}
+				if(language1.name < language2.name){
+					return -1;
+				}
+				return 0;
+			});
 			languages.forEach(function(language_idx){
 				var language = Application.getLanguageByIndex(language_idx);
 				output += TEMPLATES.language(language);
