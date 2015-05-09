@@ -282,25 +282,29 @@ var Application = (function(){
 	 */
 	function collapseFeatures(data, features){
 		//sorting in reverse makes for easier removal
-		features.sort(); //TODO: This is a STRING sort, should be numeric!
-		features.reverse();
+		features.sort(function(a,b){return b-a;});
 		custom_node_count++;
 		var data = JSON.parse(JSON.stringify(data));
 		var new_id = "custom_feature_"+custom_node_count;
 		var new_name = "Custom Feature: ";
 		var new_type = "custom_feature_"+custom_node_count;
 		var new_values = new Object();
+		var new_language_count = 0;
 		for(i in features) {
 			new_name += data.nodes[features[i]].name + " / ";
 			for(value in data.nodes[features[i]]["values"]) {
 				new_values[data.nodes[features[i]].id+"-"+value] = data.nodes[features[i]]["values"][value];
 			}
 			data.nodes.splice(features[i],1);
+			for(var j = features[i]; j < data.nodes.length; j++) {
+				data.nodes[j].index--;
+			}
 		}
 		data.nodes.push({
 			"id":new_id,
 			"name":new_name.slice(0,-3),
 			"type":new_type,
+			"index":data.nodes.length-1, //required for d3
 			"values":new_values
 		});
 

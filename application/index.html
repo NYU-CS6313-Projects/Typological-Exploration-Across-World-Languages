@@ -32,8 +32,6 @@
 
 		<span class="UI_label">Calculate Distance (SLOW!):</span>
 		<input id="UI_calculate_distance" type="checkbox" onclick="UI.onCalculateDistanceChange();" value="1"></input>
-
-		<input id="UI_collapse_features" type="button" onclick="UI.onCollapseSelectedFeatures();" value="Collapse Selected Features" />
 	</div>
 	<div id="UI_right_pannel" class="UI_resize UI_resize_right">
 		<div class="UI_tab"><h2>Data</h2></div>
@@ -57,7 +55,8 @@
 						<input type="button" value="Clear Selection" onclick="Application.clearSelection('node');"></input>
 					<input type="button" value="Remove Selected" onclick="UI.removeSelected('node');"></input>
 					<input type="button" value="Remove Unselected" onclick="UI.removeUnselected('node');"></input>
-						<input type="button" value="Invert Selection" onclick="Application.invertSelection('node');"></input>
+					<input id="UI_collapse_features" type="button" onclick="UI.onCollapseSelectedFeatures();" value="Collapse Selected" />
+					<input type="button" value="Invert Selection" onclick="Application.invertSelection('node');"></input>
 					</div>
 					<div class="null_selection">
 						No Features Selected
