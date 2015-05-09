@@ -146,9 +146,10 @@ var Application = (function(){
 		var intersecting_languages = [];
 		var f1_v1_langs = [];
 		var f2_v2_langs = [];
-		var expected_language_count = 0;
-		var expected_value = 0;
-		var chi_value = 0;
+		var expected_probability = 0;
+		var actual_probability = 0;
+		var positive_correlation = 0;
+		var negative_correlation = 0;
 		//flatten values
 		var feature1_langs = flattenValues(data.nodes[feature1]["values"]);
 		var feature2_langs = flattenValues(data.nodes[feature2]["values"]);
@@ -163,10 +164,15 @@ var Application = (function(){
 			//every value for second fature
 			for(value2 in data.nodes[feature2]["values"]) {
 				f2_v2_langs = intersection(shared_langs, data.nodes[feature2]["values"][value2]);
-
-				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
-
 				intersecting_languages = intersection(f1_v1_langs, f2_v2_langs);
+				expected_probability = (f1_v1_langs.length) * ((f2_v2_langs.length) / (shared_langs.length*shared_langs.length));
+				actual_probability = intersecting_languages.length/shared_langs.length;
+				var correlation = actual_probability - expected_probability;
+				if(correlation > 0) {
+					positive_correlation += correlation;
+				} else if(correlation < 0) {
+					negative_correlation += correlation;
+				}
 				total_strength += intersecting_languages.length*(intersecting_languages.length-1)/2;
 
 				for(var i = 0; i < intersecting_languages.length; i++)
@@ -185,30 +191,33 @@ var Application = (function(){
 						interlanguage_strength++;
 					}
 				}
-				if(intersecting_languages.length <= 0 && expected_probability == 0) {
-					//do nothing
-				} else {
-					if(expected_probability <= 0) {
-						console.log("Expected value cannot be zero!.");
-					}
-					chi_value +=
-						Math.pow(
-							intersecting_languages.length/shared_langs.length - expected_probability,
-							2
-						)/expected_probability;
-					if(isNaN(chi_value)) {
-						console.log("chi_value is NaN!");
-					}
-				}
 			}
 		}
 		return {
-			total_strength:(total_strength&&chi_value?total_strength*chi_value:0),
-			chi_value:chi_value,
-			interfamily_strength:(interfamily_strength&&chi_value ? interfamily_strength*chi_value : 0),
-			intersubfamily_strength:(intersubfamily_strength&&chi_value ? intersubfamily_strength*chi_value : 0),
-			intergenus_strength:(intergenus_strength&&chi_value ? intergenus_strength*chi_value : 0),
-			interlanguage_strength:(interlanguage_strength&&chi_value?interlanguage_strength*chi_value:0)
+			chi_value:positive_correlation,
+			total_strength:total_strength,
+			interfamily_strength:interfamily_strength,
+			intersubfamily_strength:intersubfamily_strength,
+			intergenus_strength:intergenus_strength,
+			interlanguage_strength:interlanguage_strength,
+			"correlations":{
+				positive_correlation:positive_correlation,
+				negative_correlation:positive_correlation
+			},
+			"original_strengths":{
+				total_strength:total_strength,
+				interfamily_strength:interfamily_strength,
+				intersubfamily_strength:intersubfamily_strength,
+				intergenus_strength:intergenus_strength,
+				interlanguage_strength:interlanguage_strength
+			},
+			"scaled_strengths":{
+				total_strength:total_strength,
+				interfamily_strength:interfamily_strength,
+				intersubfamily_strength:intersubfamily_strength,
+				intergenus_strength:intergenus_strength,
+				interlanguage_strength:interlanguage_strength
+			}
 		};
 	}
 
