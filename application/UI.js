@@ -94,11 +94,10 @@ var UI = (function(){
 				+'<h2>'+link.source.id+' - '+link.target.id+'</h2>'
 				+'Correlation Confidence'
 				+'<table>'
-					+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
-					+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
-					+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
-					+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
-					+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
+					+'<tr><th>Interfamily:</th><td>'+link.scaled_strengths.interfamily_strength+'</td></tr>'
+					+'<tr><th>Intersubfamily:</th><td>'+link.scaled_strengths.intersubfamily_strength+'</td></tr>'
+					+'<tr><th>Intergenus:</th><td>'+link.scaled_strengths.intergenus_strength+'</td></tr>'
+					+'<tr><th>Interlanguage:</th><td>'+link.scaled_strengths.interlanguage_strength+'</td></tr>'
 				+'</table>'
 			+'</div>';
 		},

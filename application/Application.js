@@ -151,7 +151,6 @@ var Application = (function(){
 	function calculateStrength(feature1, feature2, data){
 		var value1;
 		var value2;
-		var total_strength = 0;
 		var interfamily_strength = 0;
 		var intersubfamily_strength = 0;
 		var intergenus_strength = 0;
@@ -224,11 +223,8 @@ var Application = (function(){
 				}
 			}
 		}
-		//get rid of this soon, it's no longer relevant
-		total_strength = interlanguage_strength;
 		return {
 			chi_value:positive_correlation,
-			total_strength:total_strength,
 			interfamily_strength:interfamily_strength,
 			intersubfamily_strength:intersubfamily_strength,
 			intergenus_strength:intergenus_strength,
@@ -238,14 +234,12 @@ var Application = (function(){
 				negative_correlation:negative_correlation
 			},
 			"original_strengths":{
-				total_strength:total_strength,
 				interfamily_strength:interfamily_strength,
 				intersubfamily_strength:intersubfamily_strength,
 				intergenus_strength:intergenus_strength,
 				interlanguage_strength:interlanguage_strength
 			},
 			"scaled_strengths":{
-				total_strength:total_strength,
 				interfamily_strength:interfamily_strength,
 				intersubfamily_strength:intersubfamily_strength,
 				intergenus_strength:intergenus_strength,
@@ -267,16 +261,13 @@ var Application = (function(){
 			//compare to every OTHER feature
 			for(var feature2 = feature1+1; feature2 < data.nodes.length; feature2++) {
 				var strength = calculateStrength(feature1, feature2, data);
-				if(strength != null && strength.total_strength > 0){
+				if(strength != null && strength.original_strengths.interlanguage_strength > 0){
 					links.push({
 						"source":data.nodes[feature1],
 						"target":data.nodes[feature2],
-						"total_strength":strength.total_strength,
-						"chi_value":strength.chi_value,
-						"interfamily_strength":strength.interfamily_strength,
-						"intersubfamily_strength":strength.intersubfamily_strength,
-						"intergenus_strength":strength.intergenus_strength,
-						"interlanguage_strength":strength.interlanguage_strength
+						"correlations":strength.correlations,
+						"original_strengths":strength.original_strengths,
+						"scaled_strengths":strength.scaled_strengths
 					});
 				}
 			}
@@ -343,12 +334,12 @@ var Application = (function(){
 	function floorData(data, threshold){
 		data = JSON.parse(JSON.stringify(data))
 		for(var i = 0; i<data.links.length; i++){
-			if(data.links[i].total_strength <=threshold){
+			if(data.links[i].scaled_strengths.interlanguage_strength <=threshold){
 				data.links.splice(i, 1);
 				i--;
 			}
 			else{
-				data.links[i].total_strength -= threshold;
+				data.links[i].scaled_strengths.interlanguage_strength -= threshold;
 			}
 		}
 
@@ -743,15 +734,13 @@ var Application = (function(){
 			for(var i = application_data.links.length-1; i>=0; i--){
 				var cur_link = application_data.links[i];
 				var strength = calculateStrength(cur_link.source, cur_link.target);
-				if(strength.total_strength){
+				if(!strength.scaled_strengths.interlanguage_strength){
 					application_data.links.splice(i,1);
 				}
 				else{
-					cur_link.total_strength = total_strength;
-					cur_link.interfamily_strength = interfamily_strength;
-					cur_link.intersubfamily_strength = intersubfamily_strength;
-					cur_link.intergenus_strength = intergenus_strength;
-					cur_link.interlanguage_strength = interlanguage_strength;
+					cur_link.correlations = strength.correlations;
+					cur_link.original_strengths = strength.original_strengths;
+					cur_link.scaled_strengths = strength.scaled_strengths;
 				}
 			};
 		}
@@ -887,25 +876,25 @@ var Application = (function(){
 			if(
 					(feature.test(d.source.id) || feature.test(d.target.id))
 				&&
-					(Number.isNaN(total_strength_min) || d.total_strength >= total_strength_min)
+					(Number.isNaN(total_strength_min) || d.scaled_strengths.interlanguage_strength >= total_strength_min)
 				&&
-					(Number.isNaN(total_strength_max) || d.total_strength <= total_strength_max)
+					(Number.isNaN(total_strength_max) || d.scaled_strengths.interlanguage_strength <= total_strength_max)
 				&&
-					(Number.isNaN(interfamily_strength_min) || d.interfamily_strength >= interfamily_strength_min)
+					(Number.isNaN(interfamily_strength_min) || d.scaled_strengths.interfamily_strength >= interfamily_strength_min)
 				&&
-					(Number.isNaN(interfamily_strength_max) || d.interfamily_strength <= interfamily_strength_max)
+					(Number.isNaN(interfamily_strength_max) || d.scaled_strengths.interfamily_strength <= interfamily_strength_max)
 				&&
-					(Number.isNaN(intersubfamily_strength_min) || d.intersubfamily_strength >= intersubfamily_strength_min)
+					(Number.isNaN(intersubfamily_strength_min) || d.scaled_strengths.intersubfamily_strength >= intersubfamily_strength_min)
 				&&
-					(Number.isNaN(intersubfamily_strength_max) || d.intersubfamily_strength <= intersubfamily_strength_max)
+					(Number.isNaN(intersubfamily_strength_max) || d.scaled_strengths.intersubfamily_strength <= intersubfamily_strength_max)
 				&&
-					(Number.isNaN(intergenus_strength_min) || d.intergenus_strength >= intergenus_strength_min)
+					(Number.isNaN(intergenus_strength_min) || d.scaled_strengths.intergenus_strength >= intergenus_strength_min)
 				&&
-					(Number.isNaN(intergenus_strength_max) || d.intergenus_strength <= intergenus_strength_max)
+					(Number.isNaN(intergenus_strength_max) || d.scaled_strengths.intergenus_strength <= intergenus_strength_max)
 				&&
-					(Number.isNaN(interlanguage_strength_min) || d.interlanguage_strength >= interlanguage_strength_min)
+					(Number.isNaN(interlanguage_strength_min) || d.scaled_strengths.interlanguage_strength >= interlanguage_strength_min)
 				&&
-					(Number.isNaN(interlanguage_strength_max) || d.interlanguage_strength <= interlanguage_strength_max)
+					(Number.isNaN(interlanguage_strength_max) || d.scaled_strengths.interlanguage_strength <= interlanguage_strength_max)
 			){
 				results.push(d);
 			}
