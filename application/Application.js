@@ -26,6 +26,11 @@ var Application = (function(){
 	var custom_node_count = 0;
 
 	/**
+	 * whether or not to do distance calculations (very slow!)
+	 */
+	var calculate_distance = false;
+
+	/**
 	 * main function, entry point for the application,
 	 * sets up D3,
 	 * starts up other event handlers that drive the rest of the application
@@ -191,18 +196,20 @@ var Application = (function(){
 				{
 					for(var j = i+1; j < intersecting_languages.length; j++)
 					{
-//						distance = fastDistLatLon(
-//							data.languages[intersecting_languages[i]].x,
-//							data.languages[intersecting_languages[i]].y,
-//							data.languages[intersecting_languages[i]].z,
-//							data.languages[intersecting_languages[j]].x,
-//							data.languages[intersecting_languages[j]].y,
-//							data.languages[intersecting_languages[j]].z
-//						);
-//						if(distance > distance_threshold) {
-//							interlanguage_strength += 1;
-//							continue;
-//						}
+						if(calculate_distance) {
+							distance = fastDistLatLon(
+								data.languages[intersecting_languages[i]].x,
+								data.languages[intersecting_languages[i]].y,
+								data.languages[intersecting_languages[i]].z,
+								data.languages[intersecting_languages[j]].x,
+								data.languages[intersecting_languages[j]].y,
+								data.languages[intersecting_languages[j]].z
+							);
+							if(distance > distance_threshold) {
+								interlanguage_strength += 1;
+								continue;
+							}
+						}
 						if(data.languages[intersecting_languages[i]].family != data.languages[intersecting_languages[j]].family) {
 							interfamily_strength += 1;
 						}
@@ -979,6 +986,7 @@ var Application = (function(){
 		setMinimumCorrelation:setFlooredData,
 		setSubgraphSeparation:function(d){ForceGraph.setGroupRingSize(d);},
 		setDrawLinks:function(d){ForceGraph.setDrawLinks(d);},
+		setCalculateDistance:function(d){calculate_distance = d;},
 		setMinimumDrawStrength:function(d){ForceGraph.setMinimumDrawStrength(d);},
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d);},
 		setCorrelationType:function(d){MatrixView.setCorrelationType(d);},

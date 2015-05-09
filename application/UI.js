@@ -441,6 +441,14 @@ var UI = (function(){
 	}
 
 	/**
+	 * the user has decided to change the calculating of distance
+	 */
+	function onCalculateDistanceChange(){
+		var is_checked = $('#UI_calculate_distance').prop('checked');
+		Application.setCalculateDistance(is_checked);
+	}
+
+	/**
 	 * the user has decided to change showing of labels on the matrix
 	 */
 	function onDrawMatrixLabelsChange(){
@@ -623,6 +631,7 @@ var UI = (function(){
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
 		onDrawLinkChange:onDrawLinkChange,
+		onCalculateDistanceChange:onCalculateDistanceChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
 		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
 		onMinimumDrawStrengthChange:onMinimumDrawStrengthChange,
