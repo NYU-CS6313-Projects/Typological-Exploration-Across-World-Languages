@@ -120,6 +120,11 @@ var ForceGraph = (function(){
 		max_link_strength:0,
 
 		/**
+		 * this only needs to be recalculated every now and then
+		 */
+		avg_link_strength:0,
+
+		/**
 		 * number of disconnected subgraphs in the collection of nodes
 		 */
 		group_count: 0,
@@ -132,7 +137,7 @@ var ForceGraph = (function(){
 		/**
 		 * boolean flag telling us if we should draw links or not
 		 */
-		draw_links: false,
+		draw_labels: true,
 
 		/**
 		 * config option for skipping the drawing of weak links
@@ -150,7 +155,7 @@ var ForceGraph = (function(){
 	 *map link strength values to width
 	 */
 	function strengthToWidth(strength){
-		return 200*Math.pow(strength/P.max_link_strength,2);
+		return 200*(strength/P.max_link_strength);
 	}
 
 	/**
@@ -161,7 +166,9 @@ var ForceGraph = (function(){
 		var intergenus = link.scaled_strengths.intergenus_strength - link.scaled_strengths.intersubfamily_strength;
 		var intersubfamily = link.scaled_strengths.intersubfamily_strength - link.scaled_strengths.interfamily_strength;
 		var weighted_strength = link.scaled_strengths.interfamily_strength + intersubfamily/2 + intergenus/4 + interlanguage/8;
-		return 5000*Math.pow(1.0 - (weighted_strength/P.max_link_strength), 4)+100;
+		var avg_length = Math.pow(1.0 - (P.avg_link_strength/P.max_link_strength), 4);
+		var my_length = Math.pow(1.0 - (weighted_strength/P.max_link_strength), 4);
+		return 5000*my_length/avg_length+100;
 	}
 
 	/**
@@ -470,9 +477,12 @@ var ForceGraph = (function(){
 			P.data = data;
 
 			P.max_link_strength = 0;
+			P.avg_link_strength = 0;
 			P.data.links.forEach(function(d){
 				P.max_link_strength = Math.max(P.max_link_strength, d.scaled_strengths.interlanguage_strength);
+				P.avg_link_strength += d.scaled_strengths.interlanguage_strength;
 			});
+			P.avg_link_strength /= P.data.links.length;
 			P.group_count = 0;
 			P.data.nodes.forEach(function(d){
 				if('group' in d){
@@ -501,23 +511,22 @@ var ForceGraph = (function(){
 						}
 					);
 
-				if(P.draw_links){
 					P.link_selections[i]
 						
-						.enter()
-						.append("line")
-						.attr("class", type+"_link")
-						.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths[type+'_strength']); })
-						.on("click", function(d) {
-							Application.toggleLinkSelection(d)
-						})
-						.on("mouseover", function(d){
-							Application.highlightLink(d);
-						})
-						.on("mouseout", function(d){
-							Application.highlightLink(null);
-						});
-				}
+					.enter()
+					.append("line")
+					.attr("class", type+"_link")
+					.attr("stroke-width", function(d) { return strengthToWidth(d.scaled_strengths[type+'_strength']); })
+					.on("click", function(d) {
+						Application.toggleLinkSelection(d)
+					})
+					.on("mouseover", function(d){
+						Application.highlightLink(d);
+					})
+					.on("mouseout", function(d){
+						Application.highlightLink(null);
+					});
+
 				P.link_selections[i].exit()
 					.remove();
 			});
@@ -556,14 +565,9 @@ var ForceGraph = (function(){
 		 *turn the drawing of links on or off
 		 *this could have a better name
 		 */
-		setDrawLinks: function(draw_links){
-			P.draw_links = draw_links;
-			if(!draw_links){
-				STRENGTH_TYPES.forEach(function(type, i){
-					P.link_selections[i].remove();
-				});
-			}
-			this.setData(P.data);
+		setDrawNodeLabels: function(draw_labels){
+			P.draw_labels = draw_labels;
+			P.svg.classed('no_node_labels', !P.draw_labels);
 		},
 
 		/**

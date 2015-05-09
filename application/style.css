@@ -67,6 +67,15 @@ svg
 	cursor: grabbing;
 }
 
+.no_node_labels .node text{
+	display:none;
+}
+
+.node:hover text {
+	display: initial;
+	fill: #880;
+}
+
 .node text{
 	stroke:none;
 	font-size:7em;

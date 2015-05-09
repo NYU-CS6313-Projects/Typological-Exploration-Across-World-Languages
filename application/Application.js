@@ -6,6 +6,11 @@ var Application = (function(){
 	var source_data = new Object();
 
 	/**
+	 * 
+	 */
+	var scaling_mode = 'quadratic';
+
+	/**
 	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
 	 * it is source data after filtering and transformations that happen from user input
 	 */
@@ -61,9 +66,11 @@ var Application = (function(){
 		},100);
 	}
 
-	function setData(data){
+	function setData(data, clear_selection){
 		application_data = data;
-		clearSelection();
+		if(typeof(clear_selection) === 'undefined' || clear_selection){
+			clearSelection();
+		}
 		ForceGraph.setData(application_data);
 		MatrixView.setData(application_data);		
 	}
@@ -77,6 +84,7 @@ var Application = (function(){
 		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
 		built_data.nodes = buildFeatureNodes(input_data);
 		built_data.links = buildLinks(built_data);
+		setScale(scaling_mode, built_data);
 
 		return built_data;
 	}
@@ -239,11 +247,11 @@ var Application = (function(){
 				intergenus_strength:intergenus_strength,
 				interlanguage_strength:interlanguage_strength
 			},
-			"scaled_strengths":{
-				interfamily_strength:interfamily_strength,
-				intersubfamily_strength:intersubfamily_strength,
-				intergenus_strength:intergenus_strength,
-				interlanguage_strength:interlanguage_strength
+			"scaled_strengths":{ //this will get calculated via a call to setScale
+				interfamily_strength:0,
+				intersubfamily_strength:0,
+				intergenus_strength:0,
+				interlanguage_strength:0
 			}
 		};
 	}
@@ -305,6 +313,7 @@ var Application = (function(){
 		});
 
 		data.links = buildLinks(data);
+		setScale(scaling_mode, data);
 		data = makeSubgraphs(data);
 		return data;
 	}
@@ -439,9 +448,64 @@ var Application = (function(){
 		//rebuild the links
 		if(nodes_removed)  {
 			data.links = buildLinks(data);
+			setScale(scaling_mode, data);
 		}
 
 		return data;
+	}
+
+	/**
+	 *change the scale mode
+	 */
+	function setScale(mode, data){
+		if(typeof(data) === 'undefined'){
+			data = application_data;
+		}
+		switch(mode){
+			case 'linear':
+				data.links.forEach(function(link){
+					for(type in link.original_strengths){
+						link.scaled_strengths[type] = link.original_strengths[type];
+					}
+				});
+			break;
+
+			case 'logorithmic':
+				data.links.forEach(function(link){
+					for(type in link.original_strengths){
+						link.scaled_strengths[type] = Math.log(link.original_strengths[type]+1);
+					}
+				});
+			break;
+
+			case	'quadratic':
+				data.links.forEach(function(link){
+					for(type in link.original_strengths){
+						link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 2);
+					}
+				});
+			break;
+
+			case	'4th_pow':
+				data.links.forEach(function(link){
+					for(type in link.original_strengths){
+						link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 4);
+					}
+				});
+			break;
+
+			case	'root':
+				data.links.forEach(function(link){
+					for(type in link.original_strengths){
+						link.scaled_strengths[type] = Math.sqrt(link.original_strengths[type]);
+					}
+				});
+			break;
+
+			default:
+				throw "invalid scaling mode '"+mode+"'";
+		}
+		scaling_mode = mode;
 	}
 
 	/**
@@ -579,7 +643,7 @@ var Application = (function(){
 	/**
 	 * unselects everything
 	 */
-	function clearSelection(){
+	function clearSelection(type){
 		if(typeof(type) === 'undefined' || type === 'node'){
 			selected_data.nodes = [];
 		}
@@ -743,6 +807,7 @@ var Application = (function(){
 					cur_link.scaled_strengths = strength.scaled_strengths;
 				}
 			};
+			setScale(scaling_mode);
 		}
 		UI.clearSearchResults();
 		clearSelection();
@@ -981,11 +1046,12 @@ var Application = (function(){
 		main:main,
 		setMinimumCorrelation:setFlooredData,
 		setSubgraphSeparation:function(d){ForceGraph.setGroupRingSize(d);},
-		setDrawLinks:function(d){ForceGraph.setDrawLinks(d);},
+		setDrawNodeLabels:function(d){ForceGraph.setDrawNodeLabels(d);},
 		setCalculateDistance:function(d){calculate_distance = d;},
 		setMinimumDrawStrength:function(d){ForceGraph.setMinimumDrawStrength(d);},
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d);},
 		setCorrelationType:function(d){MatrixView.setCorrelationType(d);},
+		setScale:function(d){setScale(d); setData(application_data, false);},
 		sortMatrix:MatrixView.sortMatrix,
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,

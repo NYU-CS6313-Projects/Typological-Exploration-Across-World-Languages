@@ -568,9 +568,17 @@ var UI = (function(){
 	/**
 	 * the user has decided to change the drawing of links
 	 */
-	function onDrawLinkChange(){
-		var is_checked = $('#UI_draw_links').prop('checked');
-		Application.setDrawLinks(is_checked);
+	function onDrawNodeLabelsChange(){
+		var is_checked = $('#UI_draw_node_labels').prop('checked');
+		Application.setDrawNodeLabels(is_checked);
+	}
+
+	/**
+	 * the user has decided to change the link scaling mode
+	 */
+	function onScaleChange(){
+		var mode = $('#UI_scaling').val();
+		Application.setScale(mode);
 	}
 
 	/**
@@ -783,7 +791,8 @@ var UI = (function(){
 	return {
 		onCorrelationChange:onCorrelationChange,
 		onSeparationChange:onSeparationChange,
-		onDrawLinkChange:onDrawLinkChange,
+		onDrawNodeLabelsChange:onDrawNodeLabelsChange,
+		onScaleChange:onScaleChange,
 		onCalculateDistanceChange:onCalculateDistanceChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
 		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
