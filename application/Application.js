@@ -8,7 +8,7 @@ var Application = (function(){
 	/**
 	 * 
 	 */
-	var scaling_mode = 'quadratic';
+	var scaling_mode = 'linear';
 
 	/**
 	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
