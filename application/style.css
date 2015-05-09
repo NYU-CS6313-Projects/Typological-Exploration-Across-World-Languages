@@ -421,12 +421,16 @@ div{
 
 .search_result.selected
 {
-	border-color:#0F0;
+	border-color:#000;
+	color:#990;
+	border-width:3px;
 }
 
 .search_result.highlighted
 {
-	border-color:yellow;
+	border-color:#990;
+	color:#990;
+	border-width:3px;
 }
 
 #simplemodal-container.UI_DLG_auto
