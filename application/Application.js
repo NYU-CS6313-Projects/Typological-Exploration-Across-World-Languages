@@ -8,7 +8,7 @@ var Application = (function(){
 	/**
 	 * 
 	 */
-	var scaling_mode = 'quadratic';
+	var scaling_mode = 'linear';
 
 	/**
 	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
@@ -282,7 +282,6 @@ var Application = (function(){
 		//sorting in reverse makes for easier removal
 		features.sort(function(a,b){return b-a;});
 		custom_node_count++;
-		var data = JSON.parse(JSON.stringify(data));
 		var new_id = "custom_feature_"+custom_node_count;
 		var new_name = "Custom Feature: ";
 		var new_type = "custom_feature_"+custom_node_count;
@@ -307,8 +306,7 @@ var Application = (function(){
 		});
 
 		data.links = buildLinks(data);
-		data = makeSubgraphs(data);
-		return data;
+		makeSubgraphs(application_data);
 	}
 
 	/**
@@ -326,8 +324,8 @@ var Application = (function(){
 				}
 			}
 		}
-		application_data = collapseFeatures(application_data, features);
-		setData(application_data);
+		collapseFeatures(application_data, features);
+		setData(application_data, true);
 	}
 
 	/**
@@ -345,7 +343,7 @@ var Application = (function(){
 			}
 		}
 
-		data = makeSubgraphs(data);
+		makeSubgraphs(data);
 	
 		return data;
 	}
@@ -362,10 +360,8 @@ var Application = (function(){
 	/**
 	 * Forms nodes into groups
 	 * deletes any single nodes
-	 * operates directly on the reference passed to it!
 	 */
 	function makeSubgraphs(data){
-		var data = JSON.parse(JSON.stringify(data));
 		var group_counter = 0;
 		var nodes_removed = false;
 		function findNodeIndexById(node_id) {
