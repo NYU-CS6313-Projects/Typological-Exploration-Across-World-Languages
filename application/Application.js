@@ -767,6 +767,13 @@ var Application = (function(){
 	}
 
 	/**
+	 * gets a language by it's position in the language array
+	 */
+	function getLanguageByIndex(idx){
+		return application_data.languages[idx];
+	}
+
+	/**
 	 * searches on features
 	 * @param id regex
 	 * @param name regex
@@ -949,6 +956,8 @@ var Application = (function(){
 		highlightLink:highlightLink,
 		loadData:loadData,
 		collapseFeatures:callCollapseFeatures,
+		intersection:intersection,
+		flattenValues:flattenValues,
 		/*selection related functions*/
 		selectLink:selectLink,
 		selectNode:selectNode,
@@ -966,6 +975,7 @@ var Application = (function(){
 		selectLanguage:selectLanguage,
 		unselectLanguage:unselectLanguage,
 		getLanguage:getLanguage,
+		getLanguageByIndex:getLanguageByIndex,
 		removeSelected:removeSelected,
 		removeUnselected:removeUnselected,
 		/*data access functions*/

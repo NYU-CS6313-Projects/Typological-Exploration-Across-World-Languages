@@ -412,7 +412,9 @@ var MatrixView = (function(){
 		var data_cells = $('.MatrixView td.data');
 		data_cells.on( "click", function(){
 			var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
-			Application.toggleLinkSelection(link);
+			if(link){
+				Application.toggleLinkSelection(link);
+			}
 		} );
 		data_cells.on( "mouseover", function(){
 			var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));

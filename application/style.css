@@ -435,7 +435,59 @@ div{
 	background-color: #F2F2F2;
 	border-radius:15px;
 	border-style: solid;
-    border-width: 3px;
-    padding:2ex;
+	border-width: 3px;
+	padding:2ex;
 }
 
+.link_feature_value_matrix{
+	border-collapse: collapse;
+	margin-left:auto;
+}
+
+.link_feature_value_matrix .source_label{
+	vertical-align: bottom;
+	text-align: left;
+}
+
+.link_feature_value_matrix .source_label{
+	-webkit-transform: rotate(90deg); 
+	-moz-transform: rotate(90deg);
+	width:1em;
+}
+
+.link_feature_value_matrix .target_value_header {
+	height: 1em;
+	white-space: nowrap;
+}
+
+.link_feature_value_matrix .target_value_header div {
+	-webkit-transform: rotate(315deg);
+	-moz-transform: rotate(-315deg);
+	width: 1em;
+}
+
+.link_feature_value_matrix .source_value_header {
+	text-align: right;
+}
+
+.link_feature_value_matrix .data {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
+.link_feature_value_matrix .data {
+	color: white;
+	cursor: pointer;
+}
+
+.link_feature_value_matrix .target_label {
+	width: 1px;
+}
+
+.search_result h2,
+.search_result > input
+{
+	margin: 10px;
+	display: inline;
+}

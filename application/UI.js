@@ -70,6 +70,88 @@ var UI = (function(){
 		);
 	}
 
+
+	/**
+	 * the heat color used in the mini-matrix
+	 */
+	function getHeatColor(count, total){
+		var r = Math.round((count/total*0.75+0.25)*255);
+		var g = Math.round((count/total/2)*255);
+		var b = Math.round((count/total/2)*255);
+		return 'rgb('+r+','+g+','+b+')';
+	}
+
+	/**
+	 * used by the link template for generating the table of feature values
+	 */
+	function generateLinkFeatureValueTable(link){
+		var output = '<table class="link_feature_value_matrix">'
+			+'<tr>'
+				+'<td></td>';
+				for(value in link.target.values){
+					//headers for the different target values
+					output += '<th class="target_value_header"><div>'+value.replace(/\s+/g,'&nbsp;')+'</div></th>';
+				}
+				output += '<th class="total target_value_header"><div>Any</div></th>';
+			output += '</tr>';
+			var first = false;
+			var all_source = Application.flattenValues(link.source.values);
+			all_source.sort(function(a,b){return a-b});
+			var all_target = Application.flattenValues(link.target.values);
+			all_target.sort(function(a,b){return a-b});
+			var shared_languages = Application.intersection(all_source,all_target);
+			for(source_value in link.source.values){
+				output += '<tr>';					//row for source value
+					output += '<th class="source_value_header">'+source_value.replace(/\s+/g,'&nbsp;')+'</th>';		//header for source value
+					for(target_value in link.target.values){
+						//number of languages with the intersection of both
+						var combo_value_languages = Application.intersection(link.source.values[source_value], link.target.values[target_value]);
+						output += '<td class="data" '
+							+'data-languages="['+combo_value_languages.join(',')+']" '
+							+'style="background-color:'+getHeatColor(combo_value_languages.length, shared_languages.length)+'" '
+							+'onclick="UI.linkMiniMatrixClicked(this);" '
+							+'>'+combo_value_languages.length+'</td>';
+					};
+					//number of languages with the source value (not caring about target)
+					var total = Application.intersection(shared_languages, link.source.values[source_value]);
+					output += '<td class="data" '
+						+'data-languages="['+total.join(',')+']" '
+						+'style="background-color:'+getHeatColor(total.length, shared_languages.length)+'" '
+						+'onclick="UI.linkMiniMatrixClicked(this);" '
+						+'>'+total.length+'</td>';
+					if(!first){
+						first = true;
+						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div style="width:'+(Object.keys(link.source.values).length*2)+'em">'+link.source.name+'</div></th>';
+					}
+				output += '</tr>';
+			}
+
+			output += '<tr><th class="total source_value_header">Any</th>';
+				var total_total = [];
+				for(value in link.target.values){
+					var total = Application.intersection(shared_languages, link.target.values[value]);
+					total_total = total_total.concat(total);
+					output += '<td class="data" '
+						+'data-languages="['+total.join(',')+']" '
+						+'style="background-color:'+getHeatColor(total.length, shared_languages.length)+'" '
+						+'onclick="UI.linkMiniMatrixClicked(this);" '
+						+'>'+total.length+'</td>';
+				}
+			
+			output += '<td class="data" '
+					+'data-languages="['+total_total.join(',')+']" '
+					+'style="background-color:'+getHeatColor(total_total.length, shared_languages.length)+'"'
+					+'>'+total_total.length+'</td></tr>';
+			output += '<tr>'
+				+'<td></td>'
+				+'<th class="target_label" colspan="'+(Object.keys(link.target.values).length+1)+'">'+link.target.name+'</th>'
+			+'</tr>';
+
+		output += '</table>';
+		return output;
+	}
+	
+
 	/**
 	 * templates for drawing nodes, links and languages
 	 */
@@ -78,28 +160,48 @@ var UI = (function(){
 			var is_selected = Application.nodeIsSelected(feature);
 			return '<div class="feature_search_result search_result feature feature_'+feature.id+(is_selected?' selected':'')+'" data-feature_id="'+feature.id+'">'
 				+'<h2>'+feature.name+' ('+feature.id+')</h2>'
-				+'<table>'
-					+'<tr><th>Id</th><td>'+feature.id+'</td></tr>'
-					+'<tr><th>Name</th><td>'+feature.name+'</td></tr>'
-					+'<tr><th>Language Count</th><td>'+feature.language_count+'</td></tr>'
-					+'<tr><th>Area</th><td>'+feature.area+'</td></tr>'
-					+'<tr><th>Author</th><td>'+feature.author+'</td></tr>'
-				+'</table>'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<div class="detail" style="display:none">'
+					+'<table>'
+						+'<tr><th>Id</th><td>'+feature.id+'</td></tr>'
+						+'<tr><th>Name</th><td>'+feature.name+'</td></tr>'
+						+'<tr><th>Language Count</th><td>'+feature.language_count+'</td></tr>'
+						+'<tr><th>Area</th><td>'+feature.area+'</td></tr>'
+						+'<tr><th>Author</th><td>'+feature.author+'</td></tr>'
+					+'</table>'
+				+'</div>'
 			+'</div>';
 		},
 
 		link: function(link){
 			var is_selected = Application.nodeIsSelected(link);
 			return '<div class="link_search_result search_result link feature_'+link.source.id+' feature_'+link.target.id+(is_selected?' selected':'')+'" data-link_id="'+link.source.id+','+link.target.id+'">'
-				+'<h2>'+link.source.id+' - '+link.target.id+'</h2>'
-				+'Correlation Confidence'
-				+'<table>'
-					+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
-					+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
-					+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
-					+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
-					+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
-				+'</table>'
+				+'<h2>'+link.source.id+' - '+link.target.id+'</input></h2>'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<div class="detail" style="display:none">'
+					+'<table>'
+						+'<tr>'
+							+'<td>'
+								+'<table>'
+									+'<tr><th colspan="2">Correlation Confidence</th></tr>'
+									+'<tr><th>Interfamily:</th><td>'+link.interfamily_strength+'</td></tr>'
+									+'<tr><th>Intersubfamily:</th><td>'+link.intersubfamily_strength+'</td></tr>'
+									+'<tr><th>Intergenus:</th><td>'+link.intergenus_strength+'</td></tr>'
+									+'<tr><th>Interlanguage:</th><td>'+link.interlanguage_strength+'</td></tr>'
+									+'<tr><th>Total:</th><td>'+link.total_strength+'</td></tr>'
+								+'</table>'
+							+'</td>'
+							+'<td style="width:100%">'
+								+generateLinkFeatureValueTable(link)
+							+'</td>'
+						+'</tr>'
+						+'<tr>'
+							+'<td colspan="2">'
+								+'<div class="language_list"></div>'
+							+'</td>'
+						+'</tr>'
+					+'</table>'
+				+'</div>'
 			+'</div>';
 		},
 
@@ -107,20 +209,28 @@ var UI = (function(){
 			var is_selected = Application.languageIsSelected(language);
 			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
 				+'<h2>'+language.name+'</h2>'
-				+'<table>'
-					+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-					+'<tr><th>Subfamily</th><td>'+language.subfamily+'</td></tr>'
-					+'<tr><th>Genus</th><td>'+language.genus+'</td></tr>'
-					+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
-					+'<tr><th>Name</th><td>'+language.name+'</td></tr>'
-					+'<tr><th>Latitude</th><td>'+language.latitude+'</td></tr>'
-					+'<tr><th>Longitude</th><td>'+language.longitude+'</td></tr>'
-				+'</table>'
+				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);">'
+				+'<div class="detail" style="display:none">'
+					+'<table>'
+						+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
+						+'<tr><th>Subfamily</th><td>'+language.subfamily+'</td></tr>'
+						+'<tr><th>Genus</th><td>'+language.genus+'</td></tr>'
+						+'<tr><th>Family</th><td>'+language.family+'</td></tr>'
+						+'<tr><th>Name</th><td>'+language.name+'</td></tr>'
+						+'<tr><th>Latitude</th><td>'+language.latitude+'</td></tr>'
+						+'<tr><th>Longitude</th><td>'+language.longitude+'</td></tr>'
+					+'</table>'
+				+'</div>'
 			+'</div>';
 		}
 	};
 
-	
+	/**
+	 * function used by the templates for showing/hiding detail
+	 */
+	function toggleDetail(clicked_element){
+		$(clicked_element).closest('.search_result').find('.detail').toggle();
+	}	
 
 	/**
 	 * read the function name >:(
@@ -448,7 +558,6 @@ var UI = (function(){
 		Application.setDrawMatrixLabels(is_checked);
 	}
 
-
 	/**
 	 * the user wants to resort something on the matrix somehow
 	 */
@@ -462,7 +571,6 @@ var UI = (function(){
 			UI.stopLightBox();
 		},100);
 	}
-
 
 	/**
 	 * the user has decided to change the weakest links to draw
@@ -485,6 +593,28 @@ var UI = (function(){
 	 */
 	function onCollapseSelectedFeatures(){
 		Application.collapseFeatures();
+	}
+
+	/**
+	 * the user has clicked on a minimatrix
+	 */
+	function linkMiniMatrixClicked(clicked_element){
+		var common_ancestor = $(clicked_element);
+		var language_list = [];
+		while(language_list.length < 1 && common_ancestor.length > 0){
+			common_ancestor = $(common_ancestor.parent());
+			language_list = common_ancestor.find('.language_list');
+		}
+		var output = '';
+		if(language_list.length > 0){
+			output += '<input type="button" value="Hide Languages" onclick="$(this).parent().html(\'\');"></input>';
+			var languages = $(clicked_element).data('languages');
+			languages.forEach(function(language_idx){
+				var language = Application.getLanguageByIndex(language_idx);
+				output += TEMPLATES.language(language);
+			});
+		}
+		language_list.html(output);
 	}
 
 	/**
@@ -637,7 +767,9 @@ var UI = (function(){
 		startLightBox:startLightBox,
 		stopLightBox:stopLightBox,
 		removeUnselected:removeUnselected,
-		removeSelected:removeSelected
+		removeSelected:removeSelected,
+		linkMiniMatrixClicked:linkMiniMatrixClicked,
+		toggleDetail:toggleDetail
 	};
 }());
 
