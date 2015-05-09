@@ -84,7 +84,6 @@ var Application = (function(){
 		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
 		built_data.nodes = buildFeatureNodes(input_data);
 		built_data.links = buildLinks(built_data);
-		setScale(scaling_mode, built_data);
 
 		return built_data;
 	}
@@ -229,7 +228,8 @@ var Application = (function(){
 				}
 			}
 		}
-		return {
+
+		return calculateScale({
 			correlation:correlation,
 			"original_strengths":{
 				interfamily_strength:interfamily_strength,
@@ -237,13 +237,13 @@ var Application = (function(){
 				intergenus_strength:intergenus_strength,
 				interlanguage_strength:interlanguage_strength
 			},
-			"scaled_strengths":{ //this will get calculated via a call to setScale
+			"scaled_strengths":{ //this will get calculated via a call to calculateScale
 				interfamily_strength:0,
 				intersubfamily_strength:0,
 				intergenus_strength:0,
 				interlanguage_strength:0
 			}
-		};
+		});
 	}
 
 	/**
@@ -307,7 +307,6 @@ var Application = (function(){
 		});
 
 		data.links = buildLinks(data);
-		setScale(scaling_mode, data);
 		data = makeSubgraphs(data);
 		return data;
 	}
@@ -442,10 +441,50 @@ var Application = (function(){
 		//rebuild the links
 		if(nodes_removed)  {
 			data.links = buildLinks(data);
-			setScale(scaling_mode, data);
 		}
 
 		return data;
+	}
+
+	/**
+	 * calculate a scale for a given link
+	 */
+	function calculateScale(link){
+		switch(scaling_mode){
+			case 'linear':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = link.original_strengths[type];
+				}
+			break;
+
+			case 'logorithmic':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = Math.log(link.original_strengths[type]+1);
+				}
+			break;
+
+			case	'quadratic':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 2);
+				}
+			break;
+
+			case	'4th_pow':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 4);
+				}
+			break;
+
+			case	'root':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = Math.sqrt(link.original_strengths[type]);
+				}
+			break;
+
+			default:
+				throw "invalid scaling mode '"+scaling_mode+"'";
+		}
+		return link;
 	}
 
 	/**
@@ -455,51 +494,12 @@ var Application = (function(){
 		if(typeof(data) === 'undefined'){
 			data = application_data;
 		}
-		switch(mode){
-			case 'linear':
-				data.links.forEach(function(link){
-					for(type in link.original_strengths){
-						link.scaled_strengths[type] = link.original_strengths[type];
-					}
-				});
-			break;
 
-			case 'logorithmic':
-				data.links.forEach(function(link){
-					for(type in link.original_strengths){
-						link.scaled_strengths[type] = Math.log(link.original_strengths[type]+1);
-					}
-				});
-			break;
-
-			case	'quadratic':
-				data.links.forEach(function(link){
-					for(type in link.original_strengths){
-						link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 2);
-					}
-				});
-			break;
-
-			case	'4th_pow':
-				data.links.forEach(function(link){
-					for(type in link.original_strengths){
-						link.scaled_strengths[type] = Math.pow(link.original_strengths[type], 4);
-					}
-				});
-			break;
-
-			case	'root':
-				data.links.forEach(function(link){
-					for(type in link.original_strengths){
-						link.scaled_strengths[type] = Math.sqrt(link.original_strengths[type]);
-					}
-				});
-			break;
-
-			default:
-				throw "invalid scaling mode '"+mode+"'";
-		}
 		scaling_mode = mode;
+
+		data.links.forEach(function(link){
+			link = calculateScale(link);
+		});
 	}
 
 	/**
@@ -801,7 +801,6 @@ var Application = (function(){
 					cur_link.scaled_strengths = strength.scaled_strengths;
 				}
 			};
-			setScale(scaling_mode);
 		}
 		UI.clearSearchResults();
 		clearSelection();
