@@ -107,11 +107,27 @@ var UI = (function(){
 	/**
 	 * the heat color used in the mini-matrix
 	 */
-	function getHeatColor(count, total){
-		var r = Math.round((count/total*0.75+0.25)*255);
-		var g = Math.round((count/total/2)*255);
+	function getHeatColor(count, total, hue){
+
+		if(typeof(hue) === 'undefined'){
+			hue == 'red';
+		}
+		
+		var a = Math.round((count/total*0.75+0.25)*255);
 		var b = Math.round((count/total/2)*255);
-		return 'rgb('+r+','+g+','+b+')';
+
+		if(hue === 'red'){
+			return 'rgb('+a+','+b+','+b+')';
+		}
+		else if(hue === 'blue'){
+			return 'rgb('+b+','+b+','+a+')';
+		}
+		else if(hue === 'green'){
+			return 'rgb('+b+','+a+','+b+')';
+		}
+		else{
+			return getHeatColor(count, total, 'red');
+		}
 	}
 
 	/**
@@ -160,7 +176,7 @@ var UI = (function(){
 					var total = Application.intersection(shared_languages, link.source.values[source_value]);
 					output += '<td class="data" '
 						+'data-languages="['+total.join(',')+']" '
-						+'style="background-color:'+getHeatColor(total.length, shared_languages.length)+'" '
+						+'style="background-color:'+getHeatColor(total.length, shared_languages.length, 'blue')+'" '
 						+'onclick="UI.linkMiniMatrixClicked(this);" '
 						+'>'+total.length+'</td>';
 				output += '<td></td></tr>';
@@ -173,14 +189,15 @@ var UI = (function(){
 					total_total = total_total.concat(total);
 					output += '<td class="data" '
 						+'data-languages="['+total.join(',')+']" '
-						+'style="background-color:'+getHeatColor(total.length, shared_languages.length)+'" '
+						+'style="background-color:'+getHeatColor(total.length, shared_languages.length, 'blue')+'" '
 						+'onclick="UI.linkMiniMatrixClicked(this);" '
 						+'>'+total.length+'</td>';
 				}
 			
 			output += '<td class="data" '
 					+'data-languages="['+total_total.join(',')+']" '
-					+'style="background-color:'+getHeatColor(total_total.length, shared_languages.length)+'"'
+					+'style="background-color:'+getHeatColor(total_total.length, shared_languages.length, 'blue')+'"'
+					+'onclick="UI.linkMiniMatrixClicked(this);" '
 					+'>'+total_total.length+'</td></tr>';
 
 		output += '</table>';
