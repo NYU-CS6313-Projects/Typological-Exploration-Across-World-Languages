@@ -639,6 +639,11 @@ var UI = (function(){
 		Application.setDrawMatrixLabels(is_checked);
 	}
 
+	function onNormalizeChange(){
+		var is_checked = $('#UI_normalize').prop('checked');
+		Application.setNormalizeStrengths(is_checked);
+	}
+
 	/**
 	 * the user wants to resort something on the matrix somehow
 	 */
@@ -866,6 +871,7 @@ var UI = (function(){
 		onScaleChange:onScaleChange,
 		onCalculateDistanceChange:onCalculateDistanceChange,
 		onDrawMatrixLabelsChange:onDrawMatrixLabelsChange,
+		onNormalizeChange:onNormalizeChange,
 		onCollapseSelectedFeatures:onCollapseSelectedFeatures,
 		onMinimumDrawStrengthChange:onMinimumDrawStrengthChange,
 		onCorrelationTypeChange:onCorrelationTypeChange,

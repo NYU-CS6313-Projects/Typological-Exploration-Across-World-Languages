@@ -11,6 +11,11 @@ var Application = (function(){
 	var scaling_mode = 'linear';
 
 	/**
+	 * should we normalize strengths that have few languages
+	 */
+	var normalize_strengths = true;
+
+	/**
 	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
 	 * it is source data after filtering and transformations that happen from user input
 	 */
@@ -67,12 +72,13 @@ var Application = (function(){
 	}
 
 	function setData(data, clear_selection){
+		set_data_timer = null;
 		application_data = data;
 		if(typeof(clear_selection) === 'undefined' || clear_selection){
 			clearSelection();
 		}
 		ForceGraph.setData(application_data);
-		MatrixView.setData(application_data);		
+		MatrixView.setData(application_data);
 	}
 
 	/**
@@ -263,7 +269,7 @@ var Application = (function(){
 					links.push({
 						"source":data.nodes[feature1],
 						"target":data.nodes[feature2],
-						"correlations":strength.correlations,
+						"correlation":strength.correlation,
 						"original_strengths":strength.original_strengths,
 						"scaled_strengths":strength.scaled_strengths
 					});
@@ -477,9 +483,24 @@ var Application = (function(){
 				}
 			break;
 
+			case	'language':
+				for(type in link.original_strengths){
+					link.scaled_strengths[type] = Math.sqrt(link.original_strengths[type]*8)/2;
+				}
+			break;
+
 			default:
 				throw "invalid scaling mode '"+scaling_mode+"'";
 		}
+
+		var interlanguage_strength = link.scaled_strengths.interlanguage_strength;
+		for(type in link.original_strengths){
+			if(normalize_strengths){
+				link.scaled_strengths[type] /= interlanguage_strength;
+			}
+			link.scaled_strengths[type] *= link.correlation;
+		}
+
 		return link;
 	}
 
@@ -497,6 +518,20 @@ var Application = (function(){
 			link = calculateScale(link);
 		});
 	}
+
+	/**
+	 *change the scale mode
+	 */
+	function setNormalizeStrengths(normalize){
+
+		normalize_strengths = normalize;
+
+		application_data.links.forEach(function(link){
+			link = calculateScale(link);
+		});
+	}
+
+
 
 	/**
 	 * give it a node to highlight
@@ -792,7 +827,7 @@ var Application = (function(){
 					application_data.links.splice(i,1);
 				}
 				else{
-					cur_link.correlations = strength.correlations;
+					cur_link.correlation = strength.correlation;
 					cur_link.original_strengths = strength.original_strengths;
 					cur_link.scaled_strengths = strength.scaled_strengths;
 				}
@@ -1041,6 +1076,7 @@ var Application = (function(){
 		setDrawMatrixLabels:function(d){MatrixView.setDrawLabels(d);},
 		setCorrelationType:function(d){MatrixView.setCorrelationType(d);},
 		setScale:function(d){setScale(d); setData(application_data, false);},
+		setNormalizeStrengths:function(d){setNormalizeStrengths(d); setData(application_data, false);},
 		sortMatrix:MatrixView.sortMatrix,
 		highlightNode:highlightNode,
 		highlightLink:highlightLink,

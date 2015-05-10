@@ -155,8 +155,8 @@ var MatrixView = (function(){
 			if(!(target.id in lookup)){
 				lookup[target.id] = 0;
 			}
-			lookup[source.id] += P.raw_data.links[i][P.scaled_strengths.correlation_type+'_strength'];
-			lookup[target.id] += P.raw_data.links[i][P.scaled_strengths.correlation_type+'_strength'];
+			lookup[source.id] += P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength'];
+			lookup[target.id] += P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength'];
 		}
 
 		//sort by feature value
@@ -190,8 +190,8 @@ var MatrixView = (function(){
 			if(!(target.id in lookup)){
 				lookup[target.id] = 1;
 			}
-			lookup[source.id] *= P.raw_data.links[i][scaled_strenths][P.correlation_type+'_strength'];
-			lookup[target.id] *= P.raw_data.links[i][scaled_strenths][P.correlation_type+'_strength'];
+			lookup[source.id] *= P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength'];
+			lookup[target.id] *= P.raw_data.links[i].scaled_strengths[P.correlation_type+'_strength'];
 		}
 
 		//sort by feature value

@@ -46,13 +46,15 @@ svg
 
 .highlighted-link
 {
-	stroke: #880;
+	stroke: #DD0;
+	opacity: 0.75;
 	pointer-events:none;
 }
 
 .selected-link
 {
   stroke: #0ee;
+  opacity: 0.5;
   pointer-events:none;
 }
 
@@ -457,15 +459,18 @@ div{
 }
 
 .link_feature_value_matrix .source_label{
-	vertical-align: bottom;
-}
-
-.link_feature_value_matrix .source_label{
-	-webkit-transform: rotate(-90deg); 
-	-moz-transform: rotate(-90deg);
+	vertical-align: top;
 	width:1em;
 }
 
+.link_feature_value_matrix .source_label div{
+	-webkit-transform: rotate(-90deg); 
+	-moz-transform: rotate(-90deg);
+	-webkit-transform-origin: right;
+	-moz-transform-origin: right;
+	width:1em;
+	text-align: right;
+}
 .link_feature_value_matrix .target_value_header {
 	white-space: nowrap;
 	text-align: left;
@@ -475,6 +480,8 @@ div{
 
 .link_feature_value_matrix .source_value_header {
 	text-align: right;
+	white-space: nowrap;
+	padding-left: 10px;
 }
 
 .link_feature_value_matrix .data {
