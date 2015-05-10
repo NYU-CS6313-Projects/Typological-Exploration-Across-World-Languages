@@ -758,12 +758,16 @@ var UI = (function(){
 		$('.UI_tab_content:visible .search_result').each(function(i,result){
 			var feature = $(result).data('feature_id');
 			var link = $(result).data('link_id');
+			var language = $(result).data('language_name');
 			if(feature){
 				Application.selectNode(Application.getNode(feature));
 			}
 			if(link){
 				var link_ids = $(this).data('link_id').split(',');
 				Application.selectLink(Application.getLink(link_ids[0],link_ids[1]));
+			}
+			if(language){
+				Application.selectLanguage(Application.getLanguage(language));
 			}
 		});
 	}
@@ -775,12 +779,16 @@ var UI = (function(){
 		$('.UI_tab_content:visible .search_result').each(function(i,result){
 			var feature = $(result).data('feature_id');
 			var link = $(result).data('link_id');
+			var language = $(result).data('language_name');
 			if(feature){
 				Application.unselectNode(Application.getNode(feature));
 			}
 			if(link){
 				var link_ids = $(this).data('link_id').split(',');
 				Application.unselectLink(Application.getLink(link_ids[0],link_ids[1]));
+			}
+			if(language){
+				Application.unselectLanguage(Application.getLanguage(language));
 			}
 		});
 	}
