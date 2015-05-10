@@ -394,16 +394,16 @@ var UI = (function(){
 			try{
 				
 				var link_search_feature = getSearchStringRegex('link_search_feature');
-				var link_search_total_strength_min = parseInt($('#link_search_total_strength_min').val(),10);
-				var link_search_total_strength_max = parseInt($('#link_search_total_strength_max').val(),10);
-				var link_search_interfamily_strength_min = parseInt($('#link_search_interfamily_strength_min').val(),10);
-				var link_search_interfamily_strength_max = parseInt($('#link_search_interfamily_strength_max').val(),10);
-				var link_search_intersubfamily_strength_min = parseInt($('#link_search_intersubfamily_strength_min').val(),10);
-				var link_search_intersubfamily_strength_max = parseInt($('#link_search_intersubfamily_strength_max').val(),10);
-				var link_search_intergenus_strength_min = parseInt($('#link_search_intergenus_strength_min').val(),10);
-				var link_search_intergenus_strength_max = parseInt($('#link_search_intergenus_strength_max').val(),10);
-				var link_search_interlanguage_strength_min = parseInt($('#link_search_interlanguage_strength_min').val(),10);
-				var link_search_interlanguage_strength_max = parseInt($('#link_search_interlanguage_strength_max').val(),10);
+				var link_search_total_strength_min = parseFloat($('#link_search_total_strength_min').val());
+				var link_search_total_strength_max = parseFloat($('#link_search_total_strength_max').val());
+				var link_search_interfamily_strength_min = parseFloat($('#link_search_interfamily_strength_min').val());
+				var link_search_interfamily_strength_max = parseFloat($('#link_search_interfamily_strength_max').val());
+				var link_search_intersubfamily_strength_min = parseFloat($('#link_search_intersubfamily_strength_min').val());
+				var link_search_intersubfamily_strength_max = parseFloat($('#link_search_intersubfamily_strength_max').val());
+				var link_search_intergenus_strength_min = parseFloat($('#link_search_intergenus_strength_min').val());
+				var link_search_intergenus_strength_max = parseFloat($('#link_search_intergenus_strength_max').val());
+				var link_search_interlanguage_strength_min = parseFloat($('#link_search_interlanguage_strength_min').val());
+				var link_search_interlanguage_strength_max = parseFloat($('#link_search_interlanguage_strength_max').val());
 			
 				var results = Application.searchLink(
 					link_search_feature,

@@ -822,7 +822,7 @@ var Application = (function(){
 			//remove 0 strength links
 			for(var i = application_data.links.length-1; i>=0; i--){
 				var cur_link = application_data.links[i];
-				var strength = calculateStrength(cur_link.source, cur_link.target);
+				var strength = calculateStrength(cur_link.source.index, cur_link.target.index, application_data);
 				if(!strength.scaled_strengths.interlanguage_strength){
 					application_data.links.splice(i,1);
 				}
