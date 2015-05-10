@@ -1284,9 +1284,9 @@
 		"name":"Languages with two Dominant Orders of Subject, Object, and Verb",
 		"id":"81B",
 		"type":"81",
-		"author":" and Verb",
-		"language_count":"Word Order",
-		"area":"Matthew S. Dryer",
+		"author":"Matthew S. Dryer",
+		"language_count":"67",
+		"area":"Word Order",
 		"values":{
 			"SOV or SVO": [52,252,297,411,471,476,538,775,866,916,1063,1068,1135,1174,1187,1265,1299,1429,1489,1758,1802,1863,1890,2065,2233,2432,2498,2511,2660],
 			"VSO or VOS": [41,138,197,241,405,473,563,708,1223,1252,1708,1864,1933,2185],
