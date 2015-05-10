@@ -314,7 +314,7 @@ var UI = (function(){
 		}
 		else{
 			//if the user entered / / style regular expression with flags, split the string up to get the body of the regular expression and flags
-			if(val.test(/^\/.*(?<!\\)\/\w*$/)){
+			if(val.match(/\/([\\]\/|[^\/])*\/\w*/)){
 				flags = val.replace(/.+?[^\\]\/(\w*)/, "$1");
 				val = val.replace(/^\/(.*?)\/\w*$/, "$1");
 			}
@@ -329,7 +329,7 @@ var UI = (function(){
 		var use_regex = $('#UI_search_regex').prop('checked');
 		var vals = [];
 		if(use_regex){
-			vals = $('#'+id).val().match(/(?<!\\)\/.*?(?<!\\)\//);
+			vals = $('#'+id).val().match(/\/([\\]\/|[^\/])*\/\w*/);
 		}
 		else{
 			vals = $('#'+id).val().match(/[^\s]/);
