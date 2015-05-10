@@ -459,17 +459,20 @@ div{
 }
 
 .link_feature_value_matrix .source_label{
-	vertical-align: top;
+	vertical-align: bottom;
 	width:1em;
+	position: relative
 }
 
 .link_feature_value_matrix .source_label div{
 	-webkit-transform: rotate(-90deg); 
 	-moz-transform: rotate(-90deg);
-	-webkit-transform-origin: right;
-	-moz-transform-origin: right;
+	-webkit-transform-origin: left;
+	-moz-transform-origin: left;
 	width:1em;
-	text-align: right;
+	text-align: left;
+	position: absolute;
+	white-space: nowrap;
 }
 .link_feature_value_matrix .target_value_header {
 	white-space: nowrap;

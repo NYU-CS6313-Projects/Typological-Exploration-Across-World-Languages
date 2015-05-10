@@ -144,7 +144,7 @@ var UI = (function(){
 				output += '<tr>';					//row for source value
 					if(!first){
 						first = true;
-						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div style="width:'+(Object.keys(link.source.values).length*2)+'em">'+link.source.name+'</div></th>';
+						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div>'+link.source.name+'</div></th>';
 					}
 					output += '<th class="source_value_header">'+source_value.replace(/\s+/g,'&nbsp;')+'</th>';		//header for source value
 					for(target_value in link.target.values){
