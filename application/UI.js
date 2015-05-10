@@ -323,40 +323,6 @@ var UI = (function(){
 	}
 
 	/**
-	 *utility function that gets an array of regular expressions to test against for a given form string identified by it's form element's id
-	 */
-	function getSearchStringRegexArray(id){
-		var use_regex = $('#UI_search_regex').prop('checked');
-		var vals = [];
-		if(use_regex){
-			vals = $('#'+id).val().match(/\/([\\]\/|[^\/])*\/\w*/);
-		}
-		else{
-			vals = $('#'+id).val().match(/[^\s]/);
-		}
-		if(vals === null){
-			return [];
-		}
-		for(var i = 0; i<vals.length; i++){
-			var val = vals[i];
-			flags = 'i';
-			if(!use_regex){
-				//escape regex characters
-				val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-			}
-			else{
-				//if the user entered / / style regular expression with flags, split the string up to get the body of the regular expression and flags
-				if(val.test(/^\/.*(?<!\\)\/\w*$/)){
-					flags = val.replace(/.+?[^\\]\/(\w*)/, "$1");
-					val = val.replace(/^\/(.*?)\/\w*$/, "$1");
-				}
-			}
-			vals[i] = new RegExp(val, flags);
-		};
-		return vals;
-	}
-
-	/**
 	 * for some reason we've just been informed that our search results are now invalid
 	 */
 	function clearSearchResults(){
@@ -381,7 +347,7 @@ var UI = (function(){
 				var author = getSearchStringRegex('feature_search_author');
 				var language_count = parseInt($('#feature_search_language_count').val(),10);
 				var area = getSearchStringRegex('feature_search_area');
-				var values = getSearchStringRegexArray('feature_search_values');
+				var values = getSearchStringRegex('feature_search_values');
 			
 				var results = Application.searchFeature(id, name, author, language_count, area, values);
 

@@ -911,10 +911,10 @@ var Application = (function(){
 	function searchFeature(id, name, author, language_count, area, values){
 		var results = [];
 		application_data.nodes.forEach(function(d){
-			var has_all_values = true;
-			for(var i = 0; i<values.length; i++){
-				if(d.values.indexOf(values[i]) ==-1){
-					has_all_values = false;
+			var has_values = false;
+			for(val in d.values){
+				if(values.test(val)){
+					has_values = true;
 					break;
 				}
 			};
@@ -929,7 +929,7 @@ var Application = (function(){
 				&&
 					area.test(d.area)
 				&&
-					has_all_values
+					has_values
 			){
 				results.push(d);
 			}
