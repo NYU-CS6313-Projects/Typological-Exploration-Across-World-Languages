@@ -593,7 +593,7 @@ var UI = (function(){
 	function onCorrelationChange(){
 		//UI.startLightBox('Flooring Data...');
 		//setTimeout(function(){
-			var new_corelation = parseInt($('#UI_minimum_corelation').val(),10);
+			var new_corelation = parseFloat($('#UI_minimum_corelation').val(),10);
 			Application.setMinimumCorrelation(new_corelation);
 		//	UI.stopLightBox();
 		//},100);
