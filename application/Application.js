@@ -567,9 +567,18 @@ var Application = (function(){
 	}
 
 	function selectionChanged(){
-		ForceGraph.selectionChanged(selected_data);
-		MatrixView.selectionChanged(selected_data);
-		UI.selectionChanged(selected_data);
+		if(typeof(selectionChanged.selection_timmer) === 'undefined'){
+			selectionChanged.selection_timmer = null;
+		}
+		if(selectionChanged.selection_timmer){
+			clearTimeout(selectionChanged.selection_timmer);
+		}
+		selectionChanged.selection_timmer = setTimeout(function(){
+			selection_timmer = null;
+			ForceGraph.selectionChanged(selected_data);
+			MatrixView.selectionChanged(selected_data);
+			UI.selectionChanged(selected_data);
+		}, 100);
 	}
 
 	/**
@@ -811,6 +820,10 @@ var Application = (function(){
 					application_data.nodes.splice(i,1);
 				}
 			};
+			//update index
+			for(var i = application_data.nodes.length-1; i>=0; i--){
+				application_data.nodes[i].index = i;
+			};
 			for(var i = application_data.links.length-1; i>=0; i--){
 				var cur_link = application_data.links[i];
 				if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
@@ -825,6 +838,18 @@ var Application = (function(){
 				var cur_language = application_data.languages[i];
 				if(do_unselected != languageIsSelected(cur_language)){
 					application_data.languages.splice(i,1);
+					for(var k = 0; k<application_data.nodes.length; k++){
+						for(value in application_data.nodes[k].values){
+							for(var j = application_data.nodes[k].values[value].length-1; j>=0; j--){
+								if(application_data.nodes[k].values[value][j] === i){
+									application_data.nodes[k].values[value].splice(j,1);
+								}
+								else if(application_data.nodes[k].values[value][j] > i){
+									application_data.nodes[k].values[value][j]--;
+								}
+							}
+						}
+					}
 				}
 			};
 			//recalculate link strength
@@ -832,7 +857,7 @@ var Application = (function(){
 			for(var i = application_data.links.length-1; i>=0; i--){
 				var cur_link = application_data.links[i];
 				var strength = calculateStrength(cur_link.source.index, cur_link.target.index, application_data);
-				if(!strength.scaled_strengths.interlanguage_strength){
+				if(!strength || !strength.scaled_strengths.interlanguage_strength){
 					application_data.links.splice(i,1);
 				}
 				else{

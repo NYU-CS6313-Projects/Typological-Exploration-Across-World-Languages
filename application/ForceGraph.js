@@ -551,6 +551,7 @@ var ForceGraph = (function(){
 				});
 
 			bookKeepNode(P.node_selection);
+			self.selectionChanged({nodes:[],links:[]});
 		},
 
 		/**
