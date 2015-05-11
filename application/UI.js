@@ -846,11 +846,7 @@ var UI = (function(){
 	 * user wants to remove the things they have selected
 	 */
 	function removeSelected(type){
-		UI.startLightBox('Removing Selectied Items...');
-		setTimeout(function(){
-			Application.removeSelected(type);
-			UI.stopLightBox();
-		},100);
+		Application.removeSelected(type);
 	}
 
 	/**

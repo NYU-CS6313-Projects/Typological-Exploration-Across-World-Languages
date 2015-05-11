@@ -65,7 +65,8 @@ var Application = (function(){
 
 		UI.startLightBox('Loading Data...');
 		setTimeout(function(){
-			loadData(PreprocessedData, function(source_data){
+			loadData(PreprocessedData, function(data){
+				source_data = data;
 				ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
 				MatrixView.setTable($(".MatrixView table"));
 
@@ -85,6 +86,14 @@ var Application = (function(){
 	function setData(data, clear_selection){
 		set_data_timer = null;
 		application_data = data;
+		var map = {};
+		application_data.nodes.forEach(function(node){
+			map[node.id] = node;
+		});
+		application_data.links.forEach(function(link){
+			link.source = map[link.source.id];
+			link.target = map[link.target.id];
+		});
 		if(typeof(clear_selection) === 'undefined' || clear_selection){
 			clearSelection();
 		}
@@ -427,8 +436,7 @@ var Application = (function(){
 
 		buildLinksParallel(data, function(links){
 			data.links = links;
-			makeSubgraphs(application_data);
-			onDone();
+			makeSubgraphs(application_data, onDone);
 		});
 		/*
 		data.links = buildLinks(data);
@@ -466,7 +474,7 @@ var Application = (function(){
 	/**
 	 * cuts out all links less than the specified amount, subtracts that from what's left
 	 */
-	function floorData(data, threshold){
+	function floorData(data, threshold, onDone){
 		data = JSON.parse(JSON.stringify(data))
 		for(var i = 0; i<data.links.length; i++){
 			if(data.links[i].scaled_strengths.interlanguage_strength <=threshold){
@@ -478,9 +486,7 @@ var Application = (function(){
 			}
 		}
 
-		makeSubgraphs(data);
-	
-		return data;
+		makeSubgraphs(data, onDone);
 	}
 
 
@@ -488,44 +494,25 @@ var Application = (function(){
 	 *UI callable function for flooring the data and setting it into the visualization
 	 */
 	function setFlooredData(threshold){
-		application_data = floorData(source_data, threshold);
-		setData(application_data);
-	}
-
-	/**
-	 * removes a bunch of nodes
-	 */
-	function removeNodes(nodes_to_remove){
-		var removed_nodes = [];
-		//convert to a list of ids
-		for(var i = 0; i<nodes_to_remove.length; i++){
-			nodes_to_remove[i] = nodes_to_remove[i].id;
-		}
-		for(var i = application_data.nodes.length-1; i>=0; i--){
-			var cur_node = application_data.nodes[i];
-			if(nodes_to_remove.indexOf(cur_node.id) !== -1){
-				removed_nodes.push(cur_node.id);
-				application_data.nodes.splice(i,1);
-			}
-		};
-		//update index
-		for(var i = application_data.nodes.length-1; i>=0; i--){
-			application_data.nodes[i].index = i;
-		};
-		for(var i = application_data.links.length-1; i>=0; i--){
-			var cur_link = application_data.links[i];
-			if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
-				application_data.links.splice(i,1);
-			}
-		};		
+		UI.startLightBox('Setting Minimum Correlation...');
+		setTimeout(function(){
+			floorData(
+				source_data,
+				threshold,
+				function(data){
+					application_data = data;
+					setData(application_data);
+					UI.stopLightBox();
+				}
+			);
+		},100);
 	}
 
 	/**
 	 * Forms nodes into groups
 	 * deletes any single nodes
 	 */
-	function makeSubgraphs(data){
-		console.time('makeSubgraphs');
+	function makeSubgraphs(data, onDone){
 		var group_counter = 0;
 		var nodes_removed = false;
 		function findNodeIndexById(node_id) {
@@ -591,17 +578,26 @@ var Application = (function(){
 			}
 		}
 		//now actually delete things
-		var nodes_to_remove = []
 		for(var i = 0; i<data.nodes.length; i++){
 			if(data.nodes[i].group == null || data.nodes[i].group == undefined) {
-				nodes_to_remove.push(data.nodes[i]);
+				nodes_removed = true;
+				data.nodes.splice(i, 1);
+				i--;
 			}
 		}
-		removeNodes(nodes_to_remove);
-
-		console.timeEnd('makeSubgraphs');
-
-		return data;
+		//rebuild the links
+		if(nodes_removed)  {
+			buildLinksParallel(
+				data,
+				function(links){
+					data.links = links;
+					onDone(data);
+				}
+			);
+		}
+		else{
+			onDone(data);
+		}
 	}
 
 	/**
@@ -947,60 +943,86 @@ var Application = (function(){
 	 *removes selected things from the graph
 	 */
 	function removeSelected(type, do_unselected){
-		do_unselected = !!do_unselected;//booleanify this
-		//remove selected links
-		if(typeof(type) === 'undefined' || type === 'link'){
-			for(var i = application_data.links.length-1; i>=0; i--){
-				var cur_link = application_data.links[i];
-				if(do_unselected != linkIsSelected(cur_link)){
-					application_data.links.splice(i,1);
-				}
-			};
-		}
-		//remove selected nodes, and remove associated links
-		if((typeof(type) === 'undefined' || type === 'node') && selected_data.nodes.length > 0){
-			removeNodes(selected_data.nodes);
-		}
-		//remove selected languages, and update/remove links
-		if((typeof(type) === 'undefined' || type === 'language') && selected_data.languages.length > 0){
-			//remove selected languages
-			for(var i = application_data.languages.length-1; i>=0; i--){
-				var cur_language = application_data.languages[i];
-				if(do_unselected != languageIsSelected(cur_language)){
-					application_data.languages.splice(i,1);
-					for(var k = 0; k<application_data.nodes.length; k++){
-						for(value in application_data.nodes[k].values){
-							for(var j = application_data.nodes[k].values[value].length-1; j>=0; j--){
-								if(application_data.nodes[k].values[value][j] === i){
-									application_data.nodes[k].values[value].splice(j,1);
-								}
-								else if(application_data.nodes[k].values[value][j] > i){
-									application_data.nodes[k].values[value][j]--;
+		UI.startLightBox('Removing Selectied Items...');
+		setTimeout(function(){
+			do_unselected = !!do_unselected;//booleanify this
+			//remove selected links
+			if(typeof(type) === 'undefined' || type === 'link'){
+				for(var i = application_data.links.length-1; i>=0; i--){
+					var cur_link = application_data.links[i];
+					if(do_unselected != linkIsSelected(cur_link)){
+						application_data.links.splice(i,1);
+					}
+				};
+			}
+			//remove selected nodes, and remove associated links
+			if((typeof(type) === 'undefined' || type === 'node') && selected_data.nodes.length > 0){
+				var removed_nodes = [];
+				for(var i = application_data.nodes.length-1; i>=0; i--){
+					var cur_node = application_data.nodes[i];
+					if(do_unselected != nodeIsSelected(cur_node)){
+						removed_nodes.push(cur_node.id);
+						application_data.nodes.splice(i,1);
+					}
+				};
+				//update index
+				for(var i = application_data.nodes.length-1; i>=0; i--){
+					application_data.nodes[i].index = i;
+				};
+				for(var i = application_data.links.length-1; i>=0; i--){
+					var cur_link = application_data.links[i];
+					if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
+						application_data.links.splice(i,1);
+					}
+				};		
+			}
+			//remove selected languages, and update/remove links
+			if((typeof(type) === 'undefined' || type === 'language') && selected_data.languages.length > 0){
+				//remove selected languages
+				for(var i = application_data.languages.length-1; i>=0; i--){
+					var cur_language = application_data.languages[i];
+					if(do_unselected != languageIsSelected(cur_language)){
+						application_data.languages.splice(i,1);
+						for(var k = 0; k<application_data.nodes.length; k++){
+							for(value in application_data.nodes[k].values){
+								for(var j = application_data.nodes[k].values[value].length-1; j>=0; j--){
+									if(application_data.nodes[k].values[value][j] === i){
+										application_data.nodes[k].values[value].splice(j,1);
+									}
+									else if(application_data.nodes[k].values[value][j] > i){
+										application_data.nodes[k].values[value][j]--;
+									}
 								}
 							}
 						}
 					}
+				};
+				//recalculate link strength
+				//remove 0 strength links
+				for(var i = application_data.links.length-1; i>=0; i--){
+					var cur_link = application_data.links[i];
+					var strength = calculateStrength(cur_link.source.index, cur_link.target.index, application_data);
+					if(!strength || !strength.scaled_strengths.interlanguage_strength){
+						application_data.links.splice(i,1);
+					}
+					else{
+						cur_link.correlation = strength.correlation;
+						cur_link.original_strengths = strength.original_strengths;
+						cur_link.scaled_strengths = strength.scaled_strengths;
+					}
+				};
+			}
+			UI.clearSearchResults();
+			clearSelection();
+			makeSubgraphs(
+				application_data,
+				function(data){
+					application_data = data;
+					setData(application_data);
 				}
-			};
-			//recalculate link strength
-			//remove 0 strength links
-			for(var i = application_data.links.length-1; i>=0; i--){
-				var cur_link = application_data.links[i];
-				var strength = calculateStrength(cur_link.source.index, cur_link.target.index, application_data);
-				if(!strength || !strength.scaled_strengths.interlanguage_strength){
-					application_data.links.splice(i,1);
-				}
-				else{
-					cur_link.correlation = strength.correlation;
-					cur_link.original_strengths = strength.original_strengths;
-					cur_link.scaled_strengths = strength.scaled_strengths;
-				}
-			};
-		}
-		UI.clearSearchResults();
-		clearSelection();
-		//application_data = makeSubgraphs(application_data);
-		setData(application_data);
+			);
+			UI.stopLightBox();
+		},100);
 	}
 
 	/**
