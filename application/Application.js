@@ -41,6 +41,11 @@ var Application = (function(){
 	var calculate_distance = false;
 
 	/**
+	 *used to give all languages a unique id
+	 */
+	var last_language_id = 0;
+
+	/**
 	 * main function, entry point for the application,
 	 * sets up D3,
 	 * starts up other event handlers that drive the rest of the application
@@ -88,6 +93,10 @@ var Application = (function(){
 		var built_data = new Object();
 
 		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
+		built_data.languages.forEach(function(language){
+			language.id = ++last_language_id;
+		});
+		
 		built_data.nodes = buildFeatureNodes(input_data);
 		built_data.links = buildLinks(built_data);
 
@@ -616,10 +625,10 @@ var Application = (function(){
 	/**
 	 * removes a language from the set of selected
 	 */
-	function unselectLanguage(node){
+	function unselectLanguage(language){
 		for(var i = selected_data.languages.length-1; i>-1; i--){
 			var cur_language = selected_data.languages[i]
-			if(cur_language.name === node.name){
+			if(cur_language.id === language.id){
 				selected_data.languages.splice(i, 1);
 			}
 		}
@@ -658,7 +667,7 @@ var Application = (function(){
 	function languageIsSelected(language){
 		var is_selected = false;
 		selected_data.languages.forEach(function(cur_language){
-			if(cur_language.name === language.name){
+			if(cur_language.id === language.id){
 				is_selected = true;
 			}
 		});
@@ -883,9 +892,9 @@ var Application = (function(){
 	/**
 	 * gets a language by it's name (we can probably make some sort of id)
 	 */
-	function getLanguage(name){
+	function getLanguage(id){
 		for(var i = 0; i<application_data.languages.length; i++){
-			if(application_data.languages[i].name === name){
+			if(application_data.languages[i].id === id){
 				return application_data.languages[i];
 			}
 		}

@@ -266,7 +266,7 @@ var UI = (function(){
 			var s_text_col = getSafeInverseColor(s_col);
 			var g_text_col = getSafeInverseColor(g_col);
 
-			return '<div class="language_search_result search_result language language_name_'+language.name+(is_selected?' selected':'')+'" data-language_name="'+language.name+'">'
+			return '<div class="language_search_result search_result language language_id_'+language.id+(is_selected?' selected':'')+'" data-language_id="'+language.id+'">'
 				+'<span class="language_badge" style="background-color:'+f_col+'; color:'+f_text_col+';">F</span>'
 				+'<span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">S</span>'
 				+'<span class="language_badge" style="background-color:'+g_col+'; color:'+g_text_col+';">G</span>'
@@ -461,7 +461,7 @@ var UI = (function(){
 					results,
 					TEMPLATES.language,
 					function onclick(){
-						var language = Application.getLanguage($(this).data('language_name'));
+						var language = Application.getLanguage($(this).data('language_id'));
 						Application.toggleLanguageSelection(language);
 					},
 					function onhover(is_in){
@@ -747,7 +747,7 @@ var UI = (function(){
 			$('.link_search_result.feature_'+link.source.id+'.feature_'+link.target.id).addClass('selected');
 		});
 		selection_data.languages.forEach(function(language){
-			$('.language_search_result.language_name_'+language.name).addClass('selected');
+			$('.language_search_result.language_id_'+language.id).addClass('selected');
 		});
 	}
 
@@ -758,7 +758,7 @@ var UI = (function(){
 		$('.UI_tab_content:visible .search_result').each(function(i,result){
 			var feature = $(result).data('feature_id');
 			var link = $(result).data('link_id');
-			var language = $(result).data('language_name');
+			var language = $(result).data('language_id');
 			if(feature){
 				Application.selectNode(Application.getNode(feature));
 			}
@@ -779,7 +779,7 @@ var UI = (function(){
 		$('.UI_tab_content:visible .search_result').each(function(i,result){
 			var feature = $(result).data('feature_id');
 			var link = $(result).data('link_id');
-			var language = $(result).data('language_name');
+			var language = $(result).data('language_id');
 			if(feature){
 				Application.unselectNode(Application.getNode(feature));
 			}

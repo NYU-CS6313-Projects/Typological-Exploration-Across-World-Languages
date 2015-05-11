@@ -47,14 +47,14 @@ svg
 .highlighted-link
 {
 	stroke: #DD0;
-	opacity: 0.75;
+	opacity: 0.25;
 	pointer-events:none;
 }
 
 .selected-link
 {
   stroke: #0ee;
-  opacity: 0.5;
+  opacity: 0.25;
   pointer-events:none;
 }
 
