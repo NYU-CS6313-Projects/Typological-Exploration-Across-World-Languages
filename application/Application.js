@@ -113,6 +113,7 @@ var Application = (function(){
 		finished(built_data);
 		*/
 		//newfangled parallel method
+		UI.startLightBox('Building Correlations...');
 		buildLinksParallel(
 			built_data,
 			function(links){
@@ -287,6 +288,11 @@ var Application = (function(){
 	function buildLinksParallel(data, done){
 		console.time('calc str parallel');
 
+		//first off, if we are building links, then we don't need the links, so if they are there, kill them
+		if('links' in data){
+			delete data.links;
+		}
+
 		var batches = [];
 
 		//arbitrarily deciding to use 4 batches
@@ -392,7 +398,7 @@ var Application = (function(){
 	/**
 	 * Collapse the given list of features into one
 	 */
-	function collapseFeatures(data, features){
+	function collapseFeatures(data, features, onDone){
 		//sorting in reverse makes for easier removal
 		features.sort(function(a,b){return b-a;});
 		custom_node_count++;
@@ -419,14 +425,23 @@ var Application = (function(){
 			"values":new_values
 		});
 
+		buildLinksParallel(data, function(links){
+			data.links = links;
+			makeSubgraphs(application_data);
+			onDone();
+		});
+		/*
 		data.links = buildLinks(data);
 		makeSubgraphs(application_data);
+		*/
 	}
 
 	/**
 	 *UI callable function for collapsing features and setting it into the visualization
 	 */
 	function callCollapseFeatures() {
+		UI.startLightBox('Collapsing Features...');
+
 		if(selected_data.nodes.length < 1){
 			return;
 		}
@@ -438,8 +453,14 @@ var Application = (function(){
 				}
 			}
 		}
-		collapseFeatures(application_data, features);
-		setData(application_data, true);
+		collapseFeatures(
+			application_data,
+			features,
+			function(){
+				setData(application_data, true);
+				UI.stopLightBox();
+			}
+		);
 	}
 
 	/**
@@ -472,10 +493,39 @@ var Application = (function(){
 	}
 
 	/**
+	 * removes a bunch of nodes
+	 */
+	function removeNodes(nodes_to_remove){
+		var removed_nodes = [];
+		//convert to a list of ids
+		for(var i = 0; i<nodes_to_remove.length; i++){
+			nodes_to_remove[i] = nodes_to_remove[i].id;
+		}
+		for(var i = application_data.nodes.length-1; i>=0; i--){
+			var cur_node = application_data.nodes[i];
+			if(nodes_to_remove.indexOf(cur_node.id) !== -1){
+				removed_nodes.push(cur_node.id);
+				application_data.nodes.splice(i,1);
+			}
+		};
+		//update index
+		for(var i = application_data.nodes.length-1; i>=0; i--){
+			application_data.nodes[i].index = i;
+		};
+		for(var i = application_data.links.length-1; i>=0; i--){
+			var cur_link = application_data.links[i];
+			if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
+				application_data.links.splice(i,1);
+			}
+		};		
+	}
+
+	/**
 	 * Forms nodes into groups
 	 * deletes any single nodes
 	 */
 	function makeSubgraphs(data){
+		console.time('makeSubgraphs');
 		var group_counter = 0;
 		var nodes_removed = false;
 		function findNodeIndexById(node_id) {
@@ -541,17 +591,15 @@ var Application = (function(){
 			}
 		}
 		//now actually delete things
+		var nodes_to_remove = []
 		for(var i = 0; i<data.nodes.length; i++){
 			if(data.nodes[i].group == null || data.nodes[i].group == undefined) {
-				nodes_removed = true;
-				data.nodes.splice(i, 1);
-				i--;
+				nodes_to_remove.push(data.nodes[i]);
 			}
 		}
-		//rebuild the links
-		if(nodes_removed)  {
-			data.links = buildLinks(data);
-		}
+		removeNodes(nodes_to_remove);
+
+		console.timeEnd('makeSubgraphs');
 
 		return data;
 	}
@@ -911,24 +959,7 @@ var Application = (function(){
 		}
 		//remove selected nodes, and remove associated links
 		if((typeof(type) === 'undefined' || type === 'node') && selected_data.nodes.length > 0){
-			var removed_nodes = [];
-			for(var i = application_data.nodes.length-1; i>=0; i--){
-				var cur_node = application_data.nodes[i];
-				if(do_unselected != nodeIsSelected(cur_node)){
-					removed_nodes.push(cur_node.id);
-					application_data.nodes.splice(i,1);
-				}
-			};
-			//update index
-			for(var i = application_data.nodes.length-1; i>=0; i--){
-				application_data.nodes[i].index = i;
-			};
-			for(var i = application_data.links.length-1; i>=0; i--){
-				var cur_link = application_data.links[i];
-				if(removed_nodes.indexOf(cur_link.source.id) !== -1 || removed_nodes.indexOf(cur_link.target.id) !== -1){
-					application_data.links.splice(i,1);
-				}
-			};		
+			removeNodes(selected_data.nodes);
 		}
 		//remove selected languages, and update/remove links
 		if((typeof(type) === 'undefined' || type === 'language') && selected_data.languages.length > 0){

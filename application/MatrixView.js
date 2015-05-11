@@ -391,42 +391,47 @@ var MatrixView = (function(){
 
 		//event handlers
 		//column/row header handlers
-		var header_cells = $('.MatrixView th.header');
-		header_cells.on( "dblclick", function(){
-			if($(this).data('row_or_column') === 'column'){
-				MatrixView.sortRows(featureSort($(this).data('feature_id')));
+		$('.MatrixView').on( "dblclick", function(){
+			if($(this).is('.MatrixView th.header')){
+				if($(this).data('row_or_column') === 'column'){
+					MatrixView.sortRows(featureSort($(this).data('feature_id')));
+				}
+				else{
+					MatrixView.sortColumns(featureSort($(this).data('feature_id')));
+				}
 			}
-			else{
-				MatrixView.sortColumns(featureSort($(this).data('feature_id')));
+		} );
+		$('.MatrixView').on( "click", function(){
+			if($(this).is('.MatrixView td.data')){
+				var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
+				if(link){
+					Application.toggleLinkSelection(link);
+				}
+			}
+			else if($(this).is('.MatrixView th.header')){
+				var feature = Application.getNode($(this).data('feature_id'));
+				Application.toggleNodeSelection(feature);
 			}
 		} );
-		header_cells.on( "click", function(){
-			var feature = Application.getNode($(this).data('feature_id'));
-			Application.toggleNodeSelection(feature);
+		$('.MatrixView').on( "mouseover", function(){
+			if($(this).is('.MatrixView td.data')){
+				var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
+				Application.highlightLink(link);
+			}
+			else if($(this).is('.MatrixView th.header')){
+				var feature = Application.getNode($(this).data('feature_id'));
+				Application.highlightNode(feature);
+			}
 		} );
-		header_cells.on( "mouseover", function(){
-			var feature = Application.getNode($(this).data('feature_id'));
-			Application.highlightNode(feature);
-		} );
-		header_cells.on( "mouseout", function(){
-			Application.highlightNode(null);
+		$('.MatrixView').on( "mouseout", function(){
+			if($(this).is('.MatrixView td.data')){
+				Application.highlightLink(null);
+			}
+			else if($(this).is('.MatrixView th.header')){
+				Application.highlightNode(null);
+			}
 		} );
 
-		//data cell handlers
-		var data_cells = $('.MatrixView td.data');
-		data_cells.on( "click", function(){
-			var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
-			if(link){
-				Application.toggleLinkSelection(link);
-			}
-		} );
-		data_cells.on( "mouseover", function(){
-			var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
-			Application.highlightLink(link);
-		} );
-		data_cells.on( "mouseout", function(){
-			Application.highlightLink(null);
-		} );
 		console.timeEnd('redraw matrix');
 	}
 
