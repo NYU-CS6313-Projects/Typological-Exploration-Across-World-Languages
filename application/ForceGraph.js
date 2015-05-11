@@ -559,7 +559,9 @@ var ForceGraph = (function(){
 		 */
 		setGroupRingSize: function(size){
 			P.gravity_ring_radius = size;
-			P.layout.resume();
+			if(P.layout){
+				P.layout.resume();
+			}
 		},
 
 		/**
@@ -568,7 +570,9 @@ var ForceGraph = (function(){
 		 */
 		setDrawNodeLabels: function(draw_labels){
 			P.draw_labels = draw_labels;
-			P.svg.classed('no_node_labels', !P.draw_labels);
+			if(P.svg){
+				P.svg.classed('no_node_labels', !P.draw_labels);
+			}
 		},
 
 		/**
@@ -576,7 +580,9 @@ var ForceGraph = (function(){
 		 */
 		setMinimumDrawStrength: function(minimum){
 			P.minimum_draw_strength = minimum;
-			this.setData(P.data);
+			if(P.svg){
+				this.setData(P.data);
+			}
 		},
 
 		/**

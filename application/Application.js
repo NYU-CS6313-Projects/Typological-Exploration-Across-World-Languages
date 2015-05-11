@@ -19,7 +19,10 @@ var Application = (function(){
 	 * holds a secondary copy of the data, this is the data in the form that the application is using during run time
 	 * it is source data after filtering and transformations that happen from user input
 	 */
-	var application_data = new Object();
+	var application_data = {
+		nodes:[],
+		links:[]
+	};
 
 	/**
 	 * list of links and nodes that are currently selected
@@ -52,6 +55,14 @@ var Application = (function(){
 	 */
 	function main(){
 		//load the default data
+
+		ForceGraph.setGroupRingSize(parseFloat($('#UI_subgraph_seperation').val()));
+		ForceGraph.setDrawNodeLabels($('#UI_draw_node_labels').prop('checked'));
+		calculate_distance = $('#UI_calculate_distance').prop('checked');
+		ForceGraph.setMinimumDrawStrength(parseFloat($('#UI_minimum_draw_strength').val()));
+		setScale($('#UI_scaling').val());
+		setNormalizeStrengths($('#UI_draw_node_labels').prop('checked'));
+
 		UI.startLightBox('Loading Data...');
 		setTimeout(function(){
 			source_data = loadData(PreprocessedData);
@@ -64,14 +75,9 @@ var Application = (function(){
 			//reset the highlighted links
 			Application.highlightNode(null);
 
-			$('.UI_control_pallet').children().each(function(i,element){
-				if(element.onchange){
-					element.onchange();
-				}
-				if(element.onclick){
-					element.onclick();
-				}
-			});
+			application_data = source_data;
+			setData(application_data);
+
 			UI.stopLightBox();
 		},100);
 	}
@@ -98,6 +104,9 @@ var Application = (function(){
 		});
 		
 		built_data.nodes = buildFeatureNodes(input_data);
+		built_data.nodes.forEach(function(node){
+			node.group = 0;	//I think it's safe to assume that the initial graph is fully connected, because it seems to be every time we load it
+		});
 		built_data.links = buildLinks(built_data);
 
 		return built_data;
