@@ -65,20 +65,20 @@ var Application = (function(){
 
 		UI.startLightBox('Loading Data...');
 		setTimeout(function(){
-			source_data = loadData(PreprocessedData);
+			loadData(PreprocessedData, function(source_data){
+				ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
+				MatrixView.setTable($(".MatrixView table"));
 
-			ForceGraph.setSVG(d3.select(".ForceGraph").append("svg"));
-			MatrixView.setTable($(".MatrixView table"));
+				//this should be done in an ajax call if we end up with non-static data
 
-			//this should be done in an ajax call if we end up with non-static data
+				//reset the highlighted links
+				Application.highlightNode(null);
 
-			//reset the highlighted links
-			Application.highlightNode(null);
+				application_data = source_data;
+				setData(application_data);
 
-			application_data = source_data;
-			setData(application_data);
-
-			UI.stopLightBox();
+				UI.stopLightBox();
+			});
 		},100);
 	}
 
@@ -95,7 +95,7 @@ var Application = (function(){
 	/**
 	 * load json data into appropriate node/link format
 	 */
-	function loadData(input_data) {
+	function loadData(input_data, finished) {
 		var built_data = new Object();
 
 		built_data.languages = JSON.parse(JSON.stringify(input_data.languages));
@@ -107,9 +107,19 @@ var Application = (function(){
 		built_data.nodes.forEach(function(node){
 			node.group = 0;	//I think it's safe to assume that the initial graph is fully connected, because it seems to be every time we load it
 		});
+		/*
+		//old serial method
 		built_data.links = buildLinks(built_data);
-
-		return built_data;
+		finished(built_data);
+		*/
+		//newfangled parallel method
+		buildLinksParallel(
+			built_data,
+			function(links){
+				built_data.links = links;
+				finished(built_data);
+			}
+		);
 	}
 
 	/**
@@ -267,6 +277,86 @@ var Application = (function(){
 				intergenus_strength:0,
 				interlanguage_strength:0
 			}
+		});
+	}
+
+	/**
+	 * do the same thing as the regular buildLinks, but do it using the magic of PARALLELISM!!!
+	 * rather than returning it's result it passes it to the given callback
+	 */
+	function buildLinksParallel(data, done){
+		console.time('calc str parallel');
+
+		var batches = [];
+
+		//arbitrarily deciding to use 4 batches
+		for(var i = 0; i<4; i++){
+			batches.push([]);
+		}
+
+		for(var i = 0; i<data.nodes.length; i++){
+			batches[i%batches.length].push(i);
+		}
+
+		//make a new parallel processor that will operate on the batches
+		var processor = new Parallel(
+			batches,
+			{
+				env:{
+					data:data,					//give all threads a copy of all the data
+					calculate_distance:calculate_distance,		//we need to inject this and we can apparently only have one global imported object
+					scaling_mode:scaling_mode,			//calculate scaling needs this
+					normalize_strengths:normalize_strengths		//and this also
+				},
+				envNamespace:'application'
+			}
+		);
+
+		//give our threads access to the functions they will need
+		processor.require({fn:calculateStrength, name:'calculateStrength'});
+		processor.require({fn:intersection, name:'intersection'});
+		processor.require({fn:flattenValues, name:'flattenValues'});
+		processor.require({fn:calculateScale, name:'calculateScale'});
+
+		//hold on to your buts we're going to do stuff
+		processor.map(function (features){
+
+			//look at me making global variables here
+			calculate_distance = global.application.calculate_distance;
+			scaling_mode = global.application.scaling_mode;
+			normalize_strengths = global.application.normalize_strengths;
+
+			var links = [];
+			//loop through every feature
+			for(var i = 0; i < features.length; i++) {
+				feature1 = features[i];
+				//compare to every OTHER feature
+				for(var feature2 = feature1+1; feature2 < global.application.data.nodes.length; feature2++) {
+					var strength = calculateStrength(feature1, feature2, global.application.data);
+					if(strength != null && strength.original_strengths.interlanguage_strength > 0){
+						links.push({
+							"source":feature1,
+							"target":feature2,
+							"correlation":strength.correlation,
+							"original_strengths":strength.original_strengths,
+							"scaled_strengths":strength.scaled_strengths
+						});
+					}
+				}
+			}
+			return links;
+		})
+		.then(function(result){
+			var links = [];
+			result.forEach(function(link_subset){
+				links = links.concat(link_subset);
+			});
+			links.forEach(function(link){
+				link.source = data.nodes[link.source];
+				link.target = data.nodes[link.target];
+			});
+			console.timeEnd('calc str parallel');
+			done(links);
 		});
 	}
 
@@ -1153,7 +1243,8 @@ var Application = (function(){
 		/*search related functions*/
 		searchFeature:searchFeature,
 		searchLink:searchLink,
-		searchLanguage:searchLanguage
+		searchLanguage:searchLanguage,
+		calculateStrength:calculateStrength //exposed to allow for parallel processing
 	};
 }());
 
