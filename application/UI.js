@@ -131,6 +131,32 @@ var UI = (function(){
 	}
 
 	/**
+	 * used by minimatrix of the feature value table to highlight rows and columns
+	 */
+	function minimatrixHover(hovered_element, is_hovering){
+		var col = $(hovered_element).data('col');
+		var row = $(hovered_element).closest('tr').data('row');
+		var things_to_highlight = $(hovered_element)
+			.closest('.link_feature_value_matrix')
+			.find('tr[data-row='+row+'] *, [data-col='+col+']');
+		if(is_hovering){
+			things_to_highlight.addClass('highlighted');
+		}
+		else{
+			things_to_highlight.removeClass('highlighted');
+		}
+	}
+
+	/**
+	 * user wants the list of languages gone
+	 */
+	function clearMinimatrixLanguages(clicked_element){
+		$(clicked_element).closest('.search_result').find('.selected').removeClass('selected');
+		$(clicked_element).parent().html('');
+		event.stopPropagation();
+	}
+
+	/**
 	 * used by the link template for generating the table of feature values
 	 */
 	function generateLinkFeatureValueTable(link){
@@ -141,36 +167,46 @@ var UI = (function(){
 				+'<th class="target_label" colspan="'+(Object.keys(link.target.values).length+1)+'">'+link.target.name+'</th>'
 			+'</tr>';
 			var col_idx = Object.keys(link.target.values).length+1;
+			var last_value ='';
+			var col = -1
 			for(value in link.target.values){
 				output += '<tr>'
 					+'<td></td>'
-					+'<td rowspan="'+col_idx+'"></td>'
-					+'<th colspan="'+(col_idx+1)+'" class="target_value_header">'+value.replace(/\s+/g,'&nbsp;')+'</th>';
+					+'<td rowspan="'+col_idx+'" title="'+last_value+'" data-col="'+col+'" class="value_header" ></td>'
+					+'<th colspan="'+(col_idx+1)+'" data-col="'+(col+1)+'" class="target_value_header value_header">'+value.replace(/\s+/g,'&nbsp;')+'</th>';
 				output += '</tr>'
 				col_idx--;
+				last_value = value;
+				col++;
 			}
-			output += '<tr><td></td><td></td><th colspan="2" class="total target_value_header">Any</th></tr>';
+			output += '<tr><td></td><td title="'+last_value+'"></td><th colspan="2" class="total target_value_header">Any</th></tr>';
 			var first = false;
 			var all_source = Application.flattenValues(link.source.values);
 			all_source.sort(function(a,b){return a-b});
 			var all_target = Application.flattenValues(link.target.values);
 			all_target.sort(function(a,b){return a-b});
 			var shared_languages = Application.intersection(all_source,all_target);
+			var row = 0;
 			for(source_value in link.source.values){
-				output += '<tr>';					//row for source value
+				output += '<tr data-row="'+row+'">';					//row for source value
 					if(!first){
 						first = true;
 						output += '<th class="source_label" rowspan="'+(Object.keys(link.source.values).length+1)+'"><div>'+link.source.name+'</div></th>';
 					}
-					output += '<th class="source_value_header">'+source_value.replace(/\s+/g,'&nbsp;')+'</th>';		//header for source value
+					output += '<th class="source_value_header value_header" data-col="'+col+'">'+source_value.replace(/\s+/g,'&nbsp;')+'</th>';		//header for source value
+					var col = 0
 					for(target_value in link.target.values){
 						//number of languages with the intersection of both
 						var combo_value_languages = Application.intersection(link.source.values[source_value], link.target.values[target_value]);
 						output += '<td class="data" '
+							+'data-col="'+col+'" '
 							+'data-languages="['+combo_value_languages.join(',')+']" '
 							+'style="background-color:'+getHeatColor(combo_value_languages.length, shared_languages.length)+'" '
+							+'onmouseover="UI.minimatrixHover(this, true);" '
+							+'onmouseout="UI.minimatrixHover(this, false);" '
 							+'onclick="UI.linkMiniMatrixClicked(this);" '
 							+'>'+combo_value_languages.length+'</td>';
+						col++;
 					};
 					//number of languages with the source value (not caring about target)
 					var total = Application.intersection(shared_languages, link.source.values[source_value]);
@@ -180,6 +216,7 @@ var UI = (function(){
 						+'onclick="UI.linkMiniMatrixClicked(this);" '
 						+'>'+total.length+'</td>';
 				output += '<td></td></tr>';
+				row++;
 			}
 
 			output += '<tr><th class="total source_value_header">Any</th>';
@@ -267,15 +304,15 @@ var UI = (function(){
 			var g_text_col = getSafeInverseColor(g_col);
 
 			return '<div class="language_search_result search_result language language_id_'+language.id+(is_selected?' selected':'')+'" data-language_id="'+language.id+'">'
-				+'<span class="language_badge" style="background-color:'+f_col+'; color:'+f_text_col+';">F</span>'
-				+'<span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">S</span>'
-				+'<span class="language_badge" style="background-color:'+g_col+'; color:'+g_text_col+';">G</span>'
+				+'<span class="language_badge" title="Family: '+language.family+'" style="background-color:'+f_col+'; color:'+f_text_col+';">F</span>'
+				+((language.family !== language.subfamily)?('<span class="language_badge" title="Subfamily: '+language.subfamily+'" style="background-color:'+s_col+'; color:'+s_text_col+';">S</span>'):'')
+				+'<span class="language_badge" title="Genus: '+language.genus+'" style="background-color:'+g_col+'; color:'+g_text_col+';">G</span>'
 				+'<h2>'+language.name+'</h2>'
 				+'<input type="button" value="Toggle Detail" onclick="UI.toggleDetail(this);event.stopPropagation();">'
 				+'<div class="detail" style="display:none">'
 					+'<table>'
 						+'<tr><th>Family:</th><td><span class="language_badge" style="background-color:'+f_col+'; color:'+f_text_col+';">'+language.family+'</span></td></tr>'
-						+'<tr><th>Subfamily:</th><td><span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">'+language.subfamily+'</span></td></tr>'
+						+((language.family !== language.subfamily)?('<tr><th>Subfamily:</th><td><span class="language_badge" style="background-color:'+s_col+'; color:'+s_text_col+';">'+language.subfamily+'</span></td></tr>'):'')
 						+'<tr><th>Genus:</th><td><span class="language_badge" style="background-color:'+g_col+'; color:'+g_text_col+';">'+language.genus+'</span></td></tr>'
 						+'<tr><th>Name:</th><td>'+language.name+'</td></tr>'
 						+'<tr><th>Latitude:</th><td>'+language.latitude+'</td></tr>'
@@ -676,7 +713,7 @@ var UI = (function(){
 		}
 		var output = '';
 		if(language_list.length > 0){
-			output += '<input type="button" value="Hide Languages" onclick="$(this).parent().html(\'\');event.stopPropagation();"></input>';
+			output += '<input type="button" value="Hide Languages" onclick="UI.clearMinimatrixLanguages(this);"></input>';
 			var languages = $(clicked_element).data('languages');
 			languages.sort(function(l1, l2){
 				var language1 = Application.getLanguageByIndex(l1);
@@ -713,6 +750,18 @@ var UI = (function(){
 			});
 		}
 		language_list.html(output);
+
+		$(clicked_element)
+			.closest('.link_feature_value_matrix')
+			.find('.selected')
+			.removeClass('selected');
+		$(clicked_element).addClass('selected');
+		var col = $(clicked_element).data('col');
+		var row = $(clicked_element).closest('tr').data('row');
+		$(clicked_element)
+			.closest('.link_feature_value_matrix')
+			.find('[data-col='+col+'].value_header, tr[data-row='+row+'] .value_header')
+			.addClass('selected');
 	}
 
 	/**
@@ -878,7 +927,9 @@ var UI = (function(){
 		removeUnselected:removeUnselected,
 		removeSelected:removeSelected,
 		linkMiniMatrixClicked:linkMiniMatrixClicked,
-		toggleDetail:toggleDetail
+		toggleDetail:toggleDetail,
+		minimatrixHover:minimatrixHover,
+		clearMinimatrixLanguages:clearMinimatrixLanguages
 	};
 }());
 

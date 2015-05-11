@@ -54,7 +54,7 @@ svg
 .selected-link
 {
   stroke: #0ee;
-  opacity: 0.25;
+  opacity: 0.5;
   pointer-events:none;
 }
 
@@ -474,6 +474,7 @@ div{
 	position: absolute;
 	white-space: nowrap;
 }
+
 .link_feature_value_matrix .target_value_header {
 	white-space: nowrap;
 	text-align: left;
@@ -502,6 +503,37 @@ div{
 
 .link_feature_value_matrix .target_label {
 	width: 1px;
+}
+
+.link_feature_value_matrix .value_header.highlighted
+{
+  background-color:#FFD;
+  border-color: #FF0;
+}
+
+.link_feature_value_matrix td.data.highlighted
+{
+  border-color: #FF0;
+  border-style: double;
+}
+
+.link_feature_value_matrix .value_header.selected
+{
+  background-color:#DFF;
+  border-color: #0FF;
+}
+
+.link_feature_value_matrix td.data.selected
+{
+  border-color: #0FF;
+  border-style: double;
+}
+
+.link_feature_value_matrix td.data
+{
+  border-color: #000;
+  border-style: solid;
+  border-width: 2px;
 }
 
 .search_result h2,
