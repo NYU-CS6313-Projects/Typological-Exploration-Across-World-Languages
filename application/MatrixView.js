@@ -118,6 +118,31 @@ var MatrixView = (function(){
 	}
 
 	/**
+	 * returns a comparator function that sorts on property value
+	 */
+	function comparatorProperty(property){
+		var lookup = {};
+
+		for(var i = 0; i<P.raw_data.nodes.length; i++){
+			lookup[P.raw_data.nodes[i].id] = P.raw_data.nodes[i][property];
+		}
+
+		return function(a,b){
+
+			var a = lookup[a];
+			var b = lookup[b];
+
+			if(a>b){
+				return 1;
+			}
+			else if(a<b){
+				return -1;
+			}
+			return 0;
+		}
+	}
+
+	/**
 	 * returns a comparator function that sorts on feature id value
 	 */
 	function comparatorId(){
@@ -389,49 +414,6 @@ var MatrixView = (function(){
 			self.selectionChanged(P.selection_data);
 		}
 
-		//event handlers
-		//column/row header handlers
-		$('.MatrixView').on( "dblclick", function(){
-			if($(this).is('.MatrixView th.header')){
-				if($(this).data('row_or_column') === 'column'){
-					MatrixView.sortRows(featureSort($(this).data('feature_id')));
-				}
-				else{
-					MatrixView.sortColumns(featureSort($(this).data('feature_id')));
-				}
-			}
-		} );
-		$('.MatrixView').on( "click", function(){
-			if($(this).is('.MatrixView td.data')){
-				var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
-				if(link){
-					Application.toggleLinkSelection(link);
-				}
-			}
-			else if($(this).is('.MatrixView th.header')){
-				var feature = Application.getNode($(this).data('feature_id'));
-				Application.toggleNodeSelection(feature);
-			}
-		} );
-		$('.MatrixView').on( "mouseover", function(){
-			if($(this).is('.MatrixView td.data')){
-				var link = Application.getLink($(this).data('row_id'), $(this).data('column_id'));
-				Application.highlightLink(link);
-			}
-			else if($(this).is('.MatrixView th.header')){
-				var feature = Application.getNode($(this).data('feature_id'));
-				Application.highlightNode(feature);
-			}
-		} );
-		$('.MatrixView').on( "mouseout", function(){
-			if($(this).is('.MatrixView td.data')){
-				Application.highlightLink(null);
-			}
-			else if($(this).is('.MatrixView th.header')){
-				Application.highlightNode(null);
-			}
-		} );
-
 		console.timeEnd('redraw matrix');
 	}
 
@@ -489,6 +471,57 @@ var MatrixView = (function(){
 			P.table = table;
 
 			self.setData(P.raw_data);
+
+			//event handlers
+			//column/row header handlers
+			$('.MatrixView').on( "dblclick", function(evt){
+				if($(evt.target).is('.MatrixView th.header')){
+					if($(evt.target).data('row_or_column') === 'column'){
+						MatrixView.sortRows(featureSort($(evt.target).data('feature_id')));
+					}
+					else{
+						MatrixView.sortColumns(featureSort($(evt.target).data('feature_id')));
+					}
+				}
+				evt.stopPropagation();
+				return false;
+			} );
+			$('.MatrixView').on( "click", function(evt){
+				if($(evt.target).is('.MatrixView td.data')){
+					var link = Application.getLink($(evt.target).data('row_id'), $(evt.target).data('column_id'));
+					if(link){
+						Application.toggleLinkSelection(link);
+					}
+				}
+				else if($(evt.target).is('.MatrixView th.header')){
+					var feature = Application.getNode($(evt.target).data('feature_id'));
+					Application.toggleNodeSelection(feature);
+				}
+				evt.stopPropagation();
+				return false;
+			} );
+			$('.MatrixView').on( "mouseover", function(evt){
+				if($(evt.target).is('.MatrixView td.data')){
+					var link = Application.getLink($(evt.target).data('row_id'), $(evt.target).data('column_id'));
+					Application.highlightLink(link);
+				}
+				else if($(evt.target).is('.MatrixView th.header')){
+					var feature = Application.getNode($(evt.target).data('feature_id'));
+					Application.highlightNode(feature);
+				}
+				evt.stopPropagation();
+				return false;
+			} );
+			$('.MatrixView').on( "mouseout", function(evt){
+				if($(evt.target).is('.MatrixView td.data')){
+					Application.highlightLink(null);
+				}
+				else if($(evt.target).is('.MatrixView th.header')){
+					Application.highlightNode(null);
+				}
+				evt.stopPropagation();
+				return false;
+			} );
 		},
 
 		/**
@@ -584,6 +617,11 @@ var MatrixView = (function(){
 				break;
 				case 'id':
 					comparator = comparatorId();
+				break;
+				case 'area':
+				case 'author':
+				case 'language_count':
+					comparator = comparatorProperty(mode);
 				break;
 				case 'sum':
 					comparator = comparatorSum();
