@@ -8,6 +8,6 @@ To run this application locally, simply pull the entire /application directory a
 
 A live demo can be found [here](http://nyu-cs6313-projects.github.io/Typological-Exploration-Across-World-Languages/application/index.html).
 
-Our final proposal will be posted here when complete.
+Our final proposal can be found [here](https://docs.google.com/document/d/18jzXf6-l5PaXf_ylopnIUON6wH7ZWx-z90Jaf7zF_x0/edit?usp=sharing).
 
-Our final video presentation will be posted here when complete.
+Our final video presentation can be found [here](https://vimeo.com/127758801).
