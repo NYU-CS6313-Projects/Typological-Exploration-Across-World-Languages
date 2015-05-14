@@ -10,4 +10,4 @@ A live demo can be found [here](http://nyu-cs6313-projects.github.io/Typological
 
 Our final proposal can be found [here](https://docs.google.com/document/d/18jzXf6-l5PaXf_ylopnIUON6wH7ZWx-z90Jaf7zF_x0/edit?usp=sharing).
 
-Our final video presentation can be found [here](https://vimeo.com/127758801).
+Our final video presentation can be found [here](https://vimeo.com/127771154).
